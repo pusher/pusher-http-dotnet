@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PusherDotNet
 {
-	public class PusherProvider
+	public class PusherProvider : IPusherProvider
 	{
 		private const string _host = "api.pusherapp.com";
 		private readonly string _applicationId;
@@ -67,7 +67,7 @@ namespace PusherDotNet
 			return BytesToHex(hash);
 		}
 
-		public string GetHmac256(PusherRequest request)
+		private string GetHmac256(PusherRequest request)
 		{
 			var data = String.Format("POST\n{0}\n{1}", GetBaseUri(request), GetQueryString(request));
 			var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(_applicationSecret));
