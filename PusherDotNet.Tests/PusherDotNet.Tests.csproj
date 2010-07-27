@@ -53,14 +53,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PusherDotNet.App\PusherDotNet.csproj">
+    <None Include="App.config" />
+    <None Include="App.config.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PusherDotNet\PusherDotNet.csproj">
       <Project>{A4889613-5DF5-41B9-8B92-D9647545872D}</Project>
       <Name>PusherDotNet</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="App.config.template" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
