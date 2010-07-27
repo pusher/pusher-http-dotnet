@@ -16,6 +16,13 @@ namespace PusherDotNet
 
 		public PusherProvider(string applicationId, string applicationKey, string applicationSecret)
 		{
+			if (String.IsNullOrEmpty(applicationId))
+				throw new ArgumentNullException("applicationId");
+			if (String.IsNullOrEmpty(applicationKey)) 
+				throw new ArgumentNullException("applicationKey");
+			if (String.IsNullOrEmpty(applicationSecret))
+				throw new ArgumentNullException("applicationSecret");
+
 			_applicationSecret = applicationSecret;
 			_applicationKey = applicationKey;
 			_applicationId = applicationId;

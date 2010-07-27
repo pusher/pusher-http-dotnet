@@ -1,15 +1,22 @@
-﻿namespace PusherDotNet
+﻿using System;
+
+namespace PusherDotNet
 {
-	public class PusherRequest
+	/// <summary>
+	/// Abstract base class for pusher requests
+	/// </summary>
+	public abstract class PusherRequest
 	{
-		public string EventName { get; set; }
-		public string ChannelName { get; set; }
-		public string JsonData { get; set; }
-		public string SocketId { get; set; }
-		
-		public PusherRequest(string channelName)
+		protected PusherRequest(string channelName, string eventName)
 		{
 			ChannelName = channelName;
+			EventName = eventName;
 		}
+
+		public string EventName { get; private set; }
+		public string ChannelName { get; private set; }
+		public string SocketId { get; set; }
+
+		public abstract string JsonData { get; }
 	}
 }
