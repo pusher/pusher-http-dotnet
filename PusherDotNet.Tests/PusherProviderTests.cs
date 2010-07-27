@@ -16,8 +16,7 @@ namespace PusherDotNet.Tests
 								JsonData = @"{""some"":""data""}"
 							};
 
-			var provider = new PusherProvider("1557", "fe6a55d88fd68f3a42a5", "bcfda4394fe40ad76d47");
-			//var provider = new PusherProvider("[YOUR APP ID]", "[YOUR APP KEY]", "[YOUR APP SECRET]");
+			var provider = new PusherProvider("[YOUR APP ID]", "[YOUR APP KEY]", "[YOUR APP SECRET]");
 			provider.Trigger(request);
 		}
 
