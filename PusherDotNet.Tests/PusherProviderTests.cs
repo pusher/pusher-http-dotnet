@@ -10,8 +10,7 @@ namespace PusherDotNet.Tests
 	{
 		private PusherProvider _defaultProvider;
 
-		[SetUp]
-		public void SetUp()
+		public void SetupDefaultProvider()
 		{
 			var applicationId = ConfigurationManager.AppSettings["applicationId"];
 			var applicationKey = ConfigurationManager.AppSettings["applicationKey"];
@@ -28,16 +27,20 @@ namespace PusherDotNet.Tests
 		}
 
 		[Test]
+		[Explicit("Set your credentials in app.config for this test to pass")]
 		public void CanTriggerPush()
 		{
+			SetupDefaultProvider();
 			var request = new TestPusherRequest("test_channel", "my_event", @"{""some"":""data""}");
 
 			_defaultProvider.Trigger(request);
 		}
 
 		[Test]
+		[Explicit("Set your credentials in app.config for this test to pass")]
 		public void CanTriggerPushWithAnonymousObject()
 		{
+			SetupDefaultProvider();
 			var request = new ObjectPusherRequest("test_channel", "my_event", new
 			                                                                  	{
 			                                                                  		some = "data"
