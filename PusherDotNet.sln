@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PusherDotNet.Tests", "PusherDotNet.Tests\PusherDotNet.Tests.csproj", "{29ADB209-999D-4A86-A006-01609B6B670D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PusherDotNet", "PusherDotNet\PusherDotNet.csproj", "{A4889613-5DF5-41B9-8B92-D9647545872D}"
