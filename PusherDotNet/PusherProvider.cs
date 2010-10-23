@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 
 namespace PusherDotNet
 {
@@ -40,16 +41,11 @@ namespace PusherDotNet
 											GetQueryString(request),
 											GetHmac256(request));
 
-			var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
-			webRequest.Method = "POST";
-			webRequest.ContentType = "application/json";
-
-			using(var stream = webRequest.GetRequestStream())
-			{
-				var data = Encoding.UTF8.GetBytes(request.JsonData);
-				stream.Write(data, 0, data.Length);
-				webRequest.GetResponse();
-			}
+		    using(var client = new WebClient())
+		    {
+		        client.Encoding = Encoding.UTF8;
+		        client.UploadString(requestUrl, request.JsonData);
+		    }
 		}
 
 		private string GetBaseUri(PusherRequest request)
@@ -70,7 +66,7 @@ namespace PusherDotNet
 
 		private static string GetMd5Hash(string jsonData)
 		{
-			var hash = new MD5CryptoServiceProvider().ComputeHash(Encoding.ASCII.GetBytes(jsonData));
+			var hash = new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(jsonData));
 			return BytesToHex(hash);
 		}
 
