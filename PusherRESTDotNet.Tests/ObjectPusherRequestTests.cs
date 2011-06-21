@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace PusherDotNet.Tests
+namespace PusherRESTDotNet.Tests
 {
 	[TestFixture]
 	public class ObjectPusherRequestTests

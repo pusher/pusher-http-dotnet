@@ -7,3 +7,4 @@ Backup
 *.suo
 *.user
 PusherDotNet.Tests/App.config
+PusherRESTDotNet/PusherRESTDotNet.1.0.nupkg

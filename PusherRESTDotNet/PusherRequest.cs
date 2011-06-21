@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PusherDotNet
+namespace PusherRESTDotNet
 {
 	/// <summary>
 	/// Abstract base class for pusher requests

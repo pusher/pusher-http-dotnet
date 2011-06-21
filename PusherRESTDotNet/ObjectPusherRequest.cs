@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web.Script.Serialization;
 
-namespace PusherDotNet
+namespace PusherRESTDotNet
 {
 	/// <summary>
 	/// Provides a simple <see cref="PusherRequest"/> wrapper that provides JsonData by serializing an object using a <see cref="System.Web.Script.Serialization.JavaScriptSerializer" />

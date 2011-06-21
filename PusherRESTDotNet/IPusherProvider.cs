@@ -1,4 +1,4 @@
-﻿namespace PusherDotNet
+﻿namespace PusherRESTDotNet
 {
 	public interface IPusherProvider
 	{
