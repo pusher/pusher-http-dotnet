@@ -48,8 +48,12 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json.Net35">
+      <HintPath>..\packages\Newtonsoft.Json.4.0.2\lib\net35\Newtonsoft.Json.Net35.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
@@ -58,6 +62,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authentication\AuthData.cs" />
+    <Compile Include="Authentication\AuthSignatureHelper.cs" />
+    <Compile Include="Authentication\BasicUserInfo.cs" />
+    <Compile Include="Authentication\PresenceChannelData.cs" />
+    <Compile Include="Authentication\PusherAuthenticationHelper.cs" />
     <Compile Include="IPusherProvider.cs" />
     <Compile Include="ObjectPusherRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -81,6 +90,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

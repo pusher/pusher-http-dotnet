@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using PusherRESTDotNet.Authentication;
 
 namespace PusherRESTDotNet
 {
@@ -13,6 +14,7 @@ namespace PusherRESTDotNet
 		private readonly string _applicationId;
 		private readonly string _applicationKey;
 		private readonly string _applicationSecret;
+        private PusherAuthenticationHelper _authHelper;
 
 		public PusherProvider(string applicationId, string applicationKey, string applicationSecret)
 		{
@@ -26,6 +28,8 @@ namespace PusherRESTDotNet
 			_applicationSecret = applicationSecret;
 			_applicationKey = applicationKey;
 			_applicationId = applicationId;
+
+            _authHelper = new PusherAuthenticationHelper(_applicationId, _applicationKey, _applicationSecret);
 		}
 
 		/// <summary>
@@ -82,5 +86,17 @@ namespace PusherRESTDotNet
 		{
 			return String.Concat(byteArray.Select(bytes => bytes.ToString("x2")).ToArray());
 		}
-	}
+
+
+        public string Authenticate(string channelName, string socketId)
+        {
+            return _authHelper.CreateAuthenticatedString(socketId, channelName);
+        }
+
+
+        public string Authenticate(string channelName, string socketId, PresenceChannelData presenceChannelData)
+        {
+            return _authHelper.CreateAuthenticatedString(socketId, channelName, presenceChannelData);
+        }
+    }
 }

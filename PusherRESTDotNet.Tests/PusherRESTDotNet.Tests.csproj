@@ -64,8 +64,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ObjectPusherRequestTests.cs" />
-    <Compile Include="PusherProviderTests.cs" />
+    <Compile Include="AcceptanceTests\PusherProviderTests.cs" />
+    <Compile Include="UnitTests\ObjectPusherRequestTests.cs" />
+    <Compile Include="UnitTests\PusherProviderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,7 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53-1898-4AE9-B229-F917B8F52DB2}"
 	ProjectSection(SolutionItems) = preProject
 		PusherRESTDotNet\PusherRESTDotNet.nuspec = PusherRESTDotNet\PusherRESTDotNet.nuspec
-		README.txt = README.txt
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
