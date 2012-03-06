@@ -23,7 +23,7 @@ authenticated using the `IPusherProvider.Authenticate` method with the values fo
 channel name and the socket ID retrieved from the `Request` object.
 
 	var provider = new PusherProvider(appId, appKey, appSecret);
-	string auth = provider.Authenticate(Request["channel_name"], Request["socket_id");
+	string auth = provider.Authenticate(Request["channel_name"], Request["socket_id"]);
 	Response.Write(auth);
 
 ## Authenticate Presence Channels
@@ -33,5 +33,10 @@ is that the channel data must also be passed to the `IPusherProvider.Authenticat
 that it can be hashed within the authentication string.
 
 	var provider = new PusherProvider(appId, appKey, appSecret);
-	string auth = provider.Authenticate(Request["channel_name"], Request["socket_id");
+	var presenceChannelData = new PresenceChannelData()
+        {
+            user_id = "leggetter",
+            user_info = new { name = "Phil Leggetter", twitter = "@leggetter" }
+        };
+	string auth = provider.Authenticate(Request["channel_name"], Request["socket_id"], presenceChannelData);
 	Response.Write(auth);

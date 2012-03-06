@@ -32,12 +32,13 @@ namespace PusherRESTDotNet.Authentication
 
         public string CreateAuthenticatedString(string socketID, string channelName, PresenceChannelData channelData)
         {
-            string channel = (channelData == null?"":JsonConvert.SerializeObject(channelData));
-            string auth = AuthSignatureHelper.GetAuthString(socketID + ":" + channelName + ":" + channel, applicationSecret);
+            string channelDataString = (channelData == null?"":JsonConvert.SerializeObject(channelData));
+            string stringToSign = socketID + ":" + channelName + (string.IsNullOrEmpty(channelDataString)?"":":" + channelDataString);
+            string auth = AuthSignatureHelper.GetAuthString(stringToSign, applicationSecret);
 
             AuthData data = new AuthData();
             data.auth = applicationKey + ":" + auth;
-            data.channel_data = channel;
+            data.channel_data = channelDataString;
 
             string json = JsonConvert.SerializeObject(data);
             return json;

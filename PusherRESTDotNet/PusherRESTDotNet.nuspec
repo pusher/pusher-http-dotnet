@@ -3,8 +3,8 @@
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
-    <authors>Graham Scott, Phil Leggetter</authors>
-    <owners>$author$</owners>
+    <authors>Phil Leggetter, Graham Scott</authors>
+    <owners>leggetter</owners>
     <projectUrl>https://github.com/leggetter/pusher-rest-dotnet</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The Pusher (http://pusher.com) REST library provides a simple way of pushing realtime messages into Pusher via the Pusher REST API.</description>
