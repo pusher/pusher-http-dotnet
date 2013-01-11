@@ -1,42 +1,79 @@
-The Pusher REST .NET project is implementation of the Pusher REST API in C#.
+# Pusher .NET Server library
 
-It provides functionality to let you trigger events using the Pusher REST API in addition to 
-[authenticating](http://pusher.com/docs/authenticating_users) user subscription request to
-[private](http://pusher.com/docs/private_channels) and [presence](http://pusher.com/docs/presence) channels.
+This is a .NET library for interacting with the Pusher REST API.
 
-## Trigger events
+Registering at <http://pusher.com> and use the application credentials within your app as shown below.
 
-Events can be triggered with any type of data which is then serialized to JSON.
+Comprehensive documenation can be found at <http://pusher.com/docs/>.
 
-	var provider = new PusherProvider(applicationId, applicationKey, applicationSecret);
-	var request = new ObjectPusherRequest("test_channel", "my_event", new
-																		{
-																			some = "data"
-																		});
+## Installation
 
-	provider.Trigger(request);
+** NuGet Package coming soon **
+```
+// TODO
+```
 
-## Authenticate Private Channels
+## How to use
 
-Assuming that the running application is an ASP.NET app then the private channels are
-authenticated using the `IPusherProvider.Authenticate` method with the values for the
-channel name and the socket ID retrieved from the `Request` object.
+### Constructor
 
-	var provider = new PusherProvider(appId, appKey, appSecret);
-	string auth = provider.Authenticate(Request["channel_name"], Request["socket_id"]);
-	Response.Write(auth);
+```
+var Pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET);
+```
 
-## Authenticate Presence Channels
+### Publishing/Triggering events
 
-Presence channels are authenticated in much the same way as private channels. The only difference
-is that the channel data must also be passed to the `IPusherProvider.Authenticate` method so
-that it can be hashed within the authentication string.
+To trigger an event on one or more channels use the trigger function.
 
-	var provider = new PusherProvider(appId, appKey, appSecret);
-	var presenceChannelData = new PresenceChannelData()
-        {
-            user_id = "leggetter",
-            user_info = new { name = "Phil Leggetter", twitter = "@leggetter" }
-        };
-	string auth = provider.Authenticate(Request["channel_name"], Request["socket_id"], presenceChannelData);
-	Response.Write(auth);
+#### A single channel
+
+```
+pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
+```
+
+#### Multiple channels
+
+```
+pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", { message: "hello world" } );
+```
+
+### Excluding event recipients
+
+In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more informaiton see: <http://pusher.com/docs/publisher_api_guide/publisher_excluding_recipients>.
+
+```
+pusher.Trigger(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
+```
+
+### Authenticating Private channels
+
+To authorise your users to access private channels on Pusher, you can use the `Authenticate` function:
+
+```
+var auth = pusher.Authenticate( socketId, channel );
+```
+
+For more information see: <http://pusher.com/docs/authenticating_users>
+
+### Authenticating Presence channels
+
+Using presence channels is similar to private channels, but you can specify extra data to identify that particular user:
+
+```
+var channelData = new PresenceChannelData() {
+	user_id: "unique_user_id",
+	user_info: new {
+	  name = "Phil Leggetter"
+	  twitter_id = "@leggetter"
+	}
+};
+var auth = pusher.Authenticate( socketId, channel, channelData );
+```
+
+The `auth` is then returned to the caller as JSON.
+
+For more information see: <http://pusher.com/docs/authenticating_users>
+
+## License
+
+This code is free to use under the terms of the MIT license.
