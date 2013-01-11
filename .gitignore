@@ -10,3 +10,5 @@ PusherDotNet.Tests/App.config
 PusherRESTDotNet/PusherRESTDotNet.1.0.nupkg
 packages/
 PusherRESTDotNet.sln.docstates
+build
+PusherRESTDotNet.Tests/App.config

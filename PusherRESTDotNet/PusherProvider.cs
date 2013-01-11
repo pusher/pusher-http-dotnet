@@ -10,13 +10,13 @@ namespace PusherRESTDotNet
 {
 	public class PusherProvider : IPusherProvider
 	{
-		private const string _host = "api.pusherapp.com";
+        private readonly PusherConfig _config;
 		private readonly string _applicationId;
 		private readonly string _applicationKey;
 		private readonly string _applicationSecret;
         private PusherAuthenticationHelper _authHelper;
 
-		public PusherProvider(string applicationId, string applicationKey, string applicationSecret)
+		public PusherProvider(string applicationId, string applicationKey, string applicationSecret, PusherConfig config)
 		{
 			if (String.IsNullOrEmpty(applicationId))
 				throw new ArgumentNullException("applicationId");
@@ -25,6 +25,8 @@ namespace PusherRESTDotNet
 			if (String.IsNullOrEmpty(applicationSecret))
 				throw new ArgumentNullException("applicationSecret");
 
+            _config = config;
+
 			_applicationSecret = applicationSecret;
 			_applicationKey = applicationKey;
 			_applicationId = applicationId;
@@ -32,14 +34,23 @@ namespace PusherRESTDotNet
             _authHelper = new PusherAuthenticationHelper(_applicationId, _applicationKey, _applicationSecret);
 		}
 
+        public PusherProvider(string applicationId, string applicationKey, string applicationSecret):
+            this(applicationId, applicationKey, applicationSecret, new PusherConfig())
+		{
+        }
+
 		/// <summary>
 		/// Sends the request. Will throw a WebException if anything other than a 202 response is encountered
 		/// </summary>
 		/// <param name="request"></param>
 		public void Trigger(PusherRequest request)
 		{
-			var requestUrl = String.Format("http://{0}{1}?{2}&auth_signature={3}",
-											_host,
+            var origin = this._config.Scheme + "://" + this._config.Host;
+            if (this._config.Port != 80)
+            {
+                origin += ":" + this._config.Port;
+            }
+			var requestUrl = String.Format(origin + "{0}?{1}&auth_signature={2}",
 											GetBaseUri(request),
 											GetQueryString(request),
 											GetHmac256(request));
