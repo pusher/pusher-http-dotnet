@@ -12,3 +12,6 @@ packages/
 PusherRESTDotNet.sln.docstates
 build
 PusherRESTDotNet.Tests/App.config
+Local.testsettings
+PusherRESTDotNet.vsmdi
+TraceAndTestImpact.testsettings
