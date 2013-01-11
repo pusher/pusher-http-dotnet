@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Pusher.Server")]
+[assembly: AssemblyTitle("PusherServer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Pusher.Server")]
+[assembly: AssemblyProduct("PusherServer")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -34,4 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.0.*")]
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Pusher.Server.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("PusherServer.Tests")]

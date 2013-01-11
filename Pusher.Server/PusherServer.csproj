@@ -8,10 +8,11 @@
     <ProjectGuid>{D81CCD25-73B9-45E4-96BE-5BAD950715AB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Pusher.Server</RootNamespace>
-    <AssemblyName>Pusher.Server</AssemblyName>
+    <RootNamespace>PusherServer</RootNamespace>
+    <AssemblyName>PusherServer</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,9 +39,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthenticationSignature.cs" />
+    <Compile Include="AuthenticationData.cs" />
     <Compile Include="CryptoHelper.cs" />
-    <Compile Include="IAuthenticationSignature.cs" />
+    <Compile Include="IAuthenticationData.cs" />
     <Compile Include="IPusher.cs" />
     <Compile Include="IPusherOptions.cs" />
     <Compile Include="ITriggerOptions.cs" />

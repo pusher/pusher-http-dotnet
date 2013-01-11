@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using RestSharp;
 
-namespace Pusher.Server.Tests.UnitTests
+namespace PusherServer.Tests.UnitTests
 {
     [TestFixture]
     public class When_Triggering_an_Event_with_socketId

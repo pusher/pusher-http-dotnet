@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
+using PusherServer;
 
 namespace PusherRESTDotNet.Authentication
 {
@@ -11,36 +12,29 @@ namespace PusherRESTDotNet.Authentication
         private string applicationId;
         private string applicationKey;
         private string applicationSecret;
+        private IPusher _pusher;
 
         public PusherAuthenticationHelper(string applicationId, string applicationKey, string applicationSecret)
         {
-            this.applicationId = applicationId;
-            this.applicationKey = applicationKey;
-            this.applicationSecret = applicationSecret;
+            this._pusher = new Pusher(applicationId, applicationKey, applicationSecret);
         }
 
         public string CreateAuthenticatedString(string socketID, string channelName)
         {
-            string auth = AuthSignatureHelper.GetAuthString(socketID + ":" + channelName, applicationSecret);
-
-            AuthData data = new AuthData();
-            data.auth = applicationKey + ":" + auth;
-
-            string json = JsonConvert.SerializeObject(data);
+            IAuthenticationData signature = _pusher.Authenticate(channelName, socketID);
+            string json = JsonConvert.SerializeObject(signature);
             return json;
         }
 
         public string CreateAuthenticatedString(string socketID, string channelName, PresenceChannelData channelData)
         {
-            string channelDataString = (channelData == null?"":JsonConvert.SerializeObject(channelData));
-            string stringToSign = socketID + ":" + channelName + (string.IsNullOrEmpty(channelDataString)?"":":" + channelDataString);
-            string auth = AuthSignatureHelper.GetAuthString(stringToSign, applicationSecret);
-
-            AuthData data = new AuthData();
-            data.auth = applicationKey + ":" + auth;
-            data.channel_data = channelDataString;
-
-            string json = JsonConvert.SerializeObject(data);
+            PusherServer.PresenceChannelData data = new PusherServer.PresenceChannelData()
+            {
+                user_id = channelData.user_id,
+                user_info = channelData.user_info
+            };
+            IAuthenticationData signature = _pusher.Authenticate(channelName, socketID, data);
+            string json = JsonConvert.SerializeObject(signature);
             return json;
         }
     }

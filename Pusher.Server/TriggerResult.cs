@@ -2,7 +2,7 @@
 using System.Net;
 using RestSharp;
 
-namespace Pusher.Server
+namespace PusherServer
 {
     internal class TriggerResult: ITriggerResult
     {

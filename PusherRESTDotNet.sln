@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pusher.Server", "Pusher.Server\Pusher.Server.csproj", "{D81CCD25-73B9-45E4-96BE-5BAD950715AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PusherServer", "Pusher.Server\PusherServer.csproj", "{D81CCD25-73B9-45E4-96BE-5BAD950715AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pusher.Server.Tests", "Pusher.Server.Tests\Pusher.Server.Tests.csproj", "{37CEF892-E818-4B9D-A144-F46FBA8F1B97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PusherServer.Tests", "Pusher.Server.Tests\PusherServer.Tests.csproj", "{37CEF892-E818-4B9D-A144-F46FBA8F1B97}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B44ABE0-8AC3-4526-B15E-54AB1D6438D8}"
 	ProjectSection(SolutionItems) = preProject

@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Net;
 
-namespace Pusher.Server.Tests.AcceptanceTests
+namespace PusherServer.Tests.AcceptanceTests
 {
     [TestFixture]
     public class When_Triggering_an_Event_on_a_single_Channel

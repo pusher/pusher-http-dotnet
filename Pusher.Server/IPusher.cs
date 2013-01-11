@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Pusher.Server
+﻿
+namespace PusherServer
 {
     /// <summary>
     /// Provides access to functionality within the Pusher service such as <see cref="Trigger"/> to trigger events
@@ -69,7 +65,7 @@ namespace Pusher.Server
         /// <param name="channelName">Name of the channel to be authenticated.</param>
         /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
         /// <returns></returns>
-        IAuthenticationSignature Authenticate(string channelName, string socketId);
+        IAuthenticationData Authenticate(string channelName, string socketId);
 
         /// <summary>
         /// Authenticates the subscription request for a presence channel.
@@ -78,7 +74,7 @@ namespace Pusher.Server
         /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
         /// <param name="data">Information about the user subscribing to the presence channel.</param>
         /// <returns></returns>
-        IAuthenticationSignature Authenticate(string channelName, string socketId, PresenceChannelData data);
+        IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData data);
 
         #endregion
     }

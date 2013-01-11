@@ -1,5 +1,5 @@
 ﻿
-namespace Pusher.Server
+namespace PusherServer
 {
     public class TriggerOptions: ITriggerOptions
     {

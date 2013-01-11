@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 
-namespace Pusher.Server
+namespace PusherServer
 {
     public interface IPusherOptions
     {

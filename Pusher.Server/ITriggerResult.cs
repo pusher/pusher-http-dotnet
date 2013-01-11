@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Pusher.Server
+namespace PusherServer
 {
     public interface ITriggerResult
     {

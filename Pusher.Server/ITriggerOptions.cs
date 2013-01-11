@@ -1,5 +1,5 @@
 ﻿
-namespace Pusher.Server
+namespace PusherServer
 {
     /// <summary>
     /// Additional options that can be used when triggering an event.

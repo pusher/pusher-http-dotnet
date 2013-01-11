@@ -8,8 +8,8 @@
     <ProjectGuid>{37CEF892-E818-4B9D-A144-F46FBA8F1B97}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Pusher.Server.Tests</RootNamespace>
-    <AssemblyName>Pusher.Server.Tests</AssemblyName>
+    <RootNamespace>PusherServer.Tests</RootNamespace>
+    <AssemblyName>PusherServer.Tests</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -60,9 +60,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Pusher.Server\Pusher.Server.csproj">
+    <ProjectReference Include="..\Pusher.Server\PusherServer.csproj">
       <Project>{D81CCD25-73B9-45E4-96BE-5BAD950715AB}</Project>
-      <Name>Pusher.Server</Name>
+      <Name>PusherServer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

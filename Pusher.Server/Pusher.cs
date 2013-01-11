@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using RestSharp;
-using System.Security.Cryptography;
 using RestSharp.Serializers;
-//using Newtonsoft.Json;
 
-namespace Pusher.Server
+namespace PusherServer
 {
     public class Pusher : IPusher
     {
@@ -80,14 +76,14 @@ namespace Pusher.Server
             return result;
         }
 
-        public IAuthenticationSignature Authenticate(string channelName, string socketId)
+        public IAuthenticationData Authenticate(string channelName, string socketId)
         {
-            return new AuthenticationSignature(this._appKey, this._appSecret, channelName, socketId);
+            return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId);
         }
 
-        public IAuthenticationSignature Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
+        public IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
         {
-            return new AuthenticationSignature(this._appKey, this._appSecret, channelName, socketId, presenceData);
+            return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId, presenceData);
         }
 
         private IRestResponse ExecuteRequest(string[] channelNames, string eventName, object requestBody)

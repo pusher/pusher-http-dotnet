@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using RestSharp.Serializers;
 
-namespace Pusher.Server.Tests.UnitTests
+namespace PusherServer.Tests.UnitTests
 {
     [TestFixture]
     public class When_authenticating_a_private_channel
@@ -20,7 +16,7 @@ namespace Pusher.Server.Tests.UnitTests
 
             string expectedAuthString = Config.AppKey + ":" + CreateSignedString(channelName, socketId);
 
-            IAuthenticationSignature result = _pusher.Authenticate(channelName, socketId);
+            IAuthenticationData result = _pusher.Authenticate(channelName, socketId);
             Assert.AreEqual(expectedAuthString, result.auth);
         }
 
@@ -53,8 +49,28 @@ namespace Pusher.Server.Tests.UnitTests
 
             string expectedAuthString = Config.AppKey + ":" + CreateSignedString(channelName, socketId, presenceJSON);
 
-            IAuthenticationSignature result = _pusher.Authenticate(channelName, socketId, data);
+            IAuthenticationData result = _pusher.Authenticate(channelName, socketId, data);
             Assert.AreEqual(expectedAuthString, result.auth);
+        }
+
+        [Test]
+        public void channel_data_is_encoded_as_JSON()
+        {
+            string channelName = "my-channel";
+            string socketId = "some_socket_id";
+
+            var serializer = new JsonSerializer();
+
+            PresenceChannelData data = new PresenceChannelData()
+            {
+                user_id = "unique_user_id",
+                user_info = new { twitter_id = "@leggetter" }
+            };
+
+            string expectedChannelData = serializer.Serialize(data); ;
+
+            IAuthenticationData result = _pusher.Authenticate(channelName, socketId, data);
+            Assert.AreEqual(expectedChannelData, result.channel_data);
         }
 
         private string CreateSignedString(string channelName, string socketId, string presenceJSON)

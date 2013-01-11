@@ -1,5 +1,5 @@
 ﻿
-namespace Pusher.Server
+namespace PusherServer
 {
     /// <summary>
     /// Information about a user who is subscribing to a presence channel.

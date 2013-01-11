@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Configuration;
+﻿using System.Configuration;
 
-namespace Pusher.Server.Tests
+namespace PusherServer.Tests
 {
     internal static class Config
     {
