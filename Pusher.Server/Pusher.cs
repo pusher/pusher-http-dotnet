@@ -61,7 +61,7 @@ namespace PusherServer
 
             TriggerBody bodyData = new TriggerBody()
             {
-                name = "",
+                name = eventName,
                 data = serializer.Serialize(data),
                 channels = channelNames
             };
