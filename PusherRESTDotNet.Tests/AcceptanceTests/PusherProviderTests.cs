@@ -3,6 +3,8 @@ using System.Configuration;
 using System.Net;
 using NUnit.Framework;
 using PusherRESTDotNet.Authentication;
+using System.IO;
+using System.Web.Script.Serialization;
 
 namespace PusherRESTDotNet.Tests.AcceptanceTests
 {
@@ -64,6 +66,19 @@ namespace PusherRESTDotNet.Tests.AcceptanceTests
 
 			_defaultProvider.Trigger(request);
 		}
+
+        [Test]
+        public void CanTriggerEventWithPercentInMessage()
+        {
+            SetupDefaultProvider();
+
+            var eventJSON = File.ReadAllText("AcceptanceTests/percent-message.json");
+            var message = new JavaScriptSerializer().Deserialize(eventJSON, typeof(object) );
+
+            var request = new ObjectPusherRequest("test_channel", "my_event", message);
+
+            _defaultProvider.Trigger(request);
+        }
 
 		[Test]
 		[ExpectedException(typeof(WebException))]
