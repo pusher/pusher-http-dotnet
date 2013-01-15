@@ -26,8 +26,25 @@ namespace PusherRESTDotNet.Tests.AcceptanceTests
 			_defaultProvider = new PusherProvider(applicationId, applicationKey, applicationSecret);
 		}
 
+        [Test]
+        public void CanProvideCustomConfig()
+        {
+            var provider = new PusherProvider(
+                applicationId,
+                applicationKey,
+                applicationSecret,
+                new PusherConfig()
+                {
+                    Host = "50.17.194.145",
+                    Port = 82,
+                    Scheme = "http"
+                });
+            var request = new SimplePusherRequest("test_channel", "my_event", @"{""some"":""data""}");
+
+            provider.Trigger(request);
+        }
+
 		[Test]
-		[Explicit("Set your credentials in app.config for this test to pass")]
 		public void CanTriggerPush()
 		{
 			SetupDefaultProvider();
@@ -37,7 +54,6 @@ namespace PusherRESTDotNet.Tests.AcceptanceTests
 		}
 
 		[Test]
-		[Explicit("Set your credentials in app.config for this test to pass")]
 		public void CanTriggerPushWithAnonymousObject()
 		{
 			SetupDefaultProvider();
