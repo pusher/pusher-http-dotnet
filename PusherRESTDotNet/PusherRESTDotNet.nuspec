@@ -5,7 +5,7 @@
     <version>$version$</version>
     <authors>Phil Leggetter, Graham Scott</authors>
     <owners>leggetter</owners>
-    <projectUrl>https://github.com/leggetter/pusher-rest-dotnet</projectUrl>
+    <projectUrl>https://github.com/leggetter/pusher-dotnet-server</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The Pusher (http://pusher.com) REST library provides a simple way of pushing realtime messages into Pusher via the Pusher REST API.</description>
     <tags>realtime push websockets REST API Pusher</tags>
