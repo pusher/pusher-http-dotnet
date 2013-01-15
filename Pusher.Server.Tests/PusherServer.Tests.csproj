@@ -38,6 +38,9 @@
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="PusherClient, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\pusher-dotnet-client\PusherClient\bin\Debug\PusherClient.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.104.1\lib\net35\RestSharp.dll</HintPath>
     </Reference>
@@ -61,10 +64,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\pusher-dotnet-client\PusherClient\PusherClient.csproj">
-      <Project>{9E30E755-C00E-4BF7-B56B-8F2D836FBA60}</Project>
-      <Name>PusherClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Pusher.Server\PusherServer.csproj">
       <Project>{D81CCD25-73B9-45E4-96BE-5BAD950715AB}</Project>
       <Name>PusherServer</Name>

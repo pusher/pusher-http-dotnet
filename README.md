@@ -28,13 +28,13 @@ To trigger an event on one or more channels use the trigger function.
 #### A single channel
 
 ```
-pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
+var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
 ```
 
 #### Multiple channels
 
 ```
-pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", { message: "hello world" } );
+var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", { message: "hello world" } );
 ```
 
 ### Excluding event recipients
@@ -42,7 +42,7 @@ pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", { messag
 In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more informaiton see: <http://pusher.com/docs/publisher_api_guide/publisher_excluding_recipients>.
 
 ```
-pusher.Trigger(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
+var result = pusher.Trigger(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
 ```
 
 ### Authenticating Private channels
@@ -73,6 +73,11 @@ var auth = pusher.Authenticate( socketId, channel, channelData );
 The `auth` is then returned to the caller as JSON.
 
 For more information see: <http://pusher.com/docs/authenticating_users>
+
+## Development Notes
+
+* Developed using Visual Studio 2010
+* PusherServer acceptance tests presently need the [PusherClient](https://github.com/leggetter/pusher-dotnet-client) DLL. Eventually this will be changed to fetch via NuGet.
 
 ## License
 
