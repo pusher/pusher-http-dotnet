@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PusherServer.Tests</RootNamespace>
     <AssemblyName>PusherServer.Tests</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,6 +61,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\pusher-dotnet-client\PusherClient\PusherClient.csproj">
+      <Project>{9E30E755-C00E-4BF7-B56B-8F2D836FBA60}</Project>
+      <Name>PusherClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Pusher.Server\PusherServer.csproj">
       <Project>{D81CCD25-73B9-45E4-96BE-5BAD950715AB}</Project>
       <Name>PusherServer</Name>

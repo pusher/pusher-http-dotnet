@@ -1,18 +1,77 @@
 ﻿using System;
-using NUnit.Framework;
+using System.Diagnostics;
 using System.Net;
+using System.Threading;
+using NUnit.Framework;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
     [TestFixture]
     public class When_Triggering_an_Event_on_a_single_Channel
     {
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
+
+        }
+
         [Test]
         public void It_should_return_a_202_response()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
             ITriggerResult result = pusher.Trigger("my-channel", "my_event", new { hello = "world" });
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Test]
+        public void It_should_be_received_by_a_client()
+        {
+            string channelName = "my_channel";
+            string eventName = "my_event";
+
+            bool eventReceived = false;
+            AutoResetEvent reset = new AutoResetEvent(false);
+            var client = new PusherClient.Pusher(Config.AppKey);
+            client.Connected += new PusherClient.ConnectedEventHandler(delegate(object sender)
+            {
+                Debug.WriteLine("connected");
+                reset.Set();
+            });
+
+            Debug.WriteLine("connecting");
+            client.Connect();
+
+            Debug.WriteLine("waiting to connect");
+            reset.WaitOne(TimeSpan.FromSeconds(5));
+
+            Debug.WriteLine("subscribing");
+            var channel = client.Subscribe(channelName);
+            channel.Subscribed += new PusherClient.SubscriptionEventHandler(delegate(object s)
+            {
+                Debug.WriteLine("subscribed");
+                reset.Set();
+            });
+
+            Debug.WriteLine("binding");
+            channel.Bind(eventName, delegate(dynamic data)
+            {
+                Debug.WriteLine("event received");
+                eventReceived = true;
+                reset.Set();
+            });
+
+            Debug.WriteLine("waiting to subscribe");
+            reset.WaitOne(TimeSpan.FromSeconds(5));
+
+            Debug.WriteLine("triggering");
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            ITriggerResult result = pusher.Trigger(channelName, eventName, new { hello = "world" });
+
+            Debug.WriteLine("waiting for event to be received");
+            reset.WaitOne(TimeSpan.FromSeconds(5));
+
+            Assert.IsTrue(eventReceived);
         }
     }
 
