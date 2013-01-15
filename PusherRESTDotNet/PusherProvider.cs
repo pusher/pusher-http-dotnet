@@ -47,6 +47,7 @@ namespace PusherRESTDotNet
 		    using(var client = new WebClient())
 		    {
 		        client.Encoding = Encoding.UTF8;
+                client.Headers.Add("Content-Type", "application/json");
 		        client.UploadString(requestUrl, request.JsonData);
 		    }
 		}
