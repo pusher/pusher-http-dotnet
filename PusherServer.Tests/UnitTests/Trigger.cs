@@ -6,10 +6,14 @@ using RestSharp.Serializers;
 namespace PusherServer.Tests.UnitTests
 {
     [TestFixture]
-    public class When_Triggering_an_Event_with_socketId
+    public class When_Triggering_an_Event
     {
         IPusher _pusher;
         IRestClient _subClient;
+
+        string channelName = "my-channel";
+        string eventName = "my_event";
+        object eventData = new { hello = "world" };
 
         [SetUp]
         public void Setup()
@@ -20,16 +24,92 @@ namespace PusherServer.Tests.UnitTests
                 RestClient = _subClient
             };
 
+            Config.AppId = "test-app-id";
+            Config.AppKey = "test-app-key";
+            Config.AppSecret = "test-app-secret";
+
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
+        }
+
+        [Test]
+        public void trigger_calls_are_made_over_HTTP_by_default()
+        {
+            IPusherOptions options = new PusherOptions()
+            {
+                RestClient = _subClient
+            };
+
+            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
+
+            ITriggerResult result =
+                _pusher.Trigger(
+                    channelName,
+                    eventName,
+                    eventData
+                );
+
+            _subClient.Received().Execute(
+                Arg.Is<IRestRequest>(
+                    x => CheckRequestIsMadeOver("http://", _subClient, x)
+                )
+            );
+        }
+
+        [Test]
+        public void trigger_calls_are_made_over_HTTPS_when_Encrypted_option_is_set()
+        {
+            IPusherOptions options = new PusherOptions()
+            {
+                RestClient = _subClient,
+                Encrypted = true
+            };
+
+            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
+
+            ITriggerResult result =
+                _pusher.Trigger(
+                    channelName,
+                    eventName,
+                    eventData
+                );
+
+            _subClient.Received().Execute(
+                Arg.Is<IRestRequest>(
+                    x => CheckRequestIsMadeOver("https://", _subClient, x)
+                )
+            );
+        }
+
+        private bool CheckRequestIsMadeOver(string urlPrefix, IRestClient client, IRestRequest req)
+        {
+            return client.BaseUrl.StartsWith(urlPrefix);
+        }
+
+        [Test]
+        public void url_resource_is_in_expected_format()
+        {
+            ITriggerResult result =
+                _pusher.Trigger(
+                    channelName,
+                    eventName,
+                    eventData
+                );
+
+            _subClient.Received().Execute(
+                Arg.Is<IRestRequest>(
+                    x => CheckRequestHasExpectedUrl(x)
+                )
+            );
+        }
+
+        private bool CheckRequestHasExpectedUrl(IRestRequest req)
+        { 
+            return req.Resource.StartsWith( "/apps/" + Config.AppId + "/events?");
         }
 
         [Test]
         public void post_payload_contains_channelName_eventName_and_eventData()
         {
-            var channelName = "my-channel";
-            var eventName = "my_event";
-            var eventData = new { hello = "world" };
-
             ITriggerResult result =
                 _pusher.Trigger(
                     channelName,
@@ -65,9 +145,9 @@ namespace PusherServer.Tests.UnitTests
             
             ITriggerResult result =
                 _pusher.Trigger(
-                    "my-channel",
-                    "my_event",
-                    new { hello = "world" },
+                    channelName,
+                    eventName,
+                    eventData,
                     new TriggerOptions()
                     {
                         SocketId = expectedSocketId
@@ -89,8 +169,8 @@ namespace PusherServer.Tests.UnitTests
             ITriggerResult result =
                 _pusher.Trigger(
                     new string[]{ "my-channel", "my-channel-2" },
-                    "my_event",
-                    new { hello = "world" },
+                    eventName,
+                    eventData,
                     new TriggerOptions()
                     {
                         SocketId = expectedSocketId

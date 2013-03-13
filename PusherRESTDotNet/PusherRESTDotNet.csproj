@@ -98,7 +98,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Pusher.Server\PusherServer.csproj">
+    <ProjectReference Include="..\PusherServer\PusherServer.csproj">
       <Project>{D81CCD25-73B9-45E4-96BE-5BAD950715AB}</Project>
       <Name>PusherServer</Name>
     </ProjectReference>

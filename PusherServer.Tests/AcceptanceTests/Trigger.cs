@@ -86,4 +86,22 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
     }
+
+    [TestFixture]
+    public class When_Triggering_an_Event_over_HTTPS
+    {
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
+        }
+
+        [Test]
+        public void It_should_return_a_202_response()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions() { Encrypted = true } );
+            ITriggerResult result = pusher.Trigger("my-channel", "my_event", new { hello = "world" });
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+    }
 }

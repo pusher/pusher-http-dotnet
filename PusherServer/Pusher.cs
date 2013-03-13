@@ -7,7 +7,8 @@ namespace PusherServer
 {
     public class Pusher : IPusher
     {
-        private static string REST_API_URL = "http://api.pusherapp.com";
+        private string _restAPIScheme = "http";
+        private string _restAPIHost = "api.pusherapp.com";
 
         private string _appId;
         private string _appKey;
@@ -22,18 +23,31 @@ namespace PusherServer
 
         public Pusher(string appId, string appKey, string appSecret, IPusherOptions options)
         {
+            ThrowArgumentExceptionIfNullOrEmpty(appId, "appId");
+            ThrowArgumentExceptionIfNullOrEmpty(appKey, "appKey");
+            ThrowArgumentExceptionIfNullOrEmpty(appSecret, "appSecret");
+
             if (options != null)
             {
                 _client = options.RestClient;
+                _restAPIScheme = (options.Encrypted ? "https" : "http");
             }
             else
             {
                 _client = new RestClient();
             }
-            _client.BaseUrl = REST_API_URL;
+            _client.BaseUrl = _restAPIScheme + "://" + _restAPIHost;
             _appId = appId;
             _appKey = appKey;
             _appSecret = appSecret;
+        }
+
+        private void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException(string.Format("{0} cannot be null or empty", argumentName));
+            }
         }
 
         public ITriggerResult Trigger(string channelName, string eventName, object data)
