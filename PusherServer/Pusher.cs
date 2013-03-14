@@ -7,13 +7,12 @@ namespace PusherServer
 {
     public class Pusher : IPusher
     {
-        private string _restAPIScheme = "http";
-        private string _restAPIHost = "api.pusherapp.com";
+        private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
 
         private string _appId;
         private string _appKey;
         private string _appSecret;
-        private IRestClient _client;
+        private IPusherOptions _options;
 
         public Pusher(string appId, string appKey, string appSecret):
             this(appId, appKey, appSecret, null)
@@ -27,19 +26,15 @@ namespace PusherServer
             ThrowArgumentExceptionIfNullOrEmpty(appKey, "appKey");
             ThrowArgumentExceptionIfNullOrEmpty(appSecret, "appSecret");
 
-            if (options != null)
+            if (options == null)
             {
-                _client = options.RestClient;
-                _restAPIScheme = (options.Encrypted ? "https" : "http");
+                options = new PusherOptions();
             }
-            else
-            {
-                _client = new RestClient();
-            }
-            _client.BaseUrl = _restAPIScheme + "://" + _restAPIHost;
+
             _appId = appId;
             _appKey = appKey;
             _appSecret = appSecret;
+            _options = options;
         }
 
         private void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)
@@ -119,6 +114,8 @@ namespace PusherServer
 
             string authToSign = String.Format("POST\n{0}\n{1}", resource, queryString);
             var authSignature = CryptoHelper.GetHmac256(_appSecret, authToSign);
+
+            _options.RestClient.BaseUrl = GetBaseUrl(_options);
             
             var requestUrl = resource + "?" + queryString + "&auth_signature=" + authSignature;            
             var request = new RestRequest(requestUrl);
@@ -126,8 +123,16 @@ namespace PusherServer
             request.Method = Method.POST;
             request.AddBody(requestBody);
 
-            IRestResponse response = _client.Execute(request);
+            IRestResponse response = _options.RestClient.Execute(request);
             return response;
+        }
+
+        private string GetBaseUrl(IPusherOptions _options)
+        {
+            string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
+                DEFAULT_REST_API_HOST +
+                (_options.Port == 80 ? "" : ":" + _options.Port);
+            return baseUrl;
         }
 
         
