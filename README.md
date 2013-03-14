@@ -6,6 +6,9 @@ Registering at <http://pusher.com> and use the application credentials within yo
 
 Comprehensive documenation can be found at <http://pusher.com/docs/>.
 
+**This is a 2.0.0 BETA version. Version 1.3 with the previous API can be found [here
+](https://github.com/leggetter/pusher-dotnet-server/tree/v1.3.4763).**
+
 ## Installation
 
 ** NuGet Package coming soon **
