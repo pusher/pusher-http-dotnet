@@ -5,6 +5,10 @@ using RestSharp.Serializers;
 
 namespace PusherServer
 {
+    /// <summary>
+    /// Provides access to functionality within the Pusher service such as <see cref="Trigger"/> to trigger events
+    /// and authenticating subscription requests to private and presence channels.
+    /// </summary>
     public class Pusher : IPusher
     {
         private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
@@ -14,12 +18,25 @@ namespace PusherServer
         private string _appSecret;
         private IPusherOptions _options;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Pusher" /> class.
+        /// </summary>
+        /// <param name="appId">The app id.</param>
+        /// <param name="appKey">The app key.</param>
+        /// <param name="appSecret">The app secret.</param>
         public Pusher(string appId, string appKey, string appSecret):
             this(appId, appKey, appSecret, null)
 
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Pusher" /> class.
+        /// </summary>
+        /// <param name="appId">The app id.</param>
+        /// <param name="appKey">The app key.</param>
+        /// <param name="appSecret">The app secret.</param>
+        /// <param name="options">Additional options to be used with the instance e.g. setting the call to the REST API to be made over HTTPS.</param>
         public Pusher(string appId, string appKey, string appSecret, IPusherOptions options)
         {
             ThrowArgumentExceptionIfNullOrEmpty(appId, "appId");
@@ -37,31 +54,53 @@ namespace PusherServer
             _options = options;
         }
 
-        private void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException(string.Format("{0} cannot be null or empty", argumentName));
-            }
-        }
-
+        /// <summary>
+        /// Triggers an event on the specified channel.
+        /// </summary>
+        /// <param name="channelName">The name of the channel the event should be triggered on.</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string channelName, string eventName, object data)
         {
             var channelNames = new string[] { channelName };
             return Trigger(channelNames, eventName, data);
         }
 
+        /// <summary>
+        /// Triggers an event on the specified channels.
+        /// </summary>
+        /// <param name="channelNames">The names of the channels the event should be triggered on.</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string[] channelNames, string eventName, object data)
         {
             return Trigger(channelNames, eventName, data, new TriggerOptions());
         }
 
+        /// <summary>
+        /// Triggers an event on the specified channel.
+        /// </summary>
+        /// <param name="channelName">The name of the channel the event should be triggered on.</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
+        /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string channelName, string eventName, object data, ITriggerOptions options)
         {
             var channelNames = new string[] { channelName };
             return Trigger(channelNames, eventName, data, options);
         }
 
+        /// <summary>
+        /// Triggers an event on the specified channels.
+        /// </summary>
+        /// <param name="channelNames"></param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
+        /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options)
         {
             Dictionary<string, string> additionalPostParams = new Dictionary<string, string>();
@@ -80,22 +119,37 @@ namespace PusherServer
                 bodyData.socket_id = options.SocketId;
             }
 
-            IRestResponse response = ExecuteRequest(channelNames, eventName, bodyData);
+            IRestResponse response = ExecuteTrigger(channelNames, eventName, bodyData);
             TriggerResult result = new TriggerResult(response);
             return result;
         }
 
+        /// <summary>
+        /// Authenticates the subscription request for a private channel.
+        /// </summary>
+        /// <param name="channelName">Name of the channel to be authenticated.</param>
+        /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
+        /// <returns>
+        /// Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth" />
+        /// </returns>
         public IAuthenticationData Authenticate(string channelName, string socketId)
         {
             return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId);
         }
 
+        /// <summary>
+        /// Authenticates the specified channel name.
+        /// </summary>
+        /// <param name="channelName">Name of the channel.</param>
+        /// <param name="socketId">The socket id.</param>
+        /// <param name="presenceData">The presence data.</param>
+        /// <returns></returns>
         public IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
         {
             return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId, presenceData);
         }
 
-        private IRestResponse ExecuteRequest(string[] channelNames, string eventName, object requestBody)
+        private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)
         {
            _options.RestClient.BaseUrl = GetBaseUrl(_options);
 
@@ -134,6 +188,14 @@ namespace PusherServer
             request.AddBody(requestBody);
 
             return request;
+        }
+
+        private void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException(string.Format("{0} cannot be null or empty", argumentName));
+            }
         }
 
         private string GetBaseUrl(IPusherOptions _options)

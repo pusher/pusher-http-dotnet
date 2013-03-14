@@ -15,7 +15,7 @@ namespace PusherServer
         /// <param name="channelName">The name of the channel the event should be triggered on.</param>
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <returns></returns>
+        /// <returns>The result of the call to the REST API</returns>
         ITriggerResult Trigger(string channelName, string eventName, object data);
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace PusherServer
         /// <param name="channelNames">The names of the channels the event should be triggered on.</param>
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <returns></returns>
+        /// <returns>The result of the call to the REST API</returns>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data);
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace PusherServer
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions"/>.</param>
-        /// <returns></returns>
+        /// <returns>The result of the call to the REST API</returns>
         ITriggerResult Trigger(string channelName, string eventName, object data, ITriggerOptions options);
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace PusherServer
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions"/>.</param>
-        /// <returns></returns>
+        /// <returns>The result of the call to the REST API</returns>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options);
 
         //void TriggerAsync(string channelName, string eventName object data, Action<IRestResponse, RestRequestAsyncHandle> callback);
@@ -64,7 +64,7 @@ namespace PusherServer
         /// </summary>
         /// <param name="channelName">Name of the channel to be authenticated.</param>
         /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
-        /// <returns></returns>
+        /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
         IAuthenticationData Authenticate(string channelName, string socketId);
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace PusherServer
         /// <param name="channelName">Name of the channel to be authenticated.</param>
         /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
         /// <param name="data">Information about the user subscribing to the presence channel.</param>
-        /// <returns></returns>
+        /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
         IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData data);
 
         #endregion
