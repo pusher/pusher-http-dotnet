@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using NUnit.Framework;
+using System.IO;
+using System.Web.Script.Serialization;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
@@ -72,6 +74,17 @@ namespace PusherServer.Tests.AcceptanceTests
             reset.WaitOne(TimeSpan.FromSeconds(5));
 
             Assert.IsTrue(eventReceived);
+        }
+
+        [Test]
+        public void CanTriggerEventWithPercentInMessage()
+        {
+            var eventJSON = File.ReadAllText("AcceptanceTests/percent-message.json");
+            var message = new JavaScriptSerializer().Deserialize(eventJSON, typeof(object));
+
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            ITriggerResult result = pusher.Trigger("my-channel", "my_event", message);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
     }
 
