@@ -97,34 +97,43 @@ namespace PusherServer
 
         private IRestResponse ExecuteRequest(string[] channelNames, string eventName, object requestBody)
         {
-            var serializer = new JsonSerializer();
+           _options.RestClient.BaseUrl = GetBaseUrl(_options);
 
-            var bodyDataJson = serializer.Serialize(requestBody);
-            var bodyMD5 = CryptoHelper.GetMd5Hash(bodyDataJson);
             var resource = String.Format("/apps/{0}/events", this._appId);
+            var request = CreateAuthenticatedRequest("POST", resource, requestBody);
+
+            IRestResponse response = _options.RestClient.Execute(request);
+            return response;
+        }
+
+        private IRestRequest CreateAuthenticatedRequest(string requestType, string resource, object requestBody)
+        {
             var queryString = String.Format(
                 "auth_key={0}&" +
                 "auth_timestamp={1}&" +
-                "auth_version={2}&" +
-                "body_md5={3}",
+                "auth_version={2}",
                 this._appKey,
                 (int)((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds),
-                "1.0",
-                bodyMD5);
+                "1.0");
 
-            string authToSign = String.Format("POST\n{0}\n{1}", resource, queryString);
+            if (requestBody != null)
+            {
+                var serializer = new JsonSerializer();
+                var bodyDataJson = serializer.Serialize(requestBody);
+                var bodyMD5 = CryptoHelper.GetMd5Hash(bodyDataJson);
+                queryString += string.Format("&body_md5={0}", bodyMD5);
+            }
+
+            string authToSign = String.Format(requestType + "\n{0}\n{1}", resource, queryString);
             var authSignature = CryptoHelper.GetHmac256(_appSecret, authToSign);
 
-            _options.RestClient.BaseUrl = GetBaseUrl(_options);
-            
-            var requestUrl = resource + "?" + queryString + "&auth_signature=" + authSignature;            
+            var requestUrl = resource + "?" + queryString + "&auth_signature=" + authSignature;
             var request = new RestRequest(requestUrl);
             request.RequestFormat = DataFormat.Json;
             request.Method = Method.POST;
             request.AddBody(requestBody);
 
-            IRestResponse response = _options.RestClient.Execute(request);
-            return response;
+            return request;
         }
 
         private string GetBaseUrl(IPusherOptions _options)
