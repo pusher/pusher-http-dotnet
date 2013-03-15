@@ -4,26 +4,11 @@ using RestSharp;
 
 namespace PusherServer
 {
-    internal class TriggerResult: ITriggerResult
+    internal class TriggerResult: RequestResult, ITriggerResult
     {
-        string _body = null;
-        private HttpStatusCode _statusCode;
-
-        public TriggerResult(IRestResponse response)
+        public TriggerResult(IRestResponse response):
+            base(response)
         {
-            _body = response.Content;
-            _statusCode = response.StatusCode;
-        }
-
-        public HttpStatusCode StatusCode
-        {
-            get { return _statusCode; }
-        }
-
-
-        public string Body
-        {
-            get { return _body; }
         }
     }
 }

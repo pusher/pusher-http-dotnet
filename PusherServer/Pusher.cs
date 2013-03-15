@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using RestSharp;
 using RestSharp.Serializers;
+using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace PusherServer
 {
@@ -54,6 +56,7 @@ namespace PusherServer
             _options = options;
         }
 
+        #region Trigger
         /// <summary>
         /// Triggers an event on the specified channel.
         /// </summary>
@@ -123,7 +126,9 @@ namespace PusherServer
             TriggerResult result = new TriggerResult(response);
             return result;
         }
+        #endregion
 
+        #region Authentication
         /// <summary>
         /// Authenticates the subscription request for a private channel.
         /// </summary>
@@ -148,46 +153,98 @@ namespace PusherServer
         {
             return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId, presenceData);
         }
+        #endregion
+
+        #region Get
+
+        public IGetResult<T> Get<T>(string resource)
+        {
+            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+
+            return Get<T>(resource, null);
+        }
+
+        public IGetResult<T> Get<T>(string resource, object parameters)
+        {
+            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+
+            var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
+
+            IRestResponse response = _options.RestClient.Execute(request);
+            return new GetResult<T>(response);
+        }
+        #endregion
 
         private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)
         {
            _options.RestClient.BaseUrl = GetBaseUrl(_options);
 
-            var resource = String.Format("/apps/{0}/events", this._appId);
-            var request = CreateAuthenticatedRequest("POST", resource, requestBody);
+            var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
 
             IRestResponse response = _options.RestClient.Execute(request);
             return response;
         }
 
-        private IRestRequest CreateAuthenticatedRequest(string requestType, string resource, object requestBody)
+        private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody)
         {
-            var queryString = String.Format(
-                "auth_key={0}&" +
-                "auth_timestamp={1}&" +
-                "auth_version={2}",
-                this._appKey,
-                (int)((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds),
-                "1.0");
+            SortedDictionary<string, string> queryParams = GetObjectProperties(requestParameters);
+
+            int timeNow = (int)((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds);
+            queryParams.Add("auth_key", this._appKey);
+            queryParams.Add("auth_timestamp", timeNow.ToString());
+            queryParams.Add("auth_version", "1.0");
 
             if (requestBody != null)
             {
                 var serializer = new JsonSerializer();
                 var bodyDataJson = serializer.Serialize(requestBody);
                 var bodyMD5 = CryptoHelper.GetMd5Hash(bodyDataJson);
-                queryString += string.Format("&body_md5={0}", bodyMD5);
+                queryParams.Add("body_md5", bodyMD5);
             }
 
-            string authToSign = String.Format(requestType + "\n{0}\n{1}", resource, queryString);
+            string queryString = string.Empty;
+            foreach(KeyValuePair<string, string> parameter in queryParams)
+            {
+                queryString += parameter.Key + "=" + parameter.Value + "&";
+            }
+            queryString = queryString.TrimEnd('&');
+
+            resource = resource.TrimStart('/');
+            string path = string.Format("/apps/{0}/{1}", this._appId, resource);
+
+            string authToSign = String.Format(
+                Enum.GetName(requestType.GetType(), requestType) + 
+                "\n{0}\n{1}",    
+                path, 
+                queryString);
+
             var authSignature = CryptoHelper.GetHmac256(_appSecret, authToSign);
 
-            var requestUrl = resource + "?" + queryString + "&auth_signature=" + authSignature;
+            var requestUrl = path + "?" + queryString + "&auth_signature=" + authSignature;
             var request = new RestRequest(requestUrl);
             request.RequestFormat = DataFormat.Json;
-            request.Method = Method.POST;
+            request.Method = requestType;
             request.AddBody(requestBody);
 
             return request;
+        }
+
+        private SortedDictionary<string, string> GetObjectProperties(object obj)
+        {
+            SortedDictionary<string, string> properties = new SortedDictionary<string, string>();
+
+            if (obj != null)
+            {
+                Type objType = obj.GetType();
+                IList<PropertyInfo> propertyInfos = new List<PropertyInfo>(objType.GetProperties());
+
+                foreach (PropertyInfo propertyInfo in propertyInfos)
+                {
+                    properties.Add(propertyInfo.Name, propertyInfo.GetValue(obj, null).ToString());
+                }
+            }
+
+            return properties;
         }
 
         private void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)

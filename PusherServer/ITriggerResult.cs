@@ -2,10 +2,7 @@
 
 namespace PusherServer
 {
-    public interface ITriggerResult
+    public interface ITriggerResult: IRequestResult
     {
-        HttpStatusCode StatusCode { get; }
-
-        string Body { get; }
     }
 }

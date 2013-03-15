@@ -11,7 +11,7 @@ Comprehensive documenation can be found at <http://pusher.com/docs/>.
 
 ## Installation
 
-** NuGet Package coming soon **
+**NuGet Package coming soon**
 ```
 // TODO
 ```
@@ -80,6 +80,46 @@ var json = auth.ToJson();
 The `json` can then be returned to the client which will then use it for validation of the subscription with Pusher.
 
 For more information see: <http://pusher.com/docs/authenticating_users>
+
+### Application State
+
+It is possible to query the state of your Pusher application using the generic `Pusher.Get( resource )` method and overloads.
+
+For full details see: <http://pusher.com/docs/rest_api>
+
+#### List channels
+
+You can get a list of channels that are present within your application:
+
+```
+IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels");
+```
+
+You can provide additional parameters to filter the list of channels that is returned.
+
+```
+IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels", new { filter_by_prefix = "presence-" } );
+```
+
+#### Fetch channel information
+
+Retrive information about a single channel:
+
+```
+IGetResult<object> result = pusher.Get<object>("/channels/my_channel" );
+```
+
+*Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
+
+#### Fetch a list of users on a presence channel
+
+Retrive a list of users that are on a presence channel:
+
+```
+IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users" );
+```
+
+*Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
 
 ## Development Notes
 

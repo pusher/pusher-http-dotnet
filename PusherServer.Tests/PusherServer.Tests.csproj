@@ -51,10 +51,15 @@
     <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AcceptanceTests\Authenticate.cs" />
+    <Compile Include="AcceptanceTests\Get.cs" />
+    <Compile Include="Helpers\InMemoryAuthorizer.cs" />
     <Compile Include="AcceptanceTests\Trigger.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTests\Authenticate.cs" />
+    <Compile Include="UnitTests\ChannelsList.cs" />
+    <Compile Include="UnitTests\Get.cs" />
     <Compile Include="UnitTests\Pusher.cs" />
     <Compile Include="UnitTests\PusherOptions.cs" />
     <Compile Include="UnitTests\Trigger.cs" />
