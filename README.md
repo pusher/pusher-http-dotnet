@@ -53,7 +53,7 @@ var result = pusher.Trigger(channel, event, data, new TriggerOptions() { SocketI
 To authorise your users to access private channels on Pusher, you can use the `Authenticate` function:
 
 ```
-var auth = pusher.Authenticate( socketId, channel );
+var auth = pusher.Authenticate( channelName, socketId );
 var json = auth.ToJson();
 ```
 
@@ -73,7 +73,7 @@ var channelData = new PresenceChannelData() {
 	  twitter_id = "@leggetter"
 	}
 };
-var auth = pusher.Authenticate( socketId, channel, channelData );
+var auth = pusher.Authenticate( channelName, socketId, channelData );
 var json = auth.ToJson();
 ```
 
