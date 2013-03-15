@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using RestSharp.Serializers;
+using System.Runtime.Serialization;
 
 namespace PusherServer
 {
+    [DataContract]
     class AuthenticationData: IAuthenticationData
     {
         private string _appKey;
@@ -27,17 +29,15 @@ namespace PusherServer
             _presenceData = presenceData;
         }
 
+        [DataMember(Name = "auth", IsRequired = true)]
         public string auth
         {
             get
             {
                 var serializer = new JsonSerializer();
                 var stringToSign = _socketId + ":" + _channelName;
-                if (_presenceData != null)
-                {
-                    var presenceJson = serializer.Serialize(_presenceData);
-                    stringToSign += ":" + presenceJson;
-                }
+                var presenceJson = serializer.Serialize(_presenceData);
+                stringToSign += ":" + presenceJson;
                 
                 return _appKey + ":" + CryptoHelper.GetHmac256(_appSecret, stringToSign);
             }
@@ -46,6 +46,7 @@ namespace PusherServer
         /// <summary>
         /// Double encoded JSON containing presence channel user information.
         /// </summary>
+        [DataMember(Name = "channel_data", IsRequired = false)]
         public string channel_data
         {
             get
@@ -53,6 +54,17 @@ namespace PusherServer
                 var serializer = new JsonSerializer();
                 return serializer.Serialize(_presenceData);
             }
+        }
+
+        public string ToJson()
+        {
+            var serializer = new JsonSerializer();
+            return serializer.Serialize(this);
+        }
+
+        public override string ToString()
+        {
+            return ToJson();
         }
     }
 }

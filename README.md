@@ -54,7 +54,10 @@ To authorise your users to access private channels on Pusher, you can use the `A
 
 ```
 var auth = pusher.Authenticate( socketId, channel );
+var json = auth.ToJson();
 ```
+
+The `json` can then be returned to the client which will then use it for validation of the subscription with Pusher.
 
 For more information see: <http://pusher.com/docs/authenticating_users>
 
@@ -71,9 +74,10 @@ var channelData = new PresenceChannelData() {
 	}
 };
 var auth = pusher.Authenticate( socketId, channel, channelData );
+var json = auth.ToJson();
 ```
 
-The `auth` is then returned to the caller as JSON.
+The `json` can then be returned to the client which will then use it for validation of the subscription with Pusher.
 
 For more information see: <http://pusher.com/docs/authenticating_users>
 
