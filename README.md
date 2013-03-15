@@ -11,10 +11,15 @@ Comprehensive documenation can be found at <http://pusher.com/docs/>.
 
 ## Installation
 
-**NuGet Package coming soon**
+### NuGet Package - coming soon
 ```
 // TODO
 ```
+
+### Download
+
+The latest 2.0.0 BETA can be found here:
+<http://cl.ly/3E1a472Z1I30/pusher-dotnet-server-2.0.0-beta.2.zip>
 
 ## How to use
 
