@@ -139,7 +139,8 @@ From the `pusher-dotnet-server` directory:
 
 1. Update `pusher-dotnet-server.nuspec` with new version number etc.
 2. Run `package.cmd`
-3. Run `tools/nuget.exe push Download/package/PusherServer.{VERSION}.nupkg'
+3. Run `tools/nuget.exe push Download/PusherServer.{VERSION}.nupkg'
+
 ## License
 
 This code is free to use under the terms of the MIT license.
