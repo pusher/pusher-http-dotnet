@@ -128,9 +128,18 @@ IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users
 
 ## Development Notes
 
-* Developed using Visual Studio 2010
-* PusherServer acceptance tests presently need the [PusherClient](https://github.com/pusher/pusher-dotnet-client) DLL. Eventually this will be changed to fetch via NuGet.
+* Developed using Visual Studio 2010 or Visual Studio 2012
+* PusherServer acceptance tests presently need the [PusherClient](https://github.com/leggetter/pusher-dotnet-client) DLL. Eventually this will be changed to fetch via NuGet.
 
+## Publish to NuGet
+
+You should be familiar with [creating an publishing NuGet packages](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package).
+
+From the `pusher-dotnet-server` directory:
+
+1. Update `pusher-dotnet-server.nuspec` with new version number etc.
+2. Run `package.cmd`
+3. Run `tools/nuget.exe push Download/package/PusherServer.{VERSION}.nupkg'
 ## License
 
 This code is free to use under the terms of the MIT license.
