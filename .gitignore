@@ -2,6 +2,7 @@ _ReSharper.*/
 _UpgradeReport_Files
 UpgradeLog.XML
 Backup
+Download
 [Bb]in
 [Oo]bj
 *.suo
@@ -12,3 +13,4 @@ PusherRESTDotNet.sln.docstates
 build
 *.testsettings
 *.vsmdi
+msbuild.log
