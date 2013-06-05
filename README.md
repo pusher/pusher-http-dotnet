@@ -11,9 +11,9 @@ Comprehensive documenation can be found at <http://pusher.com/docs/>.
 
 ## Installation
 
-### NuGet Package - coming soon
+### NuGet Package
 ```
-// TODO
+Install-Package PusherServer -Pre
 ```
 
 ### Download
@@ -42,7 +42,7 @@ var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello w
 #### Multiple channels
 
 ```
-var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", { message: "hello world" } );
+var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
 ```
 
 ### Excluding event recipients
@@ -129,7 +129,7 @@ IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users
 ## Development Notes
 
 * Developed using Visual Studio 2010
-* PusherServer acceptance tests presently need the [PusherClient](https://github.com/leggetter/pusher-dotnet-client) DLL. Eventually this will be changed to fetch via NuGet.
+* PusherServer acceptance tests presently need the [PusherClient](https://github.com/pusher/pusher-dotnet-client) DLL. Eventually this will be changed to fetch via NuGet.
 
 ## License
 
