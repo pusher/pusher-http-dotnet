@@ -19,6 +19,7 @@ namespace PusherServer
         private string _appKey;
         private string _appSecret;
         private IPusherOptions _options;
+        private IBodySerializer _serializer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pusher" /> class.
@@ -54,6 +55,20 @@ namespace PusherServer
             _appKey = appKey;
             _appSecret = appSecret;
             _options = options;
+
+            BodySerializer = new DefaultJsonBodySerializer();
+        }
+
+        /// <summary>
+        /// The serializer to use for the body of the messages.
+        /// </summary>
+        public IBodySerializer BodySerializer
+        {
+            get
+            {
+                return _serializer;
+            }
+            set { _serializer = value ?? new DefaultJsonBodySerializer(); }
         }
 
         #region Trigger
@@ -105,15 +120,11 @@ namespace PusherServer
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
         /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options)
-        {
-            Dictionary<string, string> additionalPostParams = new Dictionary<string, string>();
-
-            var serializer = new JsonSerializer();
-
+        {   
             TriggerBody bodyData = new TriggerBody()
             {
                 name = eventName,
-                data = serializer.Serialize(data),
+                data = BodySerializer.Serialize(data),
                 channels = channelNames
             };
 
@@ -195,9 +206,8 @@ namespace PusherServer
             queryParams.Add("auth_version", "1.0");
 
             if (requestBody != null)
-            {
-                var serializer = new JsonSerializer();
-                var bodyDataJson = serializer.Serialize(requestBody);
+            {   
+                var bodyDataJson = BodySerializer.Serialize(requestBody);
                 var bodyMD5 = CryptoHelper.GetMd5Hash(bodyDataJson);
                 queryParams.Add("body_md5", bodyMD5);
             }

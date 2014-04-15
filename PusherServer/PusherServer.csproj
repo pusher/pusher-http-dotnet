@@ -46,8 +46,10 @@
     <Compile Include="AuthenticationData.cs" />
     <Compile Include="ChannelsList.cs" />
     <Compile Include="CryptoHelper.cs" />
+    <Compile Include="DefaultJsonBodySerializer.cs" />
     <Compile Include="GetResult.cs" />
     <Compile Include="IAuthenticationData.cs" />
+    <Compile Include="IBodySerializer.cs" />
     <Compile Include="IGetResult.cs" />
     <Compile Include="IPusher.cs" />
     <Compile Include="IPusherOptions.cs" />
