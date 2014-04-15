@@ -207,7 +207,8 @@ namespace PusherServer
 
             if (requestBody != null)
             {   
-                var bodyDataJson = BodySerializer.Serialize(requestBody);
+                JsonSerializer serializer = new JsonSerializer();
+                var bodyDataJson = serializer.Serialize(requestBody);
                 var bodyMD5 = CryptoHelper.GetMd5Hash(bodyDataJson);
                 queryParams.Add("body_md5", bodyMD5);
             }
