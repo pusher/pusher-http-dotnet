@@ -46,8 +46,10 @@
     <Compile Include="AuthenticationData.cs" />
     <Compile Include="ChannelsList.cs" />
     <Compile Include="CryptoHelper.cs" />
+    <Compile Include="DefaultJsonBodySerializer.cs" />
     <Compile Include="GetResult.cs" />
     <Compile Include="IAuthenticationData.cs" />
+    <Compile Include="IBodySerializer.cs" />
     <Compile Include="IGetResult.cs" />
     <Compile Include="IPusher.cs" />
     <Compile Include="IPusherOptions.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pusher.cs" />
     <Compile Include="PusherOptions.cs" />
+    <Compile Include="RawBodySerializer.cs" />
     <Compile Include="RequestResult.cs" />
     <Compile Include="TriggerBody.cs" />
     <Compile Include="TriggerOptions.cs" />
