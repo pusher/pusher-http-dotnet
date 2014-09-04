@@ -36,5 +36,15 @@ namespace PusherServer
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets or sets the host name of the rest api.  For example, for a dedicated cluster
+        /// named "acme", the value might be "api-acme.pusher.com.
+        /// </summary>
+        string HostName
+        {
+            get;
+            set;
+        }                  
     }
 }

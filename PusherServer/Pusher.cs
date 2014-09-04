@@ -308,8 +308,10 @@ namespace PusherServer
 
         private string GetBaseUrl(IPusherOptions _options)
         {
+            string hostName = _options.HostName ?? DEFAULT_REST_API_HOST;
+
             string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
-                DEFAULT_REST_API_HOST +
+                hostName +
                 (_options.Port == 80 ? "" : ":" + _options.Port);
             return baseUrl;
         }
