@@ -6,20 +6,12 @@ Registering at <http://pusher.com> and use the application credentials within yo
 
 Comprehensive documenation can be found at <http://pusher.com/docs/>.
 
-**This is a 2.0.0 BETA version. Version 1.3 with the previous API can be found [here
-](https://github.com/leggetter/pusher-dotnet-server/tree/v1.3.4763).**
-
 ## Installation
 
 ### NuGet Package
 ```
 Install-Package PusherServer -Pre
 ```
-
-### Download
-
-The latest 2.0.0 BETA can be found here:
-<http://cl.ly/3E1a472Z1I30/pusher-dotnet-server-2.0.0-beta.2.zip>
 
 ## How to use
 
@@ -126,9 +118,15 @@ IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
 
+## Changelog
+
+### 2.0.0-beta-5
+
+* Updating RestSharp to 105.0.1
+
 ## Development Notes
 
-* Developed using Visual Studio 2010 or Visual Studio 2012
+* Developed using Visual Studio Community 2013
 * PusherServer acceptance tests presently need the [PusherClient](https://github.com/leggetter/pusher-dotnet-client) DLL. Eventually this will be changed to fetch via NuGet.
 
 ## Publish to NuGet
