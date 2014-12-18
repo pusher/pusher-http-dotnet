@@ -266,12 +266,12 @@ namespace PusherServer
             }
         }
 
-        private string GetBaseUrl(IPusherOptions _options)
+        private Uri GetBaseUrl(IPusherOptions _options)
         {
             string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
                 DEFAULT_REST_API_HOST +
                 (_options.Port == 80 ? "" : ":" + _options.Port);
-            return baseUrl;
+            return new Uri( baseUrl );
         }
 
         

@@ -50,7 +50,7 @@ namespace PusherServer.Tests.UnitTests
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
-                    x => CheckRequestIsMadeOver("http://", _subClient, x)
+                    x => CheckRequestScheme("http", _subClient, x)
                 )
             );
         }
@@ -75,14 +75,14 @@ namespace PusherServer.Tests.UnitTests
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
-                    x => CheckRequestIsMadeOver("https://", _subClient, x)
+                    x => CheckRequestScheme("https", _subClient, x)
                 )
             );
         }
 
-        private bool CheckRequestIsMadeOver(string urlPrefix, IRestClient client, IRestRequest req)
+        private bool CheckRequestScheme(string urlPrefix, IRestClient client, IRestRequest req)
         {
-            return client.BaseUrl.StartsWith(urlPrefix);
+            return client.BaseUrl.Scheme.StartsWith(urlPrefix);
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace PusherServer.Tests.UnitTests
 
         private bool _CheckRequestPort(int port, IRestClient _subClient, IRestRequest x)
         {
-            return _subClient.BaseUrl.EndsWith(":" + port);
+            return _subClient.BaseUrl.Port == port;
         }
 
         [Test]
