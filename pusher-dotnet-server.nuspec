@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>PusherServer</id>
-    <version>2.0.0-beta-4</version>
+    <version>2.0.0-beta-5</version>
     <title>Pusher .NET Server Library</title>
     <authors>Pusher, Phil Leggetter</authors>
     <owners>Pusher</owners>
@@ -12,10 +12,10 @@
     <description>The .NET library for interacting with the Pusher REST API.
 Register at http://pusher.com and use the application credentials within your app as shown below.</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2013</copyright>
+    <copyright>Copyright 2014</copyright>
     <tags>pusher realtime</tags>
     <dependencies>
-        <dependency id="RestSharp" version="104.1" />
+        <dependency id="RestSharp" version="105.0.1" />
     </dependencies>
   </metadata>
 </package>
