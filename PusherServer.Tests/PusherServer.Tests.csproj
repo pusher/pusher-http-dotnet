@@ -72,6 +72,7 @@
     <Compile Include="UnitTests\Pusher.cs" />
     <Compile Include="UnitTests\PusherOptions.cs" />
     <Compile Include="UnitTests\Trigger.cs" />
+    <Compile Include="UnitTests\WebHook.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AcceptanceTests\percent-message.json">
