@@ -120,6 +120,11 @@ IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users
 
 ## Changelog
 
+### 2.0.0
+
+* Full release of 2.0.0 library
+* Added `Pusher.ProcessWebHook(signature, body)` support
+
 ### 2.0.0-beta-5
 
 * Updating RestSharp to 105.0.1
