@@ -5,29 +5,38 @@ using System.Text;
 
 namespace PusherServer
 {
-    interface IWebHook
+    public interface IWebHook
     {
+        /// <summary>
+        /// Indicates if the WebHook has validated.
+        /// </summary>
         bool IsValid
         {
             get;
         }
 
-        /** Returns all WebHook data.
-         *
-         * @throws WebHookError when WebHook is invalid
-         * @returns {Object}
-         */
+        /// <summary>
+        /// The Events in the WebHook
+        /// </summary>
         Dictionary<string, string>[] Events
         {
             get;
         }
 
-        /** Returns WebHook timestamp.
-         *
-         * @throws WebHookError when WebHook is invalid
-         * @returns {Date}
-         */
-        string Time
+
+        /// <summary>
+        /// The timestamp of the WebHook
+        /// </summary>
+        DateTime Time
+        {
+            get;
+        }
+
+        /// <summary>
+        /// An array of validation errors. If <see cref="IsValid"/> is true then the array
+        /// will have no elements.
+        /// </summary>
+        string[] ValidationErrors
         {
             get;
         }

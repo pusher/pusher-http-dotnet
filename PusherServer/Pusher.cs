@@ -184,6 +184,11 @@ namespace PusherServer
             IRestResponse response = _options.RestClient.Execute(request);
             return new GetResult<T>(response);
         }
+
+        public IWebHook ProcessWebHook(string signature, string body)
+        {
+            return new WebHook(this._appSecret, signature, body);
+        }
         #endregion
 
         private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)

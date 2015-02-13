@@ -97,6 +97,14 @@ namespace PusherServer
         /// The result of the GET request
         /// </returns>
         IGetResult<T> Get<T>(string resource, object parameters);
+
+        /// <summary>
+        /// Handle an incoming WebHook and validate it.
+        /// </summary>
+        /// <param name="signature">The signature of the incoming WebHook</param>
+        /// <param name="body">The body of the incoming Webhook request</param>
+        /// <returns>A WebHook helper.</returns>
+        IWebHook ProcessWebHook(string signature, string body);
     }
 
 }

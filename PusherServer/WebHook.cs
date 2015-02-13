@@ -1,64 +1,73 @@
-﻿using RestSharp.Deserializers;
-using RestSharp.Serializers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Web.Script.Serialization;
 
 namespace PusherServer
 {
     internal class WebHook: IWebHook
     {
-        private string secret;
-        private string signature;
-        private string contentType;
-        private string body;
+        private WebHookData _webHookData;
+        private List<string> _validationErrors;
 
-        internal WebHook(string secret, string signature, string contentType, string body)
+        internal WebHook(string secret, string signature, string body)
         {
             if(string.IsNullOrEmpty(secret))
             {
                 throw new ArgumentException("A secret must be provided", "secret");
             }
 
-            this.secret = secret;
-            this.signature = signature;
-            this.contentType = contentType;
-            this.body = body;
+            this._validationErrors = new List<string>();
 
+            this._webHookData = ValidateWebHook(secret, signature, body);
+        }
+
+        private WebHookData ValidateWebHook(string secret, string signature, string body)
+        {
+            WebHookData parsedWebHookData = null;
+
+            var signatureNullOrEmpth = string.IsNullOrEmpty(signature);
+            if(signatureNullOrEmpth == true) {
+                this._validationErrors.Add("The supplied signature to check was null or empty. A signature to check must be provided.");
+            }
+
+            if (string.IsNullOrEmpty(body) == true)
+            {
+                this._validationErrors.Add("The supplied body to check was null or empty. A body to check must be provided.");
+            }
+            else
+            {
+                try
+                {
+                    JavaScriptSerializer serializer = new JavaScriptSerializer();
+                    parsedWebHookData = serializer.Deserialize<WebHookData>(body);
+                }
+                catch (Exception e)
+                {
+                    var validationError = string.Format("Exception occurred parsing the body as JSON: {0}{1}", Environment.NewLine, e.StackTrace);
+                    this._validationErrors.Add(validationError);
+                }
+            }
+
+            if (parsedWebHookData != null)
+            {
+                var expectedSignature = CryptoHelper.GetHmac256(secret, body);
+                var signatureIsValid = (signature == expectedSignature);
+                if (signatureIsValid == false)
+                {
+                    this._validationErrors.Add(
+                        string.Format("The signature did not validate. Expected {0}. Got {1}", signature, expectedSignature)
+                    );
+                }
+            }
+            return parsedWebHookData;
         }
 
         public bool IsValid
         {
             get
             {
-                return ( string.IsNullOrEmpty(this.secret) == false &&
-                    this.IsSignatureValid &&
-                    this.IsContentTypeValid &&
-                    this.IsBodyValid );
-            }
-        }
-
-        internal bool IsSignatureValid
-        {
-            get
-            {
-                return string.IsNullOrEmpty(this.signature) == false &&
-                    SignatureMatchesExpected;
-            }
-        }
-
-        internal bool IsBodyValid
-        {
-            get
-            {
-                return string.IsNullOrEmpty(this.body) == false &&
-                    this.Data != null;
+                return (this.ValidationErrors.Length == 0);
             }
         }
 
@@ -66,50 +75,26 @@ namespace PusherServer
         {
             get
             {
-                return this.Data.events;
+                return this._webHookData.events;
             }
         }
 
-        private WebHookData Data
-        {
-            get {
-                WebHookData data = null;
-
-                try
-                {
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    data = serializer.Deserialize<WebHookData>(this.body);
-                }
-                catch (Exception e) {
-                    Console.WriteLine(e);
-                }
-
-                return data;
-            }
-        }
-
-        // TODO: parse to DateTime
-        public string Time
-        {
-            get { return this.Data.time_ms; }
-        }
-
-        public bool SignatureMatchesExpected
+        public DateTime Time
         {
             get
             {
-                return ( string.IsNullOrEmpty(this.body) == false &&
-                         this.signature == CryptoHelper.GetHmac256(this.secret, this.body) );
+                return this._webHookData.Time;
             }
         }
 
-        public bool IsContentTypeValid
+        public string[] ValidationErrors
         {
             get
             {
-                return this.contentType == "application/json";
+                return this._validationErrors.ToArray<string>();
             }
         }
+
     }
 
 }
