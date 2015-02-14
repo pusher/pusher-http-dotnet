@@ -9,7 +9,7 @@
     <licenseUrl>https://github.com/pusher/pusher-dotnet-server/blob/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/pusher/pusher-dotnet-server</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>The .NET library for interacting with the Pusher REST API.
+    <description>The .NET library for interacting with the Pusher HTTP API.
 Register at http://pusher.com and use the application credentials within your app as shown below.</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2015</copyright>
