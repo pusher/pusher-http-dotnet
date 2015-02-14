@@ -1,6 +1,6 @@
 # Pusher .NET Server library
 
-This is a .NET library for interacting with the Pusher REST API.
+This is a .NET library for interacting with the Pusher HTTP API.
 
 Registering at <http://pusher.com> and use the application credentials within your app as shown below.
 
@@ -10,7 +10,7 @@ Comprehensive documenation can be found at <http://pusher.com/docs/>.
 
 ### NuGet Package
 ```
-Install-Package PusherServer -Pre
+Install-Package PusherServer
 ```
 
 ## How to use
@@ -117,6 +117,46 @@ IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users
 ```
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
+
+### WebHooks
+
+Pusher will trigger WebHooks based on the settings you have for your application. You can consume these and use them
+within your application as follows.
+
+For more information see <https://pusher.com/docs/webhooks>.
+
+```
+// How you get these depends on the framework you're using
+
+// HTTP_X_PUSHER_SIGNATURE from HTTP Header
+var receivedSignature = "value";
+
+// Body of HTTP request
+var receivedBody = "value;
+
+var pusher = new Pusher(...);
+var webHook = pusher.ProcessWebHook(receivedSignature, receivedBody);
+if(webHook.IsValid)
+{
+  // The WebHook validated
+  // Dictionary<string,string>[]
+  var events = webHook.Events;
+
+  foreach(var webHookEvent in webHook.Events)
+  {
+    var eventType = webHookEvent["name"];
+    var channelName = webHookEvent["channel"];
+
+    // depending on the type of event (eventType)
+    // there may be other values in the Dictionary<string,string>
+  }
+
+}
+else {
+  // Log the validation errors to work out what the problem is
+  // webHook.ValidationErrors
+}
+```
 
 ## Changelog
 
