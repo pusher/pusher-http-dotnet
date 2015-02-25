@@ -23,7 +23,7 @@ namespace PusherServer.Tests.UnitTests
         private string CreateSignedString(string channelName, string socketId)
         {
             // null for presence data
-            var stringToSign = socketId + ":" + channelName + ":null";
+            var stringToSign = socketId + ":" + channelName;
             return CryptoHelper.GetHmac256(Config.AppSecret, stringToSign);
         }
     }

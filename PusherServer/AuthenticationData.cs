@@ -36,8 +36,11 @@ namespace PusherServer
             {
                 var serializer = new JsonSerializer();
                 var stringToSign = _socketId + ":" + _channelName;
-                var presenceJson = serializer.Serialize(_presenceData);
-                stringToSign += ":" + presenceJson;
+                if (_presenceData != null)
+                {
+                    var presenceJson = serializer.Serialize(_presenceData);
+                    stringToSign += ":" + presenceJson;
+                }
                 
                 return _appKey + ":" + CryptoHelper.GetHmac256(_appSecret, stringToSign);
             }
