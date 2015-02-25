@@ -160,6 +160,10 @@ else {
 
 ## Changelog
 
+### 2.0.1
+
+* Fixed Pusher.Authenticate for private channels. Should not return `channel_data` in the JSON.
+
 ### 2.0.0
 
 * Full release of 2.0.0 library
