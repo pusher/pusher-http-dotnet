@@ -49,13 +49,18 @@ namespace PusherServer
         /// <summary>
         /// Double encoded JSON containing presence channel user information.
         /// </summary>
-        [DataMember(Name = "channel_data", IsRequired = false)]
+        [DataMember(Name = "channel_data", IsRequired = false, EmitDefaultValue = false)]
         public string channel_data
         {
             get
             {
-                var serializer = new JsonSerializer();
-                return serializer.Serialize(_presenceData);
+                string json = null;
+                if (_presenceData != null)
+                {
+                    var serializer = new JsonSerializer();
+                    json = serializer.Serialize(_presenceData);
+                }
+                return json;
             }
         }
 
