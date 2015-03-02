@@ -1,4 +1,4 @@
-# Pusher .NET Server library
+# Pusher .NET HTTP API library
 
 This is a .NET library for interacting with the Pusher HTTP API.
 
@@ -158,25 +158,10 @@ else {
 }
 ```
 
-## Changelog
-
-### 2.0.1
-
-* Fixed Pusher.Authenticate for private channels. Should not return `channel_data` in the JSON.
-
-### 2.0.0
-
-* Full release of 2.0.0 library
-* Added `Pusher.ProcessWebHook(signature, body)` support
-
-### 2.0.0-beta-5
-
-* Updating RestSharp to 105.0.1
-
 ## Development Notes
 
 * Developed using Visual Studio Community 2013
-* PusherServer acceptance tests presently need the [PusherClient](https://github.com/leggetter/pusher-dotnet-client) DLL. Eventually this will be changed to fetch via NuGet.
+* PusherServer acceptance tests depends on [PusherClient](https://github.com/leggetter/pusher-dotnet-client).
 
 ## Publish to NuGet
 
