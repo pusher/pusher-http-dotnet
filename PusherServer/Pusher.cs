@@ -154,14 +154,19 @@ namespace PusherServer
         }
 
         /// <summary>
-        /// Authenticates the specified channel name.
+        /// Authenticates the subscription request for a presence channel.
         /// </summary>
-        /// <param name="channelName">Name of the channel.</param>
-        /// <param name="socketId">The socket id.</param>
-        /// <param name="presenceData">The presence data.</param>
-        /// <returns></returns>
+        /// <param name="channelName">Name of the channel to be authenticated.</param>
+        /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
+        /// <param name="presenceData">Information about the user subscribing to the presence channel.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="presenceData"/> is null</exception>
+        /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
         public IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
         {
+            if(presenceData == null)
+            {
+                throw new ArgumentNullException("presenceData");
+            }
             return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId, presenceData);
         }
         #endregion

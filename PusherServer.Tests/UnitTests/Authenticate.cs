@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using RestSharp.Serializers;
+using System;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -23,7 +24,7 @@ namespace PusherServer.Tests.UnitTests
         private string CreateSignedString(string channelName, string socketId)
         {
             // null for presence data
-            var stringToSign = socketId + ":" + channelName + ":null";
+            var stringToSign = socketId + ":" + channelName;
             return CryptoHelper.GetHmac256(Config.AppSecret, stringToSign);
         }
     }
@@ -32,6 +33,19 @@ namespace PusherServer.Tests.UnitTests
     public class When_authenticating_a_presence_channel
     {
         IPusher _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void null_presence_data_throw_Exception()
+        {
+            string channelName = "my-channel";
+            string socketId = "some_socket_id";
+
+            var serializer = new JsonSerializer();
+
+            PresenceChannelData data = null;
+            _pusher.Authenticate(channelName, socketId, data);
+        }
 
         [Test]
         public void the_auth_response_is_valid()
