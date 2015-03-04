@@ -19,7 +19,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void It_should_return_a_202_response()
+        public void It_should_return_a_200_response()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
             ITriggerResult result = pusher.Trigger("my-channel", "my_event", new { hello = "world" });
@@ -77,7 +77,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void CanTriggerEventWithPercentInMessage()
+        public void it_can_trigger_an_event_with_a_percent_in_the_message()
         {
             var eventJSON = File.ReadAllText("AcceptanceTests/percent-message.json");
             var message = new JavaScriptSerializer().Deserialize(eventJSON, typeof(object));
