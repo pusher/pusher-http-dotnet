@@ -50,6 +50,7 @@
     <Compile Include="ChannelsList.cs" />
     <Compile Include="CryptoHelper.cs" />
     <Compile Include="DefaultJsonBodySerializer.cs" />
+    <Compile Include="EventIdData.cs" />
     <Compile Include="GetResult.cs" />
     <Compile Include="IAuthenticationData.cs" />
     <Compile Include="IBodySerializer.cs" />
@@ -65,13 +66,14 @@
     <Compile Include="Pusher.cs" />
     <Compile Include="PusherOptions.cs" />
     <Compile Include="RawBodySerializer.cs" />
+    <Compile Include="Exceptions\TriggerResponseException.cs" />
+    <Compile Include="Util\ReadOnlyDictionary.cs" />
     <Compile Include="RequestResult.cs" />
     <Compile Include="TriggerBody.cs" />
     <Compile Include="TriggerOptions.cs" />
     <Compile Include="TriggerResult.cs" />
     <Compile Include="WebHook.cs" />
     <Compile Include="WebHookData.cs" />
-    <Compile Include="WebHookEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
