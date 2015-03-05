@@ -27,6 +27,14 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
+        public void it_should_expose_the_event_id()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            ITriggerResult result = pusher.Trigger("my-channel", "my_event", new { hello = "world" });
+            Assert.IsTrue(string.IsNullOrEmpty(result.EventIds["my-channel"]) == false);
+        }
+
+        [Test]
         public void It_should_be_received_by_a_client()
         {
             string channelName = "my_channel";
@@ -86,6 +94,7 @@ namespace PusherServer.Tests.AcceptanceTests
             ITriggerResult result = pusher.Trigger("my-channel", "my_event", message);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
+        
     }
 
     [TestFixture]
@@ -110,11 +119,32 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void It_should_return_a_202_response()
+        public void It_should_return_a_200_response()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions() { Encrypted = true } );
             ITriggerResult result = pusher.Trigger("my-channel", "my_event", new { hello = "world" });
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Test]
+        public void It_should_expose_a_single_event_id_when_publishing_to_a_single_channel()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions() { Encrypted = true });
+            ITriggerResult result = pusher.Trigger("ch1", "my_event", new { hello = "world" });
+            Assert.IsTrue(result.EventIds.ContainsKey("ch1"));
+            Assert.AreEqual(1, result.EventIds.Count);
+        }
+
+        [Test]
+        public void It_should_expose_a_multiple_event_ids_when_publishing_to_multiple_channels()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions() { Encrypted = true });
+            var channels = new string[]{"ch1", "ch2", "ch3"};
+            ITriggerResult result = pusher.Trigger(channels, "my_event", new { hello = "world" });
+            Assert.IsTrue(result.EventIds.ContainsKey("ch1"));
+            Assert.IsTrue(result.EventIds.ContainsKey("ch2"));
+            Assert.IsTrue(result.EventIds.ContainsKey("ch3"));
+            Assert.AreEqual(channels.Length, result.EventIds.Count);
         }
     }
 }
