@@ -15,6 +15,25 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
+        public void Host_defaults_to_api_pusherapp_com()
+        {
+            var options = new PusherOptions();
+            Assert.AreEqual("api.pusherapp.com", options.Host);
+        }
+
+        [Test]
+        public void scheme_is_stripped_from_value_when_setting_host()
+        {
+            var httpsOptions = new PusherOptions();
+            httpsOptions.Host = "https://api.pusherapp.com";
+            Assert.AreEqual("api.pusherapp.com", httpsOptions.Host);
+
+            var httpOptions = new PusherOptions();
+            httpOptions.Host = "http://api.pusherapp.com";
+            Assert.AreEqual("api.pusherapp.com", httpOptions.Host);
+        }
+        
+        [Test]
         public void Port_defaults_to_80()
         {
             var options = new PusherOptions();

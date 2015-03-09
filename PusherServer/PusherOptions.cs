@@ -1,5 +1,6 @@
 ﻿using RestSharp;
 using System;
+using System.Text.RegularExpressions;
 
 namespace PusherServer
 {
@@ -10,11 +11,13 @@ namespace PusherServer
     {
         private static int DEFAULT_HTTPS_PORT = 443;
         private static int DEFAULT_HTTP_PORT = 80;
+        private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
 
         IRestClient _client;
         bool _encrypted = false;
         bool _portModified = false;
         int _port = DEFAULT_HTTP_PORT;
+        string _host = DEFAULT_REST_API_HOST;
 
         /// <summary>
         /// Gets or sets a value indicating whether calls to the Pusher REST API are over HTTP or HTTPS.
@@ -35,6 +38,25 @@ namespace PusherServer
                 {
                     _port = 443;
                 }
+            }
+        }
+
+        /// <summary>
+        /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com
+        /// </summary>
+        /// <remarks>
+        /// If the scheme is included when setting the value it will be stripped from the set value.
+        /// e.g. setting with a value of "https://api.pusherapp.com" will result in a value of "api.pusherapp.com".
+        /// </remarks>
+        public string Host
+        {
+            get
+            {
+                return _host;
+            }
+            set
+            {
+                _host = Regex.Replace(value, "^https?://", string.Empty);
             }
         }
 

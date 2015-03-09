@@ -24,6 +24,14 @@ namespace PusherServer
             set;
         }
 
+        /// <summary>
+        /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com
+        /// </summary>
+        string Host
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets the REST API port that the HTTP calls will be made to.
