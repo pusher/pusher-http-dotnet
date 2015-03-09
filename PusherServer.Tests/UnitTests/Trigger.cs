@@ -29,6 +29,10 @@ namespace PusherServer.Tests.UnitTests
             Config.AppSecret = "test-app-secret";
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
+
+            IRestResponse resp = Substitute.For<IRestResponse>();
+            resp.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
+            _subClient.Execute(Arg.Any<IRestRequest>()).Returns(resp);
         }
 
         [Test]
@@ -91,7 +95,8 @@ namespace PusherServer.Tests.UnitTests
             IPusherOptions options = new PusherOptions()
             {
                 RestClient = _subClient,
-                Encrypted = true
+                Encrypted = true,
+                Host = Config.Host
             };
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);

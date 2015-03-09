@@ -9,17 +9,20 @@ using System.Text;
 
 namespace PusherServer.Tests.UnitTests
 {
-    [TestFixture]
-    public class When_initialisation_a_TriggerEvent
+    public class TriggerResultHelper
     {
-        string JSON =   "{" +
+        public static string TRIGGER_RESPONSE_JSON = "{" +
                             "\"event_ids\": {" +
                                 "\"ch1\": \"ch1_event_id\"," +
                                 "\"ch2\": \"ch2_event_id\"," +
                                 "\"ch3\": \"ch3_event_id\"" +
                             "}" +
                         "}";
+    }
 
+    [TestFixture]
+    public class When_initialisation_a_TriggerEvent
+    {
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void it_should_not_accept_a_null_response()
@@ -58,7 +61,7 @@ namespace PusherServer.Tests.UnitTests
         public void it_should_parse_the_returned_JSON()
         {
             IRestResponse response = Substitute.For<IRestResponse>();
-            response.Content = JSON;
+            response.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
             var triggerResult = new TriggerResult(response);
 
             Assert.AreEqual(3, triggerResult.EventIds.Count);
@@ -68,7 +71,7 @@ namespace PusherServer.Tests.UnitTests
         public void it_should_expose_the_event_id_values_for_each_channel()
         {
             IRestResponse response = Substitute.For<IRestResponse>();
-            response.Content = JSON;
+            response.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
             var triggerResult = new TriggerResult(response);
 
             Assert.AreEqual("ch1_event_id", triggerResult.EventIds["ch1"]);
@@ -81,7 +84,7 @@ namespace PusherServer.Tests.UnitTests
         public void it_should_not_be_possible_to_change_EventIds()
         {
             IRestResponse response = Substitute.For<IRestResponse>();
-            response.Content = JSON;
+            response.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
             var triggerResult = new TriggerResult(response);
 
             triggerResult.EventIds.Add("fish", "pie");
