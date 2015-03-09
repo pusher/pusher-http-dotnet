@@ -40,7 +40,8 @@ var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_eve
 #### Event Buffer
 
 Version 3.0.0 of the library introduced support for event buffering. The purpose of this functionality is
-to ensure that events that are triggered during whilst a client is offline for a short period of time will still be delivered.
+to ensure that events that are triggered during whilst a client is offline for a short period of time will
+still be delivered upon reconnection.
 
 *Note: this requires your Pusher application to be on a cluster that has the Event Buffer capability*
 
