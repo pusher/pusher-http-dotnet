@@ -13,7 +13,7 @@ namespace PusherServer
     /// </summary>
     public class Pusher : IPusher
     {
-        private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
+        
 
         private string _appId;
         private string _appKey;
@@ -202,7 +202,21 @@ namespace PusherServer
 
             var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
 
+            System.Console.WriteLine("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
+                Environment.NewLine,
+                request.Method,
+                _options.RestClient.BaseUrl,
+                request.Resource, 
+                string.Join(",", Array.ConvertAll(request.Parameters.ConvertAll(p => p.Name + "=" + p.Value).ToArray(), i => i.ToString()))
+            );
+
             IRestResponse response = _options.RestClient.Execute(request);
+
+            System.Console.WriteLine("Response{0}StatusCode: {1}{0}Body: {2}",
+                Environment.NewLine,
+                response.StatusCode,
+                response.Content);
+
             return response;
         }
 
@@ -279,7 +293,7 @@ namespace PusherServer
         private Uri GetBaseUrl(IPusherOptions _options)
         {
             string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
-                DEFAULT_REST_API_HOST +
+                _options.Host +
                 (_options.Port == 80 ? "" : ":" + _options.Port);
             return new Uri( baseUrl );
         }
