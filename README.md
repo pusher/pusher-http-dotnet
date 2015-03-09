@@ -37,6 +37,33 @@ var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello w
 var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
 ```
 
+#### Event Buffer
+
+Version 3.0.0 of the library introduced support for event buffering. The purpose of this functionality is
+to ensure that events that are triggered during whilst a client is offline for a short period of time will still be delivered.
+
+*Note: this requires your Pusher application to be on a cluster that has the Event Buffer capability*
+
+As part of this the `trigger` function now returns a set of `event_id` values for each event triggered on a channel.
+These can then be used by the client to tell the Pusher service the last event it has received. If additional events 
+have been triggered after that event ID the service has the opportunity to provide the client with those IDs.
+
+For detailed information please see the [Event Buffer Documentation **TODO**](#).
+
+The event ID values are accessed via a `ITriggerResult` that is returned from the `trigger` call.
+
+```
+// Trigger on single channel
+var triggerResult = pusher.Trigger("ch1", "my-event", new {some = "data"});
+var eventId = triggerResult.EventIds["ch1"];
+
+// Trigger on multiple channels
+var channels = new string[]{"ch1", "ch2", "ch3"};
+ITriggerResult multiChannelTriggerResult = pusher.Trigger(channels, "my_event", new { hello = "world" });
+var ch1EventId = multiChannelTriggerResult.EventIds["ch1"];
+var ch2EventId = multiChannelTriggerResult.EventIds["ch2"];
+var ch3EventId = multiChannelTriggerResult.EventIds["ch3"];
+
 ### Excluding event recipients
 
 In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more informaiton see: <http://pusher.com/docs/publisher_api_guide/publisher_excluding_recipients>.
