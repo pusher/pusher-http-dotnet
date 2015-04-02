@@ -22,15 +22,27 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public void scheme_is_stripped_from_value_when_setting_host()
+        [ExpectedException(typeof(FormatException))]
+        public void https_scheme_is_not_allowed_when_setting_host()
         {
             var httpsOptions = new PusherOptions();
             httpsOptions.Host = "https://api.pusherapp.com";
-            Assert.AreEqual("api.pusherapp.com", httpsOptions.Host);
+        }
 
-            var httpOptions = new PusherOptions();
-            httpOptions.Host = "http://api.pusherapp.com";
-            Assert.AreEqual("api.pusherapp.com", httpOptions.Host);
+        [Test]
+        [ExpectedException(typeof(FormatException))]
+        public void http_scheme_is_not_allowed_when_setting_host()
+        {
+            var httpsOptions = new PusherOptions();
+            httpsOptions.Host = "http://api.pusherapp.com";
+        }
+
+        [Test]
+        [ExpectedException(typeof(FormatException))]
+        public void ftp_scheme_is_not_allowed_when_setting_host()
+        {
+            var httpsOptions = new PusherOptions();
+            httpsOptions.Host = "ftp://api.pusherapp.com";
         }
         
         [Test]
