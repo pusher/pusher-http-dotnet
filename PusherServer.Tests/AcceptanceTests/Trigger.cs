@@ -104,7 +104,7 @@ namespace PusherServer.Tests.AcceptanceTests
     public class When_Triggering_an_Event_on_a_multiple_Channels
     {
         [Test]
-        public void It_should_return_a_202_response()
+        public void It_should_return_a_200_response()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
