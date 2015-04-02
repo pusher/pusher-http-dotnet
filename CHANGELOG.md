@@ -1,9 +1,17 @@
 # Changelog
 
+## 3.0.0
+
+* [CHANGED] `Trigger` calls that result in a non 200 response from the Pusher HTTP API now result in a `TriggerResponseException` being thrown.
+			This is a BREAKING CHANGE as previously you could inspect the `ITriggerResult.StatusCode` to detect a failed request.
+* [ADDED]	When triggering events against a Pusher cluster that supports Event Buffer functionality the IDs of the triggered events
+			can be retrieved via `ITriggerResult.EventIds`
+* [ADDED]	The Pusher HTTP API Host can now be set via `PusherOptions.Host`
+
 ## 2.1.0
 
-* Fixed Pusher.Authenticate for private channels. Should not return `channel_data` in the JSON.
-* Changed IAuthenticationData Pusher.Authenticate(string channelName, string socketId, PresenceChannelData presenceData) to throw a ArgumentNullException if `presenceData` is `null`.
+* [FIXED]	Pusher.Authenticate for private channels. Should not return `channel_data` in the JSON.
+* [CHANGED] Changed IAuthenticationData Pusher.Authenticate(string channelName, string socketId, PresenceChannelData presenceData) to throw a ArgumentNullException if `presenceData` is `null`.
 
 ## 2.0.0
 
