@@ -15,6 +15,17 @@ namespace PusherServer
         public TriggerResult(IRestResponse response):
             base(response)
         {
+            if(response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                var msg = string.Format("The response from the Pusher HTTP API was not 200 OK. It was {0}", response.StatusCode);
+                throw new TriggerResponseException(msg);
+            }
+
+            if (string.IsNullOrEmpty(response.Content))
+            {
+                throw new TriggerResponseException("The response body from the Pusher HTTP API was either null or empty");
+            }
+
             EventIdData eventIdData = null;
             try
             {
@@ -23,13 +34,8 @@ namespace PusherServer
             }
             catch (Exception)
             {
-                // Allow this to be swallowed. It will be caught in the following (eventIdData == null) check.
-            }
-
-            if (eventIdData == null || eventIdData.event_ids == null || eventIdData.event_ids.Count == 0)
-            {
                 string msg =
-                    string.Format("The response from the Pusher HTTP endpoint did not provide the expect event_ids. The response was: {0}{1}",
+                    string.Format("The response body from the Pusher HTTP endpoint could not be parsed as JSON: {0}{1}",
                                   Environment.NewLine,
                                   response.Content);
                 throw new TriggerResponseException(msg);
