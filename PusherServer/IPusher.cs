@@ -17,6 +17,9 @@ namespace PusherServer
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(string channelName, string eventName, object data);
 
         /// <summary>
@@ -26,6 +29,9 @@ namespace PusherServer
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data);
 
         /// <summary>
@@ -36,6 +42,9 @@ namespace PusherServer
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions"/>.</param>
         /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(string channelName, string eventName, object data, ITriggerOptions options);
 
         /// <summary>
@@ -46,6 +55,9 @@ namespace PusherServer
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions"/>.</param>
         /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options);
 
         //void TriggerAsync(string channelName, string eventName object data, Action<IRestResponse, RestRequestAsyncHandle> callback);
