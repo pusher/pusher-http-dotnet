@@ -4,6 +4,7 @@ using RestSharp;
 using RestSharp.Serializers;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace PusherServer
 {
@@ -202,20 +203,20 @@ namespace PusherServer
 
             var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
 
-            System.Console.WriteLine("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
+            Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
                 Environment.NewLine,
                 request.Method,
                 _options.RestClient.BaseUrl,
                 request.Resource, 
                 string.Join(",", Array.ConvertAll(request.Parameters.ConvertAll(p => p.Name + "=" + p.Value).ToArray(), i => i.ToString()))
-            );
+            ));
 
             IRestResponse response = _options.RestClient.Execute(request);
 
-            System.Console.WriteLine("Response{0}StatusCode: {1}{0}Body: {2}",
+            Debug.WriteLine(string.Format("Response{0}StatusCode: {1}{0}Body: {2}",
                 Environment.NewLine,
                 response.StatusCode,
-                response.Content);
+                response.Content));
 
             return response;
         }
