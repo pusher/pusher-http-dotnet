@@ -1,5 +1,7 @@
 # Pusher .NET HTTP API library
 
+[![Build Status](https://travis-ci.org/pusher/pusher-http-dotnet.svg?branch=master)](https://travis-ci.org/pusher/pusher-http-dotnet)
+
 This is a .NET library for interacting with the Pusher HTTP API.
 
 Registering at <http://pusher.com> and use the application credentials within your app as shown below.
