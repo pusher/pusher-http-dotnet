@@ -63,6 +63,13 @@ namespace PusherServer.Tests.UnitTests
             _pusher.Authenticate("private-test", "444.444\n");
         }
 
+        [Test]
+        [ExpectedException]
+        public void socket_id_must_not_be_empty_string()
+        {
+            _pusher.Authenticate("private-test", string.Empty);
+        }
+
         private string CreateSignedString(string channelName, string socketId)
         {
             // null for presence data

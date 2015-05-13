@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RestSharp.Serializers;
-using System;
+﻿using RestSharp.Serializers;
 using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 
 namespace PusherServer
 {
     [DataContract]
     class AuthenticationData: IAuthenticationData
     {
-        private static Regex SOCKET_ID_REGEX = new Regex(@"\A\d+\.\d+\z", RegexOptions.Singleline);
-
         private string _appKey;
         private string _appSecret;
         private string _channelName;
@@ -21,12 +14,7 @@ namespace PusherServer
 
         public AuthenticationData(string appKey, string appSecret, string channelName, string socketId)
         {
-            if(SOCKET_ID_REGEX.IsMatch(socketId) == false)
-            {
-                string msg = 
-                    string.Format("socket_id \"{0}\" was not in the form: {1}", socketId, SOCKET_ID_REGEX.ToString());
-                throw new FormatException(msg);
-            }
+            ValidationHelper.ValidateSocketId(socketId);
 
             _appKey = appKey;
             _appSecret = appSecret;

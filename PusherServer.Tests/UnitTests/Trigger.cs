@@ -197,7 +197,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
-            var expectedSocketId = "some_socket_id";
+            var expectedSocketId = "123.098";
             
             ITriggerResult result =
                 _pusher.Trigger(
@@ -220,7 +220,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
-            var expectedSocketId = "some_socket_id";
+            var expectedSocketId = "123.456";
 
             ITriggerResult result =
                 _pusher.Trigger(
@@ -238,6 +238,63 @@ namespace PusherServer.Tests.UnitTests
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
             );
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_cannot_contain_colon_prefix()
+        {
+            TriggerWithSocketId(":444.444");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_cannot_contain_colon_suffix()
+        {
+            TriggerWithSocketId("444.444:");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_cannot_contain_letters_suffix()
+        {
+            TriggerWithSocketId("444.444a");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_must_contain_a_period_point()
+        {
+            TriggerWithSocketId("444");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_must_not_contain_newline_prefix()
+        {
+            TriggerWithSocketId("\n444.444");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_must_not_contain_newline_suffix()
+        {
+            TriggerWithSocketId("444.444\n");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_must_not_be_empty_string()
+        {
+            TriggerWithSocketId(string.Empty);
+        }
+
+        private void TriggerWithSocketId(string socketId)
+        {
+            _pusher.Trigger(channelName, eventName, eventData, new TriggerOptions()
+            {
+                SocketId = socketId
+            });
         }
 
         private static bool CheckRequestContainsSocketIdParameter(IRestRequest request, string expectedSocketId) {
