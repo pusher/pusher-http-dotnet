@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>PusherServer</id>
-    <version>2.1.1</version>
+    <version>$version$</version>
     <title>Pusher .NET Server Library</title>
     <authors>Pusher, Phil Leggetter</authors>
     <owners>Pusher</owners>
@@ -18,4 +18,8 @@ Register at http://pusher.com and use the application credentials within your ap
         <dependency id="RestSharp" version="105.0.1" />
     </dependencies>
   </metadata>
+  <files>
+    <file src="..\README.md" target="." />
+    <file src="..\CHANGELOG.md" target="." />
+  </files>
 </package>
