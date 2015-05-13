@@ -242,6 +242,19 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
+        public void libary_name_header_is_set_with_trigger_request()
+        {
+            ITriggerResult result =_pusher.Trigger(channelName, eventName, eventData
+                );
+
+            _subClient.Received().Execute(
+                Arg.Is<IRestRequest>(
+                    x => CheckRequestContainsHeaderParameter(x, "Pusher-Library-Name", "pusher-http-dotnet")
+                )
+            );
+        }
+
+        [Test]
         [ExpectedException]
         public void socket_id_cannot_contain_colon_prefix()
         {
@@ -349,6 +362,22 @@ namespace PusherServer.Tests.UnitTests
             var parameter = request.Parameters[0];
             return parameter.Type == ParameterType.RequestBody &&
                 parameter.ToString().Contains("socket_id");
+        }
+
+        private static bool CheckRequestContainsHeaderParameter(IRestRequest request, string headerName, string headerValue)
+        {
+            bool found = false;
+            foreach(Parameter p in request.Parameters)
+            {
+                if(p.Type == ParameterType.HttpHeader &&
+                   p.Name == headerName &&
+                   p.Value.ToString() == headerValue)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
         }
     }
 }
