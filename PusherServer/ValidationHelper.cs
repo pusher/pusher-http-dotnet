@@ -11,7 +11,7 @@ namespace PusherServer
         /// <summary>
         /// A regular expression to check that a channel name is in a format allowed and accepted by Pusher.
         /// </summary>
-        public static Regex CHANNEL_NAME_REGEX = new Regex(@"\A[-a-zA-Z0-9_=@,.;]+\z", RegexOptions.Singleline);
+        public static Regex CHANNEL_NAME_REGEX = new Regex(@"\A[a-zA-Z0-9_=@,.;\-]+\z", RegexOptions.Singleline);
 
         /// <summary>
         /// The maximum length of a channel name allowed by Pusher.
