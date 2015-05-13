@@ -121,6 +121,7 @@ namespace PusherServer
         /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options)
         {
+            ValidationHelper.ValidateChannelNames(channelNames);
             ValidationHelper.ValidateSocketId(options.SocketId);
 
             TriggerBody bodyData = new TriggerBody()

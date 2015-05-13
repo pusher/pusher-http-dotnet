@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using RestSharp;
 using RestSharp.Serializers;
+using System;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -289,12 +290,59 @@ namespace PusherServer.Tests.UnitTests
             TriggerWithSocketId(string.Empty);
         }
 
+        [Test]
+        [ExpectedException]
+        public void channel_must_not_have_trailing_colon()
+		{
+			TriggerWithChannelName("test_channel:");
+		}
+		[Test]
+        [ExpectedException]
+		public void channel_name_must_not_have_leading_colon()
+		{
+			TriggerWithChannelName(":test_channel");
+		}
+		
+        [Test]
+        [ExpectedException]
+		public void channel_name_must_not_have_leading_colon_newline()
+        {
+			TriggerWithChannelName(":\ntest_channel");
+		}
+		
+        [Test]
+        [ExpectedException]
+		public void channel_name_must_not_have_trailing_colon_newline()
+		{
+			TriggerWithChannelName("test_channel\n:");
+		}
+		
+		[Test]
+        [ExpectedException]
+		public void channel_names_in_array_must_be_validated()
+		{
+			_pusher.Trigger(new string[] { "this_one_is_okay", "test_channel\n:" }, eventName, eventData);
+        }
+
+        [Test]
+        [ExpectedException]
+        public void channel_names_must_not_exceed_allowed_length()
+        {
+            var channelName = new String('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
+            TriggerWithChannelName(channelName);
+        }
+
         private void TriggerWithSocketId(string socketId)
         {
             _pusher.Trigger(channelName, eventName, eventData, new TriggerOptions()
             {
                 SocketId = socketId
             });
+        }
+
+        private void TriggerWithChannelName(string channelName)
+        {
+            _pusher.Trigger(channelName, eventName, eventData);
         }
 
         private static bool CheckRequestContainsSocketIdParameter(IRestRequest request, string expectedSocketId) {
