@@ -14,6 +14,7 @@ namespace PusherServer
 
         public AuthenticationData(string appKey, string appSecret, string channelName, string socketId)
         {
+            ValidationHelper.ValidateChannelName(channelName);
             ValidationHelper.ValidateSocketId(socketId);
 
             _appKey = appKey;

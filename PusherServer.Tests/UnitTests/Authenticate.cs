@@ -70,6 +70,46 @@ namespace PusherServer.Tests.UnitTests
             _pusher.Authenticate("private-test", string.Empty);
         }
 
+        [Test]
+        [ExpectedException]
+        public void channel_must_not_have_trailing_colon()
+        {
+            AuthWithChannelName("private-channel:");
+        }
+        [Test]
+        [ExpectedException]
+        public void channel_name_must_not_have_leading_colon()
+        {
+            AuthWithChannelName(":private-channel");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void channel_name_must_not_have_leading_colon_newline()
+        {
+            AuthWithChannelName(":\nprivate-channel");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void channel_name_must_not_have_trailing_colon_newline()
+        {
+            AuthWithChannelName("private-channel\n:");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void channel_names_must_not_exceed_allowed_length()
+        {
+            var channelName = new String('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
+            AuthWithChannelName(channelName);
+        }
+
+        private void AuthWithChannelName(string channelName)
+        {
+            _pusher.Authenticate(channelName, "123.456");
+        }
+
         private string CreateSignedString(string channelName, string socketId)
         {
             // null for presence data
