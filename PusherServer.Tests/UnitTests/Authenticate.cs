@@ -13,12 +13,54 @@ namespace PusherServer.Tests.UnitTests
         public void the_auth_response_is_valid()
         {
             string channelName = "my-channel";
-            string socketId = "some_socket_id";
+            string socketId = "123.456";
 
             string expectedAuthString = Config.AppKey + ":" + CreateSignedString(channelName, socketId);
 
             IAuthenticationData result = _pusher.Authenticate(channelName, socketId);
             Assert.AreEqual(expectedAuthString, result.auth);
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_cannot_contain_colon_prefix()
+        {
+            _pusher.Authenticate("private-test", ":444.444");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_cannot_contain_colon_suffix()
+        {
+            _pusher.Authenticate("private-test", "444.444:");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_cannot_contain_letters_suffix()
+        {
+            _pusher.Authenticate("private-test", "444.444a");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_must_contain_a_period_point()
+        {
+            _pusher.Authenticate("private-test", "444");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_must_not_contain_newline_prefix()
+        {
+            _pusher.Authenticate("private-test", "\n444.444");
+        }
+
+        [Test]
+        [ExpectedException]
+        public void socket_id_must_not_contain_newline_suffix()
+        {
+            _pusher.Authenticate("private-test", "444.444\n");
         }
 
         private string CreateSignedString(string channelName, string socketId)
@@ -51,7 +93,7 @@ namespace PusherServer.Tests.UnitTests
         public void the_auth_response_is_valid()
         {
             string channelName = "my-channel";
-            string socketId = "some_socket_id";
+            string socketId = "123.456";
 
             var serializer = new JsonSerializer();
 
@@ -72,7 +114,7 @@ namespace PusherServer.Tests.UnitTests
         public void channel_data_is_encoded_as_JSON()
         {
             string channelName = "my-channel";
-            string socketId = "some_socket_id";
+            string socketId = "123.456";
 
             var serializer = new JsonSerializer();
 
