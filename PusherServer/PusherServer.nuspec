@@ -10,7 +10,7 @@
     <projectUrl>https://github.com/pusher/pusher-dotnet-server</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The .NET library for interacting with the Pusher HTTP API.
-Register at http://pusher.com and use the application credentials within your app as shown below.</description>
+Register at https://pusher.com and use the application credentials within your app as shown below.</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags>pusher realtime</tags>
