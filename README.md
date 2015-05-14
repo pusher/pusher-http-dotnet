@@ -1,5 +1,7 @@
 # Pusher .NET HTTP API library
 
+[![Build Status](https://travis-ci.org/pusher/pusher-http-dotnet.svg?branch=master)](https://travis-ci.org/pusher/pusher-http-dotnet)
+
 This is a .NET library for interacting with the Pusher HTTP API.
 
 Registering at <http://pusher.com> and use the application credentials within your app as shown below.
@@ -198,9 +200,10 @@ You should be familiar with [creating an publishing NuGet packages](http://docs.
 
 From the `pusher-dotnet-server` directory:
 
-1. Update `pusher-dotnet-server.nuspec` with new version number etc.
-2. Run `package.cmd`
-3. Run `tools/nuget.exe push Download/PusherServer.{VERSION}.nupkg'
+1. Update `PusherServer/Properties/AssemblyInfo.cs` with new version number.
+2. Check and change any info required in `PusherServer/PusherServer.nuspec`.
+3. Run `package.cmd` to pack a package to deploy to NuGet.
+3. Run `tools/nuget.exe push PusherServer.{VERSION}.nupkg'.
 
 ## License
 

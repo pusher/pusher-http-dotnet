@@ -72,6 +72,7 @@
     <Compile Include="TriggerBody.cs" />
     <Compile Include="TriggerOptions.cs" />
     <Compile Include="TriggerResult.cs" />
+    <Compile Include="ValidationHelper.cs" />
     <Compile Include="WebHook.cs" />
     <Compile Include="WebHookData.cs" />
   </ItemGroup>
