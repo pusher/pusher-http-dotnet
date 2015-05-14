@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RestSharp.Serializers;
+﻿using RestSharp.Serializers;
 using System.Runtime.Serialization;
 
 namespace PusherServer
@@ -17,6 +14,9 @@ namespace PusherServer
 
         public AuthenticationData(string appKey, string appSecret, string channelName, string socketId)
         {
+            ValidationHelper.ValidateChannelName(channelName);
+            ValidationHelper.ValidateSocketId(socketId);
+
             _appKey = appKey;
             _appSecret = appSecret;
             _channelName = channelName;

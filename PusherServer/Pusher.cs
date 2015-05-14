@@ -22,6 +22,31 @@ namespace PusherServer
         private IBodySerializer _serializer;
 
         /// <summary>
+        /// Pusher library version information.
+        /// </summary>
+        public static Version VERSION
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly().GetName().Version;
+            }
+        }
+
+        /// <summary>
+        /// The Pusher library name.
+        /// </summary>
+        public static String LIBRARY_NAME
+        {
+            get
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                AssemblyProductAttribute adAttr =
+                    (AssemblyProductAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyProductAttribute));
+                return adAttr.Product;
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Pusher" /> class.
         /// </summary>
         /// <param name="appId">The app id.</param>
@@ -120,7 +145,10 @@ namespace PusherServer
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
         /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options)
-        {   
+        {
+            ValidationHelper.ValidateChannelNames(channelNames);
+            ValidationHelper.ValidateSocketId(options.SocketId);
+
             TriggerBody bodyData = new TriggerBody()
             {
                 name = eventName,
@@ -246,6 +274,9 @@ namespace PusherServer
             request.RequestFormat = DataFormat.Json;
             request.Method = requestType;
             request.AddBody(requestBody);
+
+            request.AddHeader("Pusher-Library-Name", LIBRARY_NAME);
+            request.AddHeader("Pusher-Library-Version", VERSION.ToString(3));
 
             return request;
         }
