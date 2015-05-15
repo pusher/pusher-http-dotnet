@@ -83,5 +83,7 @@ namespace PusherServer
             }
         }
 
+        /// <inheritdoc/>
+        public string HostName { get; set; }
     }
 }

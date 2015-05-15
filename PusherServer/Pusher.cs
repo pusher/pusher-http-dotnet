@@ -161,10 +161,42 @@ namespace PusherServer
                 bodyData.socket_id = options.SocketId;
             }
 
-            IRestResponse response = ExecuteTrigger(channelNames, eventName, bodyData);
+            IRestResponse response = ExecuteTrigger(bodyData);
             TriggerResult result = new TriggerResult(response);
             return result;
         }
+
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelNames"></param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        public void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback)
+        {                                                     
+            TriggerBody bodyData = new TriggerBody()
+            {
+                name = eventName,
+                data = BodySerializer.Serialize(data),
+                channels = channelNames
+            };
+
+            if (string.IsNullOrEmpty(options.SocketId) == false)
+            {
+                bodyData.socket_id = options.SocketId;
+            }
+
+            ExecuteTriggerAsync(bodyData, baseResponse =>
+            {
+                if (callback != null)
+                {
+                    callback(new TriggerResult(baseResponse));
+                }
+            });
+        }
+
         #endregion
 
         #region Authentication
@@ -224,14 +256,22 @@ namespace PusherServer
         }
         #endregion
 
-        private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)
+        private IRestResponse ExecuteTrigger(object requestBody)
         {
            _options.RestClient.BaseUrl = GetBaseUrl(_options);
 
             var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
-
+            
             IRestResponse response = _options.RestClient.Execute(request);
             return response;
+        }
+
+        private void ExecuteTriggerAsync(object requestBody, Action<IRestResponse> callback)
+        {
+            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+
+            var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
+            _options.RestClient.ExecuteAsync(request, callback);
         }
 
         private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody)
@@ -309,8 +349,10 @@ namespace PusherServer
 
         private Uri GetBaseUrl(IPusherOptions _options)
         {
+            string hostName = _options.HostName ?? DEFAULT_REST_API_HOST;
+
             string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
-                DEFAULT_REST_API_HOST +
+                hostName +
                 (_options.Port == 80 ? "" : ":" + _options.Port);
             return new Uri( baseUrl );
         }
