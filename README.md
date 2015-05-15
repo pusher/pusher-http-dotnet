@@ -1,25 +1,19 @@
-# Pusher .NET Server library
+# Pusher .NET HTTP API library
 
-This is a .NET library for interacting with the Pusher REST API.
+[![Build Status](https://travis-ci.org/pusher/pusher-http-dotnet.svg?branch=master)](https://travis-ci.org/pusher/pusher-http-dotnet)
+
+This is a .NET library for interacting with the Pusher HTTP API.
 
 Registering at <http://pusher.com> and use the application credentials within your app as shown below.
 
 Comprehensive documenation can be found at <http://pusher.com/docs/>.
 
-**This is a 2.0.0 BETA version. Version 1.3 with the previous API can be found [here
-](https://github.com/leggetter/pusher-dotnet-server/tree/v1.3.4763).**
-
 ## Installation
 
 ### NuGet Package
 ```
-Install-Package PusherServer -Pre
+Install-Package PusherServer
 ```
-
-### Download
-
-The latest 2.0.0 BETA can be found here:
-<http://cl.ly/3E1a472Z1I30/pusher-dotnet-server-2.0.0-beta.2.zip>
 
 ## How to use
 
@@ -126,10 +120,50 @@ IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
 
+### WebHooks
+
+Pusher will trigger WebHooks based on the settings you have for your application. You can consume these and use them
+within your application as follows.
+
+For more information see <https://pusher.com/docs/webhooks>.
+
+```
+// How you get these depends on the framework you're using
+
+// HTTP_X_PUSHER_SIGNATURE from HTTP Header
+var receivedSignature = "value";
+
+// Body of HTTP request
+var receivedBody = "value;
+
+var pusher = new Pusher(...);
+var webHook = pusher.ProcessWebHook(receivedSignature, receivedBody);
+if(webHook.IsValid)
+{
+  // The WebHook validated
+  // Dictionary<string,string>[]
+  var events = webHook.Events;
+
+  foreach(var webHookEvent in webHook.Events)
+  {
+    var eventType = webHookEvent["name"];
+    var channelName = webHookEvent["channel"];
+
+    // depending on the type of event (eventType)
+    // there may be other values in the Dictionary<string,string>
+  }
+
+}
+else {
+  // Log the validation errors to work out what the problem is
+  // webHook.ValidationErrors
+}
+```
+
 ## Development Notes
 
-* Developed using Visual Studio 2010 or Visual Studio 2012
-* PusherServer acceptance tests presently need the [PusherClient](https://github.com/leggetter/pusher-dotnet-client) DLL. Eventually this will be changed to fetch via NuGet.
+* Developed using Visual Studio Community 2013
+* PusherServer acceptance tests depends on [PusherClient](https://github.com/leggetter/pusher-dotnet-client).
 
 ## Publish to NuGet
 
@@ -137,9 +171,10 @@ You should be familiar with [creating an publishing NuGet packages](http://docs.
 
 From the `pusher-dotnet-server` directory:
 
-1. Update `pusher-dotnet-server.nuspec` with new version number etc.
-2. Run `package.cmd`
-3. Run `tools/nuget.exe push Download/PusherServer.{VERSION}.nupkg'
+1. Update `PusherServer/Properties/AssemblyInfo.cs` with new version number.
+2. Check and change any info required in `PusherServer/PusherServer.nuspec`.
+3. Run `package.cmd` to pack a package to deploy to NuGet.
+3. Run `tools/nuget.exe push PusherServer.{VERSION}.nupkg'.
 
 ## License
 

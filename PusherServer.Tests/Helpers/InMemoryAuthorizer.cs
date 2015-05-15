@@ -21,7 +21,15 @@ namespace PusherServer.Tests.Helpers
 
         public string Authorize(string channelName, string socketId)
         {
-            var auth = _pusher.Authenticate(channelName, socketId, _presenceData);
+            IAuthenticationData auth = null;
+            if (_presenceData != null)
+            {
+                auth = _pusher.Authenticate(channelName, socketId, _presenceData);
+            }
+            else
+            {
+                auth = _pusher.Authenticate(channelName, socketId);
+            }
             return auth.ToJson();
         }
     }

@@ -22,6 +22,31 @@ namespace PusherServer
         private IBodySerializer _serializer;
 
         /// <summary>
+        /// Pusher library version information.
+        /// </summary>
+        public static Version VERSION
+        {
+            get
+            {
+                return Assembly.GetExecutingAssembly().GetName().Version;
+            }
+        }
+
+        /// <summary>
+        /// The Pusher library name.
+        /// </summary>
+        public static String LIBRARY_NAME
+        {
+            get
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                AssemblyProductAttribute adAttr =
+                    (AssemblyProductAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyProductAttribute));
+                return adAttr.Product;
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Pusher" /> class.
         /// </summary>
         /// <param name="appId">The app id.</param>
@@ -120,7 +145,10 @@ namespace PusherServer
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
         /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options)
-        {   
+        {
+            ValidationHelper.ValidateChannelNames(channelNames);
+            ValidationHelper.ValidateSocketId(options.SocketId);
+
             TriggerBody bodyData = new TriggerBody()
             {
                 name = eventName,
@@ -186,14 +214,19 @@ namespace PusherServer
         }
 
         /// <summary>
-        /// Authenticates the specified channel name.
+        /// Authenticates the subscription request for a presence channel.
         /// </summary>
-        /// <param name="channelName">Name of the channel.</param>
-        /// <param name="socketId">The socket id.</param>
-        /// <param name="presenceData">The presence data.</param>
-        /// <returns></returns>
+        /// <param name="channelName">Name of the channel to be authenticated.</param>
+        /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
+        /// <param name="presenceData">Information about the user subscribing to the presence channel.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="presenceData"/> is null</exception>
+        /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
         public IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
         {
+            if(presenceData == null)
+            {
+                throw new ArgumentNullException("presenceData");
+            }
             return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId, presenceData);
         }
         #endregion
@@ -215,6 +248,11 @@ namespace PusherServer
 
             IRestResponse response = _options.RestClient.Execute(request);
             return new GetResult<T>(response);
+        }
+
+        public IWebHook ProcessWebHook(string signature, string body)
+        {
+            return new WebHook(this._appSecret, signature, body);
         }
         #endregion
 
@@ -277,6 +315,9 @@ namespace PusherServer
             request.Method = requestType;
             request.AddBody(requestBody);
 
+            request.AddHeader("Pusher-Library-Name", LIBRARY_NAME);
+            request.AddHeader("Pusher-Library-Version", VERSION.ToString(3));
+
             return request;
         }
 
@@ -306,14 +347,14 @@ namespace PusherServer
             }
         }
 
-        private string GetBaseUrl(IPusherOptions _options)
+        private Uri GetBaseUrl(IPusherOptions _options)
         {
             string hostName = _options.HostName ?? DEFAULT_REST_API_HOST;
 
             string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
                 hostName +
                 (_options.Port == 80 ? "" : ":" + _options.Port);
-            return baseUrl;
+            return new Uri( baseUrl );
         }
 
         

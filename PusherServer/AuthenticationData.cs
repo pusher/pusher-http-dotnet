@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using RestSharp.Serializers;
+﻿using RestSharp.Serializers;
 using System.Runtime.Serialization;
 
 namespace PusherServer
@@ -17,6 +14,9 @@ namespace PusherServer
 
         public AuthenticationData(string appKey, string appSecret, string channelName, string socketId)
         {
+            ValidationHelper.ValidateChannelName(channelName);
+            ValidationHelper.ValidateSocketId(socketId);
+
             _appKey = appKey;
             _appSecret = appSecret;
             _channelName = channelName;
@@ -36,8 +36,11 @@ namespace PusherServer
             {
                 var serializer = new JsonSerializer();
                 var stringToSign = _socketId + ":" + _channelName;
-                var presenceJson = serializer.Serialize(_presenceData);
-                stringToSign += ":" + presenceJson;
+                if (_presenceData != null)
+                {
+                    var presenceJson = serializer.Serialize(_presenceData);
+                    stringToSign += ":" + presenceJson;
+                }
                 
                 return _appKey + ":" + CryptoHelper.GetHmac256(_appSecret, stringToSign);
             }
@@ -46,13 +49,18 @@ namespace PusherServer
         /// <summary>
         /// Double encoded JSON containing presence channel user information.
         /// </summary>
-        [DataMember(Name = "channel_data", IsRequired = false)]
+        [DataMember(Name = "channel_data", IsRequired = false, EmitDefaultValue = false)]
         public string channel_data
         {
             get
             {
-                var serializer = new JsonSerializer();
-                return serializer.Serialize(_presenceData);
+                string json = null;
+                if (_presenceData != null)
+                {
+                    var serializer = new JsonSerializer();
+                    json = serializer.Serialize(_presenceData);
+                }
+                return json;
             }
         }
 

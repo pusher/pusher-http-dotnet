@@ -73,7 +73,8 @@ namespace PusherServer
         /// </summary>
         /// <param name="channelName">Name of the channel to be authenticated.</param>
         /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
-        /// <param name="data">Information about the user subscribing to the presence channel.</param>
+        /// <param name="presenceData">Information about the user subscribing to the presence channel.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="presenceData"/> is null</exception>
         /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
         IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData data);
 
@@ -97,6 +98,14 @@ namespace PusherServer
         /// The result of the GET request
         /// </returns>
         IGetResult<T> Get<T>(string resource, object parameters);
+
+        /// <summary>
+        /// Handle an incoming WebHook and validate it.
+        /// </summary>
+        /// <param name="signature">The signature of the incoming WebHook</param>
+        /// <param name="body">The body of the incoming Webhook request</param>
+        /// <returns>A WebHook helper.</returns>
+        IWebHook ProcessWebHook(string signature, string body);
     }
 
 }
