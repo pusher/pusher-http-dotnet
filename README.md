@@ -33,16 +33,32 @@ To trigger an event on one or more channels use the trigger function.
 var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
 ```
 
+or asynchronously
+
+```cs
+pusher.TriggerAsync( "channel-1", "test_event", new { message = "hello world" }, (ITriggerResult result) => 
+{
+});
+```
+
 #### Multiple channels
 
-```
+```cs
 var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
+```
+
+or asynchronously
+
+```
+pusher.TriggeAsync( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" }, (ITriggerResult result) => 
+{
+});
 ```
 
 #### Event Buffer
 
 Version 3.0.0 of the library introduced support for event buffering. The purpose of this functionality is
-to ensure that events that are triggered during whilst a client is offline for a short period of time will
+to ensure that events that are triggered whilst a client is offline for a short period of time will
 still be delivered upon reconnection.
 
 *Note: this requires your Pusher application to be on a cluster that has the Event Buffer capability*
