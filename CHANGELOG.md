@@ -7,6 +7,7 @@
 * [ADDED]	When triggering events against a Pusher cluster that supports Event Buffer functionality the IDs of the triggered events
 			can be retrieved via `ITriggerResult.EventIds`
 * [ADDED]	The Pusher HTTP API Host can now be set via `PusherOptions.Host`
+* [ADDED]	`TriggerAsync` to allow asynchronous requests to be made to the HTTP API.
 
 ## 2.1.1
 
