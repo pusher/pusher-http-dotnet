@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PusherServer
 {
@@ -59,14 +60,44 @@ namespace PusherServer
         /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
         /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options);
+        
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelName">The name of the channel to trigger the event on</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        void TriggerAsync(string channelName, string eventName, object data, Action<ITriggerResult> callback);
+        
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelName">The name of the channel to trigger the event on</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        void TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
 
-        //void TriggerAsync(string channelName, string eventName object data, Action<IRestResponse, RestRequestAsyncHandle> callback);
-
-        //void TriggerAsync(string channelName, string eventName object data, ITriggerOptions options, Action<IRestResponse, RestRequestAsyncHandle> callback);
-
-        //void TriggerAsync(string[] channelNames, string eventName object data, Action<IRestResponse, RestRequestAsyncHandle> callback);
-
-        //void TriggerAsync(string[] channelNames, string eventName object data, ITriggerOptions options, Action<IRestResponse, RestRequestAsyncHandle> callback);
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelNames">The channels to trigger the event on</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        void TriggerAsync(string[] channelNames, string eventName, object data, Action<ITriggerResult> callback);
+        
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelNames">The channels to trigger the event on</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
 
         #endregion
 

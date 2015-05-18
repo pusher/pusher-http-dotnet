@@ -31,10 +31,46 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
+        public void It_should_return_a_200_response_async()
+        {
+            var waiting = new AutoResetEvent(false);
+
+            ITriggerResult asyncResult = null;
+            _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" }, (ITriggerResult result) =>
+            {
+                asyncResult = result;
+                waiting.Set();
+            });
+
+            waiting.WaitOne(5000);
+
+            Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
+        }
+
+        [Test]
         public void it_should_expose_the_event_id()
         {
             ITriggerResult result = _pusher.Trigger("my-channel", "my_event", new { hello = "world" });
             Assert.IsTrue(string.IsNullOrEmpty(result.EventIds["my-channel"]) == false);
+        }
+
+        [Test]
+        public void it_should_expose_the_event_id_async()
+        {
+            var waiting = new AutoResetEvent(false);
+
+            ITriggerResult asyncResult = null;
+
+            _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" }, (ITriggerResult result) =>
+                {
+                    asyncResult = result;
+
+                    waiting.Set();
+                });
+
+            waiting.WaitOne(5000);
+
+            Assert.IsTrue(string.IsNullOrEmpty(asyncResult.EventIds["my-channel"]) == false);
         }
 
         [Test]
@@ -112,6 +148,29 @@ namespace PusherServer.Tests.AcceptanceTests
             });
             ITriggerResult result = pusher.Trigger(new string[] { "my-channel-1", "my-channel-2" }, "my_event", new { hello = "world" });
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Test]
+        public void It_should_return_a_200_response_async()
+        {
+            var waiting = new AutoResetEvent(false);
+
+            ITriggerResult asyncResult = null;
+
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.Host
+            });
+            pusher.TriggerAsync(new string[] { "my-channel-1", "my-channel-2" }, "my_event", new { hello = "world" }, (ITriggerResult result) =>
+            {
+                asyncResult = result;
+
+                waiting.Set();
+            });
+
+            waiting.WaitOne(5000);
+
+            Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
         }
     }
 

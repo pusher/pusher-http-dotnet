@@ -41,10 +41,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com
-        /// </summary>
-        /// <exception cref="FormatException">If a scheme is found at the start of the host value</exception>
+        /// <inheritdoc/>
         public string HostName
         {
             get

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using RestSharp;
 using RestSharp.Serializers;
-using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Diagnostics;
 
@@ -147,6 +146,46 @@ namespace PusherServer
         /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options)
         {
+            var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
+            IRestResponse response = ExecuteTrigger(bodyData);
+            TriggerResult result = new TriggerResult(response);
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public void TriggerAsync(string channelName, string eventName, object data, Action<ITriggerResult> callback)
+        {
+            TriggerAsync(channelName, eventName, data, new TriggerOptions(), callback);
+        }
+
+        /// <inheritdoc/>
+        public void TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback)
+        {
+            TriggerAsync(new string[] { channelName }, eventName, data, options, callback);
+        }
+
+        /// <inheritdoc/>
+        public void TriggerAsync(string[] channelNames, string eventName, object data, Action<ITriggerResult> callback)
+        {
+            TriggerAsync(channelNames, eventName, data, new TriggerOptions(), callback);
+        }
+
+        /// <inheritdoc/>
+        public void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback)
+        {                                                     
+            var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
+
+            ExecuteTriggerAsync(bodyData, baseResponse =>
+            {
+                if (callback != null)
+                {
+                    callback(new TriggerResult(baseResponse));
+                }
+            });
+        }
+        
+        private TriggerBody CreateTriggerBody(string[] channelNames, string eventName, object data, ITriggerOptions options)
+        {
             ValidationHelper.ValidateChannelNames(channelNames);
             ValidationHelper.ValidateSocketId(options.SocketId);
 
@@ -161,11 +200,10 @@ namespace PusherServer
             {
                 bodyData.socket_id = options.SocketId;
             }
-
-            IRestResponse response = ExecuteTrigger(channelNames, eventName, bodyData);
-            TriggerResult result = new TriggerResult(response);
-            return result;
+            
+            return bodyData;
         }
+
         #endregion
 
         #region Authentication
@@ -225,7 +263,7 @@ namespace PusherServer
         }
         #endregion
 
-        private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)
+        private IRestResponse ExecuteTrigger(object requestBody)
         {
            _options.RestClient.BaseUrl = GetBaseUrl(_options);
 
@@ -247,6 +285,14 @@ namespace PusherServer
                 response.Content));
 
             return response;
+        }
+
+        private void ExecuteTriggerAsync(object requestBody, Action<IRestResponse> callback)
+        {
+            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+
+            var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
+            _options.RestClient.ExecuteAsync(request, callback);
         }
 
         private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody)
