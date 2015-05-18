@@ -18,7 +18,7 @@ namespace PusherServer.Tests.UnitTests
         public void Host_defaults_to_api_pusherapp_com()
         {
             var options = new PusherOptions();
-            Assert.AreEqual("api.pusherapp.com", options.Host);
+            Assert.AreEqual("api.pusherapp.com", options.HostName);
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace PusherServer.Tests.UnitTests
         public void https_scheme_is_not_allowed_when_setting_host()
         {
             var httpsOptions = new PusherOptions();
-            httpsOptions.Host = "https://api.pusherapp.com";
+            httpsOptions.HostName = "https://api.pusherapp.com";
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace PusherServer.Tests.UnitTests
         public void http_scheme_is_not_allowed_when_setting_host()
         {
             var httpsOptions = new PusherOptions();
-            httpsOptions.Host = "http://api.pusherapp.com";
+            httpsOptions.HostName = "http://api.pusherapp.com";
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace PusherServer.Tests.UnitTests
         public void ftp_scheme_is_not_allowed_when_setting_host()
         {
             var httpsOptions = new PusherOptions();
-            httpsOptions.Host = "ftp://api.pusherapp.com";
+            httpsOptions.HostName = "ftp://api.pusherapp.com";
         }
         
         [Test]

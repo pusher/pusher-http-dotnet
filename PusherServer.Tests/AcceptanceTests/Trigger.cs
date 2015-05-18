@@ -19,7 +19,7 @@ namespace PusherServer.Tests.AcceptanceTests
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
-                Host = Config.Host
+                HostName = Config.Host
             });
         }
 
@@ -108,7 +108,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
-                Host = Config.Host
+                HostName = Config.Host
             });
             ITriggerResult result = pusher.Trigger(new string[] { "my-channel-1", "my-channel-2" }, "my_event", new { hello = "world" });
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
@@ -127,7 +127,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions() {
                 Encrypted = true,
-                Host = Config.Host
+                HostName = Config.Host
             });
         }
 

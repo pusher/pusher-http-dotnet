@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using System;
+using RestSharp;
 
 namespace PusherServer
 {
@@ -25,10 +26,11 @@ namespace PusherServer
         }
 
         /// <summary>
-        /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com
+        /// The host of the HTTP API endpoint excluding the scheme. For example, for a dedicated cluster
+        /// named "acme", the value might be "api-acme.pusher.com.
         /// </summary>
         /// <exception cref="FormatException">If a scheme is found at the start of the host value</exception>
-        string Host
+        string HostName
         {
             get;
             set;

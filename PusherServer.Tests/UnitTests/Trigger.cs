@@ -111,7 +111,7 @@ namespace PusherServer.Tests.UnitTests
             {
                 RestClient = _subClient,
                 Encrypted = true,
-                Host = Config.Host
+                HostName = Config.Host
             };
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);

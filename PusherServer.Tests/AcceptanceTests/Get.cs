@@ -19,7 +19,7 @@ namespace PusherServer.Tests.AcceptanceTests
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
-                Host = Config.Host
+                HostName = Config.Host
             });
         }
 

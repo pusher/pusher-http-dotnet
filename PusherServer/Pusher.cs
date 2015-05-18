@@ -325,7 +325,7 @@ namespace PusherServer
         private Uri GetBaseUrl(IPusherOptions _options)
         {
             string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
-                _options.Host +
+                _options.HostName +
                 (_options.Port == 80 ? "" : ":" + _options.Port);
             return new Uri( baseUrl );
         }
