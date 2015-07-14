@@ -60,6 +60,8 @@ namespace PusherServer
         /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
         /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options);
+
+        ITriggerResult Trigger(Event[] events);
         
         /// <summary>
         /// Triggers an event on the specified channels in the background.
@@ -99,6 +101,8 @@ namespace PusherServer
         /// <param name="callback">Method to call when the request has returned.</param>
         void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
 
+        void TriggerAsync(Event[] events, Action<ITriggerResult> callback);
+        
         #endregion
 
         #region Authentication

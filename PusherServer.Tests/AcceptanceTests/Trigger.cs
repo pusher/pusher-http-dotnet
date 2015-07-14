@@ -5,6 +5,7 @@ using System.Threading;
 using NUnit.Framework;
 using System.IO;
 using System.Web.Script.Serialization;
+using RestSharp.Serializers;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
@@ -165,6 +166,71 @@ namespace PusherServer.Tests.AcceptanceTests
             {
                 asyncResult = result;
 
+                waiting.Set();
+            });
+
+            waiting.WaitOne(5000);
+
+            Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
+        }
+    }
+
+    [TestFixture]
+    public class When_Triggering_a_Batch_of_Events
+    {
+        [Test]
+        public void It_should_return_a_200_response()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.Host
+            });
+
+            var events = new Event[] {
+                new Event {
+                    Channel = "my-channel-1",
+                    EventName = "my_event",
+                    Data = new { hello = "world" }
+                },
+                new Event {
+                    Channel = "my-channel-2",
+                    EventName = "my_other_event",
+                    Data = new { hello = "other worlds" }
+                },
+            };
+
+            ITriggerResult result = pusher.Trigger(events);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Test]
+        public void It_should_return_a_200_response_async()
+        {
+            var waiting = new AutoResetEvent(false);
+
+            ITriggerResult asyncResult = null;
+
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.Host
+            });
+
+            var events = new Event[] {
+                new Event {
+                    Channel = "my-channel-1",
+                    EventName = "my_event",
+                    Data = new { hello = "world" }
+                },
+                new Event {
+                    Channel = "my-channel-2",
+                    EventName = "my_other_event",
+                    Data = new { hello = "other worlds" }
+                },
+            };
+
+            pusher.TriggerAsync(events, (ITriggerResult result) =>
+            {
+                asyncResult = result;
                 waiting.Set();
             });
 

@@ -24,6 +24,11 @@ namespace PusherServer
         public static Regex SOCKET_ID_REGEX = new Regex(@"\A\d+\.\d+\z", RegexOptions.Singleline);
 
         /// <summary>
+        /// The maximum event batch size accepted by Pusher
+        /// </summary>
+        public static int MAX_BATCH_SIZE = 100;
+
+        /// <summary>
         /// Validate a socket_id value
         /// </summary>
         /// <param name="socketId">The value to be checked.</param>
@@ -70,6 +75,20 @@ namespace PusherServer
             foreach(string name in channelNames)
             {
                 ValidateChannelName(name);
+            }
+        }
+
+        internal static void ValidateBatchEvents(Event[] events)
+        {
+            if (events.Length > 100)
+            {
+                throw new ArgumentOutOfRangeException(string.Format("Only {0} events permitted per batch, {1} submitted", MAX_BATCH_SIZE, events.Length));
+            }
+
+            foreach (Event e in events)
+            {
+                ValidateChannelName(e.Channel);
+                ValidateSocketId(e.SocketId);
             }
         }
     }
