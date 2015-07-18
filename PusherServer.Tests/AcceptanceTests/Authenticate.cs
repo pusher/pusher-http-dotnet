@@ -12,21 +12,27 @@ namespace PusherServer.Tests.AcceptanceTests
     [TestFixture]
     public class When_authenticating_a_private_subscription
     {
+        Pusher _pusher;
+
         [TestFixtureSetUp]
         public void Setup()
         {
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
+            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                Host = Config.Host
+            }); 
         }
 
         [Test]
         public void the_authentication_token_for_a_private_channel_should_be_accepted_by_Pusher()
         {
-            PusherServer.Pusher pusherServer = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
             PusherClient.Pusher pusherClient =
                 new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions()
                     {
-                        Authorizer = new InMemoryAuthorizer(pusherServer)
+                        Authorizer = new InMemoryAuthorizer(_pusher)
                     });
+            pusherClient.Host = Config.WebSocketHost;
 
             string channelName = "private-channel";
 
@@ -63,18 +69,18 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public void the_authentication_token_for_a_presence_channel_should_be_accepted_by_Pusher()
         {
-            PusherServer.Pusher pusherServer = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
             PusherClient.Pusher pusherClient =
                 new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions()
                 {
                     Authorizer = new InMemoryAuthorizer(
-                        pusherServer,
+                        _pusher,
                         new PresenceChannelData()
                         {
                             user_id = "leggetter",
                             user_info = new { twitter_id = "@leggetter" }
                         })
                 });
+            pusherClient.Host = Config.WebSocketHost;
 
             string channelName = "presence-channel";
 

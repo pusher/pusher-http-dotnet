@@ -19,7 +19,7 @@ Install-Package PusherServer
 
 ### Constructor
 
-```
+```cs
 var Pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET);
 ```
 
@@ -29,7 +29,7 @@ To trigger an event on one or more channels use the trigger function.
 
 #### A single channel
 
-```
+```cs
 var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
 ```
 
@@ -39,11 +39,40 @@ var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello w
 var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
 ```
 
+#### Event Buffer
+
+Version 3.0.0 of the library introduced support for event buffering. The purpose of this functionality is
+to ensure that events that are triggered during whilst a client is offline for a short period of time will
+still be delivered upon reconnection.
+
+*Note: this requires your Pusher application to be on a cluster that has the Event Buffer capability*
+
+As part of this the `trigger` function now returns a set of `event_id` values for each event triggered on a channel.
+These can then be used by the client to tell the Pusher service the last event it has received. If additional events 
+have been triggered after that event ID the service has the opportunity to provide the client with those IDs.
+
+For detailed information please see the [Event Buffer Documentation **TODO**](#).
+
+The event ID values are accessed via a `ITriggerResult` that is returned from the `trigger` call.
+
+```cs
+// Trigger on single channel
+var triggerResult = pusher.Trigger("ch1", "my-event", new {some = "data"});
+var eventId = triggerResult.EventIds["ch1"];
+
+// Trigger on multiple channels
+var channels = new string[]{"ch1", "ch2", "ch3"};
+ITriggerResult multiChannelTriggerResult = pusher.Trigger(channels, "my_event", new { hello = "world" });
+var ch1EventId = multiChannelTriggerResult.EventIds["ch1"];
+var ch2EventId = multiChannelTriggerResult.EventIds["ch2"];
+var ch3EventId = multiChannelTriggerResult.EventIds["ch3"];
+```
+
 ### Excluding event recipients
 
 In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more informaiton see: <http://pusher.com/docs/publisher_api_guide/publisher_excluding_recipients>.
 
-```
+```cs
 var result = pusher.Trigger(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
 ```
 
@@ -64,7 +93,7 @@ For more information see: <http://pusher.com/docs/authenticating_users>
 
 Using presence channels is similar to private channels, but you can specify extra data to identify that particular user:
 
-```
+```cs
 var channelData = new PresenceChannelData() {
 	user_id: "unique_user_id",
 	user_info: new {
@@ -90,13 +119,13 @@ For full details see: <http://pusher.com/docs/rest_api>
 
 You can get a list of channels that are present within your application:
 
-```
+```cs
 IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels");
 ```
 
 You can provide additional parameters to filter the list of channels that is returned.
 
-```
+```cs
 IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels", new { filter_by_prefix = "presence-" } );
 ```
 
@@ -104,7 +133,7 @@ IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels", new { fi
 
 Retrive information about a single channel:
 
-```
+```cs
 IGetResult<object> result = pusher.Get<object>("/channels/my_channel" );
 ```
 
@@ -114,7 +143,7 @@ IGetResult<object> result = pusher.Get<object>("/channels/my_channel" );
 
 Retrive a list of users that are on a presence channel:
 
-```
+```cs
 IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users" );
 ```
 
@@ -127,7 +156,7 @@ within your application as follows.
 
 For more information see <https://pusher.com/docs/webhooks>.
 
-```
+```cs
 // How you get these depends on the framework you're using
 
 // HTTP_X_PUSHER_SIGNATURE from HTTP Header

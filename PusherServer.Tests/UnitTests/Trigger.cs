@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using RestSharp;
 using RestSharp.Serializers;
+using System.Net;
 using System;
 
 namespace PusherServer.Tests.UnitTests
@@ -15,6 +16,21 @@ namespace PusherServer.Tests.UnitTests
         string channelName = "my-channel";
         string eventName = "my_event";
         object eventData = new { hello = "world" };
+
+        private IRestResponse V7_PROTOCOL_SUCCESSFUL_RESPONSE;
+        private IRestResponse V8_PROTOCOL_SUCCESSFUL_RESPONSE;
+
+        [TestFixtureSetUp]
+        public void FixtureSetUp()
+        {
+            V7_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
+            V7_PROTOCOL_SUCCESSFUL_RESPONSE.Content = "{}";
+            V7_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
+
+            V8_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
+            V8_PROTOCOL_SUCCESSFUL_RESPONSE.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
+            V8_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
+        }
 
         [SetUp]
         public void Setup()
@@ -30,6 +46,8 @@ namespace PusherServer.Tests.UnitTests
             Config.AppSecret = "test-app-secret";
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
+
+            _subClient.Execute(Arg.Any<IRestRequest>()).Returns(V8_PROTOCOL_SUCCESSFUL_RESPONSE);
         }
 
         [Test]
@@ -92,7 +110,8 @@ namespace PusherServer.Tests.UnitTests
             IPusherOptions options = new PusherOptions()
             {
                 RestClient = _subClient,
-                Encrypted = true
+                Encrypted = true,
+                Host = Config.Host
             };
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
@@ -215,7 +234,7 @@ namespace PusherServer.Tests.UnitTests
                 Arg.Is<IRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
-            );
+            ).Returns(V7_PROTOCOL_SUCCESSFUL_RESPONSE);
         }
 
         [Test]
