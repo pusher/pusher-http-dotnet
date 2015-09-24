@@ -36,5 +36,17 @@ namespace PusherServer
             get;
             set;
         }
+
+        /// <summary>
+        /// Gets or sets the REST API host that the HTTP calls will be made to.
+        /// </summary>
+        /// <value>
+        /// The port.
+        /// </value>
+        string Host
+        {
+            get;
+            set;
+        }
     }
 }

@@ -13,8 +13,6 @@ namespace PusherServer
     /// </summary>
     public class Pusher : IPusher
     {
-        private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
-
         private string _appId;
         private string _appKey;
         private string _appSecret;
@@ -310,7 +308,7 @@ namespace PusherServer
         private Uri GetBaseUrl(IPusherOptions _options)
         {
             string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
-                DEFAULT_REST_API_HOST +
+                _options.Host +
                 (_options.Port == 80 ? "" : ":" + _options.Port);
             return new Uri( baseUrl );
         }

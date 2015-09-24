@@ -10,11 +10,13 @@ namespace PusherServer
     {
         private static int DEFAULT_HTTPS_PORT = 443;
         private static int DEFAULT_HTTP_PORT = 80;
+        private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
 
         IRestClient _client;
         bool _encrypted = false;
         bool _portModified = false;
         int _port = DEFAULT_HTTP_PORT;
+        string _host = DEFAULT_REST_API_HOST;
 
         /// <summary>
         /// Gets or sets a value indicating whether calls to the Pusher REST API are over HTTP or HTTPS.
@@ -33,7 +35,7 @@ namespace PusherServer
                 _encrypted = value;
                 if (_encrypted && _portModified == false)
                 {
-                    _port = 443;
+                    _port = DEFAULT_HTTPS_PORT;
                 }
             }
         }
@@ -54,6 +56,24 @@ namespace PusherServer
             {
                 _port = value;
                 _portModified = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the REST API host that the HTTP calls will be made to.
+        /// </summary>
+        /// <value>
+        /// The port.
+        /// </value>
+        public string Host
+        {
+            get
+            {
+                return _host;
+            }
+            set
+            {
+                _host = value;
             }
         }
 
