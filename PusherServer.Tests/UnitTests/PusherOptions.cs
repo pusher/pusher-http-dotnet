@@ -35,5 +35,12 @@ namespace PusherServer.Tests.UnitTests
             options.Encrypted = true;
             Assert.AreEqual(90, options.Port);
         }
+
+        [Test]
+        public void Host_defaults_to_api_pusherapp_com()
+        {
+            var options = new PusherOptions();
+            Assert.AreEqual("api.pusherapp.com", options.Host);
+        }
     }
 }
