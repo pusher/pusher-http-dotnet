@@ -3,6 +3,9 @@ using RestSharp;
 
 namespace PusherServer
 {
+    /// <summary>
+    /// Interface for Pusher Options
+    /// </summary>
     public interface IPusherOptions
     {
         /// <summary>
@@ -35,7 +38,6 @@ namespace PusherServer
             get;
             set;
         }
-
         /// <summary>
         /// Gets or sets the REST API port that the HTTP calls will be made to.
         /// </summary>

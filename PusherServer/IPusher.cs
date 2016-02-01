@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace PusherServer
 {
     /// <summary>
-    /// Provides access to functionality within the Pusher service such as <see cref="Trigger"/> to trigger events
+    /// Provides access to functionality within the Pusher service such as Trigger to trigger events
     /// and authenticating subscription requests to private and presence channels.
     /// </summary>
     public interface IPusher
@@ -51,7 +50,7 @@ namespace PusherServer
         /// <summary>
         /// Triggers an event on the specified channels.
         /// </summary>
-        /// <param name="channelName">The name of the channels the event should be triggered on.</param>
+        /// <param name="channelNames">The name of the channels the event should be triggered on.</param>
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions"/>.</param>
@@ -120,15 +119,15 @@ namespace PusherServer
         /// </summary>
         /// <param name="channelName">Name of the channel to be authenticated.</param>
         /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
-        /// <param name="presenceData">Information about the user subscribing to the presence channel.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="presenceData"/> is null</exception>
+        /// <param name="data">Information about the user subscribing to the presence channel.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="data"/> is null</exception>
         /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
         IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData data);
 
         #endregion
 
         /// <summary>
-        /// Makes a GET request to the specified resource. Authentication is handled as part of the call. The data returned from the request is deserizlized to the object type defined by <paramref name="T"/>.
+        /// Makes a GET request to the specified resource. Authentication is handled as part of the call. The data returned from the request is deserizlized to the object type defined by <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="resource">The resource.</param>
@@ -136,7 +135,7 @@ namespace PusherServer
         IGetResult<T> Get<T>(string resource);
 
         /// <summary>
-        /// Makes a GET request to the specified resource. Authentication is handled as part of the call. The data returned from the request is deserizlized to the object type defined by <paramref name="T" />.
+        /// Makes a GET request to the specified resource. Authentication is handled as part of the call. The data returned from the request is deserizlized to the object type defined by <typeparamref name="T" />.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="resource">The resource.</param>

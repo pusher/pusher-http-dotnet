@@ -7,12 +7,20 @@ namespace PusherServer
     /*
     {"channels":{"test_channel":{}}}
     */
-    
+
+    /// <summary>
+    /// A list of Channels received from the Pusher Server
+    /// </summary>
     [DataContract]
     public class ChannelsList
     {
         private Dictionary<string, Dictionary<string, string>> _channelsInfo = null;
 
+        /// <summary>
+        /// Gets or sets the Channel Info for a given Channel Name
+        /// </summary>
+        /// <param name="channelName"></param>
+        /// <returns>A string representing the Channel Info</returns>
         public Dictionary<string, string> this[string channelName]
         {
             get
@@ -25,6 +33,9 @@ namespace PusherServer
             }
         }
 
+        /// <summary>
+        /// Gets or sets all the Channel Info
+        /// </summary>
         [DataMember(Name = "channels")]
         public Dictionary<string, Dictionary<string, string>> Channels
         {
