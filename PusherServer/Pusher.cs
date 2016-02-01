@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using RestSharp;
 using RestSharp.Serializers;
-using System.Text.RegularExpressions;
 using System.Reflection;
 
 namespace PusherServer
 {
     /// <summary>
-    /// Provides access to functionality within the Pusher service such as <see cref="Trigger"/> to trigger events
+    /// Provides access to functionality within the Pusher service such as Trigger to trigger events
     /// and authenticating subscription requests to private and presence channels.
     /// </summary>
     public class Pusher : IPusher
@@ -201,6 +200,12 @@ namespace PusherServer
 
         #region Get
 
+        /// <summary>
+        /// Using the provided response, interrogates the Pusher API
+        /// </summary>
+        /// <typeparam name="T">The type of object to get</typeparam>
+        /// <param name="resource">The name of the resource to get</param>
+        /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource)
         {
             _options.RestClient.BaseUrl = GetBaseUrl(_options);
@@ -208,6 +213,13 @@ namespace PusherServer
             return Get<T>(resource, null);
         }
 
+        /// <summary>
+        /// Using the provided response, interrogates the Pusher API
+        /// </summary>
+        /// <typeparam name="T">The type of object to get</typeparam>
+        /// <param name="resource">The name of the resource to get</param>
+        /// <param name="parameters">Any additional parameters required for the Get</param>
+        /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource, object parameters)
         {
             _options.RestClient.BaseUrl = GetBaseUrl(_options);
@@ -218,6 +230,12 @@ namespace PusherServer
             return new GetResult<T>(response);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="WebHook"/> using the application secret
+        /// </summary>
+        /// <param name="signature">The signature to use during creation</param>
+        /// <param name="body">A JSON string representing the data to use in the Web Hook</param>
+        /// <returns>A populated Web Hook</returns>
         public IWebHook ProcessWebHook(string signature, string body)
         {
             return new WebHook(this._appSecret, signature, body);
