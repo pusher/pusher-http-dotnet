@@ -1,7 +1,8 @@
-﻿using System.Net;
-
-namespace PusherServer
+﻿namespace PusherServer
 {
+    /// <summary>
+    /// Interface for Trigger Request Results
+    /// </summary>
     public interface ITriggerResult: IRequestResult
     {
     }
