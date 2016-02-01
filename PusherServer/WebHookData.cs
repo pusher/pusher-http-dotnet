@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace PusherServer
 {
+    /// <summary>
+    /// Represents the Data payload of a Web Hook
+    /// </summary>
     public class WebHookData
     {
         private DateTime _time;
 
+        /// <summary>
+        /// Gets or sets the Time the Web Hook was created in Milliseconds
+        /// </summary>
         public string time_ms
         {
             get
@@ -22,7 +26,14 @@ namespace PusherServer
                 _time = DateTimeFromUnixTimestampMillis(unixTimeStamp);
             }
         }
+        /// <summary>
+        /// Gets or sets the Events being triggered
+        /// </summary>
         public Dictionary<string, string>[] events { get; set; }
+
+        /// <summary>
+        /// Gets the Time the Web Hook was created
+        /// </summary>
         public DateTime Time
         {
             get
