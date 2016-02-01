@@ -7,14 +7,14 @@ namespace PusherServer
 {
     internal class WebHook: IWebHook
     {
-        private WebHookData _webHookData;
-        private List<string> _validationErrors;
+        private readonly WebHookData _webHookData;
+        private readonly List<string> _validationErrors;
 
         internal WebHook(string secret, string signature, string body)
         {
             if(string.IsNullOrEmpty(secret))
             {
-                throw new ArgumentException("A secret must be provided", "secret");
+                throw new ArgumentException("A secret must be provided", nameof(secret));
             }
 
             this._validationErrors = new List<string>();
