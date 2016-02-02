@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using System;
+using RestSharp;
 
 namespace PusherServer
 {
@@ -21,11 +22,7 @@ namespace PusherServer
         /// <value>
         ///   <c>true</c> if encrypted; otherwise, <c>false</c>.
         /// </value>
-        bool Encrypted
-        {
-            get;
-            set;
-        }
+        bool Encrypted { get; set; }
 
         /// <summary>
         /// Gets or sets the REST API port that the HTTP calls will be made to.
@@ -33,10 +30,12 @@ namespace PusherServer
         /// <value>
         /// The port.
         /// </value>
-        int Port
-        {
-            get;
-            set;
-        }
+        int Port { get; set; }
+
+        /// <summary>
+        /// Gets the base Url based on the set Options
+        /// </summary>
+        /// <returns></returns>
+        Uri GetBaseUrl();
     }
 }
