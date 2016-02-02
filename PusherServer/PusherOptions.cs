@@ -1,6 +1,6 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Text.RegularExpressions;
+using RestSharp;
 
 namespace PusherServer
 {
@@ -9,6 +9,11 @@ namespace PusherServer
     /// </summary>
     public class PusherOptions: IPusherOptions
     {
+        /// <summary>
+        /// The default Rest API Host for contacting the Pusher server, it does not contain a cluster name
+        /// </summary>
+        public const string DEFAULT_REST_API_HOST = "api.pusherapp.com";
+
         private static int DEFAULT_HTTPS_PORT = 443;
         private static int DEFAULT_HTTP_PORT = 80;
         private static string DEFAULT_HTTP_HOST_NAME = "api.pusherapp.com";
@@ -17,7 +22,7 @@ namespace PusherServer
         bool _encrypted = false;
         bool _portModified = false;
         int _port = DEFAULT_HTTP_PORT;
-        string _host = DEFAULT_HTTP_HOST_NAME;
+        string _hostName = null;
 
         /// <summary>
         /// Gets or sets a value indicating whether calls to the Pusher REST API are over HTTP or HTTPS.
@@ -38,24 +43,6 @@ namespace PusherServer
                 {
                     _port = DEFAULT_HTTPS_PORT;
                 }
-            }
-        }
-
-        /// <inheritdoc/>
-        public string HostName
-        {
-            get
-            {
-                return _host;
-            }
-            set
-            {
-                if(Regex.IsMatch(value, "^.*://"))
-                {
-                    string msg = string.Format("The scheme should not be present in the host value: {0}", value);
-                    throw new FormatException(msg);
-                }
-                _host = value;
             }
         }
 
@@ -90,8 +77,9 @@ namespace PusherServer
             {
                 if (_client == null)
                 {
-                    _client = new RestClient();
+                    _client = new RestClient(GetBaseUrl());
                 }
+
                 return _client;
             }
             set
@@ -100,9 +88,48 @@ namespace PusherServer
                 {
                     throw new ArgumentNullException("RestClient cannot be null");
                 }
+
                 _client = value;
             }
         }
 
+        /// <inheritdoc/>
+        public string HostName
+        {
+            get { return _hostName ?? DEFAULT_REST_API_HOST; }
+            set
+            {
+                if(Regex.IsMatch(value, "^.*://"))
+                {
+                    string msg = string.Format("The scheme should not be present in the host value: {0}", value);
+                    throw new FormatException(msg);
+                }
+
+                _hostName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the base Url based on the set Options
+        /// </summary>
+        /// <returns></returns>
+        public Uri GetBaseUrl()
+        {
+            string baseUrl = (Encrypted ? "https" : "http") + "://" + HostName + GetPort();
+
+            return new Uri(baseUrl);
+        }
+
+        private string GetPort()
+        {
+            var port = string.Empty;
+
+            if (Port != DEFAULT_HTTP_PORT)
+            {
+                port += (":" + Port);
+            }
+
+            return port;
+        }
     }
 }

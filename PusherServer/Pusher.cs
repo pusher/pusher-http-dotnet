@@ -13,12 +13,10 @@ namespace PusherServer
     /// </summary>
     public class Pusher : IPusher
     {
-        
-
-        private string _appId;
-        private string _appKey;
-        private string _appSecret;
-        private IPusherOptions _options;
+        private readonly string _appId;
+        private readonly string _appKey;
+        private readonly string _appSecret;
+        private readonly IPusherOptions _options;
         private IBodySerializer _serializer;
 
         /// <summary>
@@ -55,8 +53,7 @@ namespace PusherServer
         public Pusher(string appId, string appKey, string appSecret):
             this(appId, appKey, appSecret, null)
 
-        {
-        }
+        {}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pusher" /> class.
@@ -89,10 +86,7 @@ namespace PusherServer
         /// </summary>
         public IBodySerializer BodySerializer
         {
-            get
-            {
-                return _serializer;
-            }
+            get { return _serializer; }
             set { _serializer = value ?? new DefaultJsonBodySerializer(); }
         }
 
@@ -287,7 +281,7 @@ namespace PusherServer
         /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource)
         {
-            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
             return Get<T>(resource, null);
         }
@@ -301,7 +295,7 @@ namespace PusherServer
         /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource, object parameters)
         {
-            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
             var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
 
@@ -323,7 +317,7 @@ namespace PusherServer
 
         private IRestResponse ExecuteTrigger(string path, object requestBody)
         {
-           _options.RestClient.BaseUrl = GetBaseUrl(_options);
+           _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
 
@@ -425,15 +419,5 @@ namespace PusherServer
                 throw new ArgumentException(string.Format("{0} cannot be null or empty", argumentName));
             }
         }
-
-        private Uri GetBaseUrl(IPusherOptions _options)
-        {
-            string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
-                _options.HostName +
-                (_options.Port == 80 ? "" : ":" + _options.Port);
-            return new Uri( baseUrl );
-        }
-
-        
     }
 }

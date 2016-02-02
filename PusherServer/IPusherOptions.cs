@@ -22,11 +22,7 @@ namespace PusherServer
         /// <value>
         ///   <c>true</c> if encrypted; otherwise, <c>false</c>.
         /// </value>
-        bool Encrypted
-        {
-            get;
-            set;
-        }
+        bool Encrypted { get; set; }
 
         /// <summary>
         /// The host of the HTTP API endpoint excluding the scheme. For example, for a dedicated cluster
@@ -44,11 +40,12 @@ namespace PusherServer
         /// <value>
         /// The port.
         /// </value>
-        int Port
-        {
-            get;
-            set;
-        }
-                
+        int Port { get; set; }
+
+        /// <summary>
+        /// Gets the base Url based on the set Options
+        /// </summary>
+        /// <returns>The constructed Url</returns>
+        Uri GetBaseUrl();
     }
 }
