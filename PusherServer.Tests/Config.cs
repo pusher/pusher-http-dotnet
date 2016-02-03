@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 
 namespace PusherServer.Tests
 {
@@ -7,9 +8,9 @@ namespace PusherServer.Tests
         private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
         private static string DEFAULT_WEBSOCKET_API_HOST = "ws.pusherapp.com";
 
-        private static string appId = ConfigurationManager.AppSettings.Get("pusher-app-id");
-        private static string appKey = ConfigurationManager.AppSettings.Get("pusher-app-key");
-        private static string appSecret = ConfigurationManager.AppSettings.Get("pusher-app-secret");
+        private static string appId = Environment.GetEnvironmentVariable("PUSHER_APP_ID");
+        private static string appKey = Environment.GetEnvironmentVariable("PUSHER_APP_KEY");
+        private static string appSecret = Environment.GetEnvironmentVariable("PUSHER_APP_SECRET");
         private static string host = ConfigurationManager.AppSettings.Get("pusher-http-host") ?? DEFAULT_REST_API_HOST;
         private static string wshost = ConfigurationManager.AppSettings.Get("pusher-websocket-host") ?? DEFAULT_WEBSOCKET_API_HOST;
 
