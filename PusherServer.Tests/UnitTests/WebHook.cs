@@ -73,7 +73,7 @@ namespace PusherServer.Tests.UnitTests
                 caughtException = ex;
             }
 
-            StringAssert.IsMatch("A secret must be provided\r\nParameter name: secret", caughtException.Message);
+            StringAssert.IsMatch("A secret must be provided" + Environment.NewLine + "Parameter name: secret", caughtException.Message);
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace PusherServer.Tests.UnitTests
                 caughtException = ex;
             }
 
-            StringAssert.IsMatch("A secret must be provided\r\nParameter name: secret", caughtException.Message);
+            StringAssert.IsMatch("A secret must be provided" + Environment.NewLine + "Parameter name: secret", caughtException.Message);
         }
 
         [Test]
