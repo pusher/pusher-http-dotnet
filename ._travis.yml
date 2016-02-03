@@ -1,3 +1,6 @@
 ---
 language: csharp
 solution: pusher-dotnet-server.sln
+script:
+  - xbuild /p:Configuration=Release pusher-dotnet-server.sln
+  - mono ./testrunner/NUnit.Runners.*/tools/nunit-console.exe ./PusherServer.Tests/bin/Release/PusherServer.Tests.dll
