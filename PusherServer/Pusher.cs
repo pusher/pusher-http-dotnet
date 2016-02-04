@@ -14,6 +14,7 @@ namespace PusherServer
     {
         private const string ChannelUsersResource = "/channels/{0}/users";
         private const string ChannelResource = "/channels/{0}";
+        private const string MultipleChannelsResource = "/channels";
 
         private readonly string _appId;
         private readonly string _appKey;
@@ -252,6 +253,15 @@ namespace PusherServer
         public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
         {
             var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response);
+        }
+
+        public IGetResult<T> FetchStateForChannels<T>(object info)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
 
             var response = _options.RestClient.Execute(request);
 
