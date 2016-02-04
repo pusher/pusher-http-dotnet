@@ -12,6 +12,8 @@ namespace PusherServer
     /// </summary>
     public class Pusher : IPusher
     {
+        private const string ChannelResource = "/channels/{0}/users";
+
         private readonly string _appId;
         private readonly string _appKey;
         private readonly string _appSecret;
@@ -234,6 +236,17 @@ namespace PusherServer
         {
             return new WebHook(this._appSecret, signature, body);
         }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchUsersFromPrecenceChannel<T>(string channelName)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), null, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response);
+        }
+
         #endregion
 
         private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)

@@ -106,6 +106,14 @@ namespace PusherServer
         /// <param name="body">The body of the incoming Webhook request</param>
         /// <returns>A WebHook helper.</returns>
         IWebHook ProcessWebHook(string signature, string body);
+
+        /// <summary>
+        /// Queries the Pusher API for the Users of a Presence Channel
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="channelName">The name of the channel to query</param>
+        /// <returns>The result of the API query</returns>
+        IGetResult<T> FetchUsersFromPrecenceChannel<T>(string channelName);
     }
 
 }
