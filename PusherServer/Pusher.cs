@@ -275,8 +275,6 @@ namespace PusherServer
         /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource)
         {
-            _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             return Get<T>(resource, null);
         }
 
@@ -289,8 +287,6 @@ namespace PusherServer
         /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource, object parameters)
         {
-            _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
 
             IRestResponse response = _options.RestClient.Execute(request);
@@ -342,7 +338,6 @@ namespace PusherServer
         private IRestResponse ExecuteTrigger(string path, object requestBody)
         {
             _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
 
             Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
