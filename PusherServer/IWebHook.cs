@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace PusherServer
 {
+    /// <summary>
+    /// Interface for Web Hooks
+    /// </summary>
     public interface IWebHook
     {
         /// <summary>

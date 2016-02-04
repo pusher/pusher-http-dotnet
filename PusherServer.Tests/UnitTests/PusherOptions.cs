@@ -35,5 +35,41 @@ namespace PusherServer.Tests.UnitTests
             options.Encrypted = true;
             Assert.AreEqual(90, options.Port);
         }
+
+        [Test]
+        public void the_default_options_should_be_used_to_create_the_base_url_when_no_settings_are_changed()
+        {
+            var options = new PusherOptions();
+
+            StringAssert.IsMatch("http://api.pusherapp.com", options.GetBaseUrl().AbsoluteUri);
+        }
+
+        [Test]
+        public void the_default_encrypted_options_should_be_used_to_create_the_base_url_when_encrypted_is_true()
+        {
+            var options = new PusherOptions();
+            options.Encrypted = true;
+
+            StringAssert.IsMatch("https://api.pusherapp.com", options.GetBaseUrl().AbsoluteUri);
+        }
+
+        [Test]
+        public void the_new_port_should_be_used_to_create_the_base_url()
+        {
+            var options = new PusherOptions();
+            options.Port = 100;
+
+            StringAssert.IsMatch("http://api.pusherapp.com:100", options.GetBaseUrl().AbsoluteUri);
+        }
+
+        [Test]
+        public void the_new_port_should_be_used_to_create_the_base_url_when_its_encrypted()
+        {
+            var options = new PusherOptions();
+            options.Encrypted = true;
+            options.Port = 100;
+
+            StringAssert.IsMatch("https://api.pusherapp.com:100", options.GetBaseUrl().AbsoluteUri);
+        }
     }
 }

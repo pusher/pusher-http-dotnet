@@ -22,6 +22,7 @@ namespace PusherServer.Tests.UnitTests
         public void the_WebHook_will_be_valid_if_all_params_are_as_expected()
         {
             var webHook = new WebHook(secret, validSignature, validBody);
+
             Assert.IsTrue(webHook.IsValid);
         }
 
@@ -29,6 +30,7 @@ namespace PusherServer.Tests.UnitTests
         public void the_event_name_can_be_retrieved_from_the_WebHook()
         {
             var webHook = new WebHook(secret, validSignature, validBody);
+
             Assert.AreEqual("channel_occupied", webHook.Events[0]["name"]);
         }
 
@@ -36,6 +38,7 @@ namespace PusherServer.Tests.UnitTests
         public void the_channel_name_can_be_retrieved_from_the_WebHook()
         {
             var webHook = new WebHook(secret, validSignature, validBody);
+
             Assert.AreEqual("test_channel", webHook.Events[0]["channel"]);
         }
 
@@ -57,45 +60,92 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void the_WebHook_will_throw_exception_if_secret_is_null()
         {
-            var webHook = new WebHook(null, validSignature, validBody);
+            ArgumentException caughtException = null;
+
+            try
+            {
+                var webHook = new WebHook(null, validSignature, validBody);
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("A secret must be provided" + Environment.NewLine + "Parameter name: secret", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void the_WebHook_will_throw_exception_if_secret_is_empty()
         {
-            var webHook = new WebHook(string.Empty, validSignature, validBody);
+            ArgumentException caughtException = null;
+
+            try
+            {
+                var webHook = new WebHook(string.Empty, validSignature, validBody);
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("A secret must be provided" + Environment.NewLine + "Parameter name: secret", caughtException.Message);
         }
 
         [Test]
         public void the_WebHook_will_be_invalid_if_they_signature_is_null()
         {
             var webHook = new WebHook(secret, null, validBody);
+
             Assert.IsFalse(webHook.IsValid);
+            Assert.AreEqual(2, webHook.ValidationErrors.Length);
+            StringAssert.IsMatch(@"The supplied signature to check was null or empty\. A signature to check must be provided\.", webHook.ValidationErrors[0]);
+            StringAssert.IsMatch(@"The signature did not validate\. Expected \. Got 003a63ce4da20830c4fecffb63d5b3944b64989b6458e15b26e08e244f758954", webHook.ValidationErrors[1]);
         }
 
         [Test]
         public void the_WebHook_will_be_invalid_if_they_signature_is_empty()
         {
             var webHook = new WebHook(secret, string.Empty, validBody);
+
             Assert.IsFalse(webHook.IsValid);
+            Assert.AreEqual(2, webHook.ValidationErrors.Length);
+            StringAssert.IsMatch(@"The supplied signature to check was null or empty\. A signature to check must be provided\.", webHook.ValidationErrors[0]);
+            StringAssert.IsMatch(@"The signature did not validate\. Expected \. Got 003a63ce4da20830c4fecffb63d5b3944b64989b6458e15b26e08e244f758954", webHook.ValidationErrors[1]);
         }
 
         [Test]
         public void the_WebHook_will_be_invalid_if_they_body_is_null()
         {
             var webHook = new WebHook(secret, validSignature, null);
+
             Assert.IsFalse(webHook.IsValid);
+            Assert.AreEqual(1, webHook.ValidationErrors.Length);
+            StringAssert.IsMatch(@"The supplied body to check was null or empty\. A body to check must be provided\.", webHook.ValidationErrors[0]);
         }
 
         [Test]
         public void the_WebHook_will_be_invalid_if_they_body_is_empty()
         {
             var webHook = new WebHook(secret, validSignature, string.Empty);
+
             Assert.IsFalse(webHook.IsValid);
+            Assert.AreEqual(1, webHook.ValidationErrors.Length);
+            StringAssert.IsMatch(@"The supplied body to check was null or empty\. A body to check must be provided\.", webHook.ValidationErrors[0]);
+        }
+
+        [Test]
+        public void the_WebHook_will_not_be_valid_when_given_invalid_JSON_for_the_body()
+        {
+            var secret = "1c9c753dddfd049dd7f1";
+            var body = "{Invalid JSON}";
+            var expectedSignature = GenerateValidSignature(secret, body);
+
+            var webHook = new WebHook(secret, expectedSignature, body);
+
+            Assert.IsFalse(webHook.IsValid);
+            StringAssert.IsMatch("Exception occurred parsing the body as JSON: .*", webHook.ValidationErrors[0]);
         }
 
         [Test]
@@ -121,6 +171,5 @@ namespace PusherServer.Tests.UnitTests
             var webHook = new WebHook(secret, expectedSignature, body);
             Assert.AreEqual(expectedDate, webHook.Time);
         }
-
     }
 }

@@ -2,23 +2,20 @@
 using System.Collections.Generic;
 using RestSharp;
 using RestSharp.Serializers;
-using System.Text.RegularExpressions;
 using System.Reflection;
 
 namespace PusherServer
 {
     /// <summary>
-    /// Provides access to functionality within the Pusher service such as <see cref="Trigger"/> to trigger events
+    /// Provides access to functionality within the Pusher service such as Trigger to trigger events
     /// and authenticating subscription requests to private and presence channels.
     /// </summary>
     public class Pusher : IPusher
     {
-        private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
-
-        private string _appId;
-        private string _appKey;
-        private string _appSecret;
-        private IPusherOptions _options;
+        private readonly string _appId;
+        private readonly string _appKey;
+        private readonly string _appSecret;
+        private readonly IPusherOptions _options;
         private IBodySerializer _serializer;
 
         /// <summary>
@@ -55,8 +52,7 @@ namespace PusherServer
         public Pusher(string appId, string appKey, string appSecret):
             this(appId, appKey, appSecret, null)
 
-        {
-        }
+        {}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pusher" /> class.
@@ -89,10 +85,7 @@ namespace PusherServer
         /// </summary>
         public IBodySerializer BodySerializer
         {
-            get
-            {
-                return _serializer;
-            }
+            get { return _serializer; }
             set { _serializer = value ?? new DefaultJsonBodySerializer(); }
         }
 
@@ -201,16 +194,29 @@ namespace PusherServer
 
         #region Get
 
+        /// <summary>
+        /// Using the provided response, interrogates the Pusher API
+        /// </summary>
+        /// <typeparam name="T">The type of object to get</typeparam>
+        /// <param name="resource">The name of the resource to get</param>
+        /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource)
         {
-            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
             return Get<T>(resource, null);
         }
 
+        /// <summary>
+        /// Using the provided response, interrogates the Pusher API
+        /// </summary>
+        /// <typeparam name="T">The type of object to get</typeparam>
+        /// <param name="resource">The name of the resource to get</param>
+        /// <param name="parameters">Any additional parameters required for the Get</param>
+        /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource, object parameters)
         {
-            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
             var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
 
@@ -218,6 +224,12 @@ namespace PusherServer
             return new GetResult<T>(response);
         }
 
+        /// <summary>
+        /// Creates a new <see cref="WebHook"/> using the application secret
+        /// </summary>
+        /// <param name="signature">The signature to use during creation</param>
+        /// <param name="body">A JSON string representing the data to use in the Web Hook</param>
+        /// <returns>A populated Web Hook</returns>
         public IWebHook ProcessWebHook(string signature, string body)
         {
             return new WebHook(this._appSecret, signature, body);
@@ -226,7 +238,7 @@ namespace PusherServer
 
         private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)
         {
-           _options.RestClient.BaseUrl = GetBaseUrl(_options);
+           _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
             var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
 
@@ -306,15 +318,5 @@ namespace PusherServer
                 throw new ArgumentException(string.Format("{0} cannot be null or empty", argumentName));
             }
         }
-
-        private Uri GetBaseUrl(IPusherOptions _options)
-        {
-            string baseUrl = (_options.Encrypted ? "https" : "http") + "://" +
-                DEFAULT_REST_API_HOST +
-                (_options.Port == 80 ? "" : ":" + _options.Port);
-            return new Uri( baseUrl );
-        }
-
-        
     }
 }
