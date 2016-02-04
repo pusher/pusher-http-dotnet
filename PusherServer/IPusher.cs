@@ -60,6 +60,14 @@ namespace PusherServer
         /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options);
 
+        /// <summary>
+        /// Triggers a batch of events on the specified channels.
+        /// </summary>
+        /// <param name="events">The events to be triggered</param>
+        /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(Event[] events);
         
         /// <summary>
@@ -100,6 +108,11 @@ namespace PusherServer
         /// <param name="callback">Method to call when the request has returned.</param>
         void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
 
+        /// <summary>
+        /// Triggers a batch of events asynchronously.
+        /// </summary>
+        /// <param name="events">The events to trigger</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
         void TriggerAsync(Event[] events, Action<ITriggerResult> callback);
         
         #endregion

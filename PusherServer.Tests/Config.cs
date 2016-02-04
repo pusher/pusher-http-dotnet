@@ -5,35 +5,60 @@ namespace PusherServer.Tests
 {
     internal static class Config
     {
-        private static string DEFAULT_REST_API_HOST = "api.pusherapp.com";
-        private static string DEFAULT_WEBSOCKET_API_HOST = "ws.pusherapp.com";
-
         private const string PUSHER_APP_ID = "PUSHER_APP_ID";
         private const string PUSHER_APP_KEY = "PUSHER_APP_KEY";
         private const string PUSHER_APP_SECRET = "PUSHER_APP_SECRET";
+        private const string PUSHER_APP_WEB_SOCKET_HOST = "PUSHER_APP_WEB_SOCKET_HOST";
+        private const string PUSHER_APP_HOST = "PUSHER_APP_HOST";
 
-        private static string appId;
-        private static string appKey;
-        private static string appSecret;
+        private static string _appId;
+        private static string _appKey;
+        private static string _appSecret;
+        private static string _wsHost;
+        private static string _host;
 
         static Config()
         {
-            appId = Environment.GetEnvironmentVariable(PUSHER_APP_ID);
-            if (string.IsNullOrEmpty(appId))
+            _appId = Environment.GetEnvironmentVariable(PUSHER_APP_ID);
+            if (string.IsNullOrEmpty(_appId))
             {
-                appId = ConfigurationManager.AppSettings.Get(PUSHER_APP_ID);
+                _appId = ConfigurationManager.AppSettings.Get(PUSHER_APP_ID);
             }
 
-            appKey = Environment.GetEnvironmentVariable(PUSHER_APP_KEY);
-            if (string.IsNullOrEmpty(appKey))
+            _appKey = Environment.GetEnvironmentVariable(PUSHER_APP_KEY);
+            if (string.IsNullOrEmpty(_appKey))
             {
-                appKey = ConfigurationManager.AppSettings.Get(PUSHER_APP_KEY);
+                _appKey = ConfigurationManager.AppSettings.Get(PUSHER_APP_KEY);
             }
 
-            appSecret = Environment.GetEnvironmentVariable(PUSHER_APP_SECRET);
-            if (string.IsNullOrEmpty(appSecret))
+            _appSecret = Environment.GetEnvironmentVariable(PUSHER_APP_SECRET);
+            if (string.IsNullOrEmpty(_appSecret))
             {
-                appSecret = ConfigurationManager.AppSettings.Get(PUSHER_APP_SECRET);
+                _appSecret = ConfigurationManager.AppSettings.Get(PUSHER_APP_SECRET);
+            }
+
+            _wsHost = Environment.GetEnvironmentVariable(PUSHER_APP_WEB_SOCKET_HOST);
+            if (string.IsNullOrEmpty(_wsHost))
+            {
+                _wsHost = ConfigurationManager.AppSettings.Get(PUSHER_APP_WEB_SOCKET_HOST);
+            }
+
+            _host = Environment.GetEnvironmentVariable(PUSHER_APP_HOST);
+            if (string.IsNullOrEmpty(_host))
+            {
+                _host = ConfigurationManager.AppSettings.Get(PUSHER_APP_HOST);
+            }
+        }
+
+        public static string Host
+        {
+            get
+            {
+                return _host;
+            }
+            set
+            {
+                _host = value;
             }
         }
 
@@ -41,11 +66,11 @@ namespace PusherServer.Tests
         {
             get
             {
-                return appId;
+                return _appId;
             }
             set
             {
-                appId = value;
+                _appId = value;
             }
         }
 
@@ -53,11 +78,11 @@ namespace PusherServer.Tests
         {
             get
             {
-                return appKey;
+                return _appKey;
             }
             set
             {
-                appKey = value;
+                _appKey = value;
             }
         }
 
@@ -65,11 +90,11 @@ namespace PusherServer.Tests
         {
             get
             {
-                return appSecret;
+                return _appSecret;
             }
             set
             {
-                appSecret = value;
+                _appSecret = value;
             }
         }
 
@@ -77,11 +102,11 @@ namespace PusherServer.Tests
         {
             get
             {
-                return wshost;
+                return _wsHost;
             }
             set
             {
-                wshost = value;
+                _wsHost = value;
             }
         }
     }

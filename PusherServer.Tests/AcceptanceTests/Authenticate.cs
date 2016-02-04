@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using System.Threading;
 using System.Diagnostics;
+using NUnit.Framework;
 using PusherServer.Tests.Helpers;
 
 namespace PusherServer.Tests.AcceptanceTests
@@ -39,11 +36,11 @@ namespace PusherServer.Tests.AcceptanceTests
             bool subscribed = false;
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            pusherClient.Connected += new PusherClient.ConnectedEventHandler(delegate(object sender)
+            pusherClient.Connected += delegate(object sender)
             {
                 Debug.WriteLine("connected");
                 reset.Set();
-            });
+            };
 
             Debug.WriteLine("connecting");
             pusherClient.Connect();
@@ -52,6 +49,7 @@ namespace PusherServer.Tests.AcceptanceTests
             reset.WaitOne(TimeSpan.FromSeconds(5));
 
             Debug.WriteLine("subscribing");
+            reset.Reset();
             var channel = pusherClient.Subscribe(channelName);
             channel.Subscribed += new PusherClient.SubscriptionEventHandler(delegate(object s)
             {

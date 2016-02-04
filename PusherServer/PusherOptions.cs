@@ -16,7 +16,6 @@ namespace PusherServer
 
         private static int DEFAULT_HTTPS_PORT = 443;
         private static int DEFAULT_HTTP_PORT = 80;
-        private static string DEFAULT_HTTP_HOST_NAME = "api.pusherapp.com";
 
         IRestClient _client;
         bool _encrypted = false;
@@ -24,12 +23,7 @@ namespace PusherServer
         int _port = DEFAULT_HTTP_PORT;
         string _hostName = null;
 
-        /// <summary>
-        /// Gets or sets a value indicating whether calls to the Pusher REST API are over HTTP or HTTPS.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if encrypted; otherwise, <c>false</c>.
-        /// </value>
+        /// <inheritdoc/>
         public bool Encrypted
         {
             get
@@ -46,12 +40,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Gets or sets the REST API port that the HTTP calls will be made to.
-        /// </summary>
-        /// <value>
-        /// The port.
-        /// </value>
+        /// <inheritdoc/>
         public int Port
         {
             get
@@ -65,12 +54,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Gets or sets the rest client. Generally only expected to be used for testing.
-        /// </summary>
-        /// <value>
-        /// The rest client.
-        /// </value>
+        /// <inheritdoc/>
         public IRestClient RestClient
         {
             get
@@ -109,10 +93,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Gets the base Url based on the set Options
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public Uri GetBaseUrl()
         {
             string baseUrl = (Encrypted ? "https" : "http") + "://" + HostName + GetPort();

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 namespace PusherServer
 {
     /// <summary>
@@ -6,6 +7,9 @@ namespace PusherServer
     /// </summary>
     public interface ITriggerResult: IRequestResult
     {
+        /// <summary>
+        /// Gets the events returned on the Trigger Result
+        /// </summary>
         IDictionary<string, string> EventIds { get; }
     }
 }

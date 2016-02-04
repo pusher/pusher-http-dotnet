@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Threading;
-using NUnit.Framework;
-using System.IO;
 using System.Web.Script.Serialization;
-using RestSharp.Serializers;
+using NUnit.Framework;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
@@ -49,6 +48,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
+        [Ignore] // Requires support from a node with batch triggers
         public void it_should_expose_the_event_id()
         {
             ITriggerResult result = _pusher.Trigger("my-channel", "my_event", new { hello = "world" });
@@ -56,6 +56,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
+        [Ignore] // Requires support from a node with batch triggers
         public void it_should_expose_the_event_id_async()
         {
             var waiting = new AutoResetEvent(false);
@@ -264,6 +265,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
+        [Ignore] // Requires support from a node with batch triggers
         public void It_should_expose_a_single_event_id_when_publishing_to_a_single_channel()
         {
             ITriggerResult result = _pusher.Trigger("ch1", "my_event", new { hello = "world" });
@@ -272,6 +274,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
+        [Ignore] // Requires support from a node with batch triggers
         public void It_should_expose_a_multiple_event_ids_when_publishing_to_multiple_channels()
         {
             var channels = new string[]{"ch1", "ch2", "ch3"};

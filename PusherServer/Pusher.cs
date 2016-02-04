@@ -146,6 +146,7 @@ namespace PusherServer
             return result;
         }
 
+        /// <inheritdoc/>
         public ITriggerResult Trigger(Event[] events)
         {
             var bodyData = CreateBatchTriggerBody(events);
@@ -186,6 +187,7 @@ namespace PusherServer
             });
         }
 
+        /// <inheritdoc/>
         public void TriggerAsync(Event[] events, Action<ITriggerResult> callback)
         {
             var bodyData = CreateBatchTriggerBody(events);
@@ -341,7 +343,7 @@ namespace PusherServer
 
         private void ExecuteTriggerAsync(string path, object requestBody, Action<IRestResponse> callback)
         {
-            _options.RestClient.BaseUrl = GetBaseUrl(_options);
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
             _options.RestClient.ExecuteAsync(request, callback);
