@@ -27,6 +27,11 @@ namespace PusherServer
             _statusCode = response.StatusCode;
 
             Response = response;
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                OriginalContent = response.Content;
+            }
         }
 
         /// <summary>

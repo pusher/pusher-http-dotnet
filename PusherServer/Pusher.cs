@@ -310,6 +310,16 @@ namespace PusherServer
 
             var response = _options.RestClient.Execute(request);
 
+            return new GetResult<T>(response);
+        }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
+
+            var response = _options.RestClient.Execute(request);
+
             return new GetResult<T>(response, _options.JsonDeserializer);
         }
 
