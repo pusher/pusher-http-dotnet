@@ -14,7 +14,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            string channelName = "presence-channel1";
+            string channelName = "presence-test-channel-1";
 
             var pusherServer = CreateServer();
             var pusherClient = CreateClient(pusherServer, reset, channelName);
@@ -31,7 +31,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            string channelName = "presence-channel2";
+            string channelName = "presence-test-channel2";
 
             var pusherServer = CreateServer();
 
@@ -46,7 +46,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            string channelName = "presence-channel3";
+            string channelName = "presence-test-channel3";
 
             var pusherServer = CreateServer();
             var pusherClient = CreateClient(pusherServer, reset, channelName);
