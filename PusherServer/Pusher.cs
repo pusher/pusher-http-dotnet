@@ -13,7 +13,8 @@ namespace PusherServer
     /// </summary>
     public class Pusher : IPusher
     {
-        private const string ChannelResource = "/channels/{0}/users";
+        private const string ChannelUsersResource = "/channels/{0}/users";
+        private const string ChannelResource = "/channels/{0}";
 
         private readonly string _appId;
         private readonly string _appKey;
@@ -309,7 +310,17 @@ namespace PusherServer
         /// <inheritDoc/>
         public IGetResult<T> FetchUsersFromPrecenceChannel<T>(string channelName)
         {
-            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), null, null);
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response);
+        }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
 
             var response = _options.RestClient.Execute(request);
 
