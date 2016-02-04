@@ -14,7 +14,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            string channelName = "presence-channel1";
+            string channelName = "presence-state-channel1";
 
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
@@ -32,7 +32,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            string channelName = "presence-channel2";
+            string channelName = "presence-state-channel2";
 
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
@@ -63,7 +63,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            string channelName = "presence-channel3";
+            string channelName = "presence-multiple-state-channel3";
 
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
@@ -74,7 +74,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             // Really need to introduce a mechanism to use a different deserialiser!
-            Assert.AreEqual(1, ((((Dictionary<string, object>)result.Data)["channels"] as Dictionary<string, object>)["presence-channel3"] as Dictionary<string, object>)["user_count"]);
+            Assert.AreEqual(1, ((((Dictionary<string, object>)result.Data)["channels"] as Dictionary<string, object>)["presence-multiple-state-channel3"] as Dictionary<string, object>)["user_count"]);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            string channelName = "presence-channel4";
+            string channelName = "presence-multiple-state-channel4";
 
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
