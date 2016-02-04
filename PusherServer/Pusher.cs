@@ -372,7 +372,6 @@ namespace PusherServer
         {
             _options.RestClient.BaseUrl = _options.GetBaseUrl();
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
-
             Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
                 Environment.NewLine,
                 request.Method,
