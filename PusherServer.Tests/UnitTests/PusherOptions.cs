@@ -72,7 +72,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("https://api.pusherapp.com:100", options.GetBaseUrl().AbsoluteUri);
         }
 
-        [Test]
+                [Test]
         [ExpectedException(typeof(FormatException))]
         public void https_scheme_is_not_allowed_when_setting_host()
         {
@@ -94,6 +94,78 @@ namespace PusherServer.Tests.UnitTests
         {
             var httpsOptions = new PusherOptions();
             httpsOptions.HostName = "ftp://api.pusherapp.com";
+        }
+
+        [Test]
+        public void the_json_deserialiser_should_be_the_default_one_when_none_is_set()
+        {
+            var options = new PusherOptions();
+
+            Assert.IsInstanceOf<DefaultDeserializer>(options.JsonDeserializer);
+        }
+
+        [Test]
+        public void the_json_deserialiser_should_be_the_supplied_one_when_set()
+        {
+            var options = new PusherOptions();
+            options.JsonDeserializer = new FakeDeserialiser();
+
+            Assert.IsInstanceOf<FakeDeserialiser>(options.JsonDeserializer);
+        }
+
+        [Test]
+        public void the_json_deserialiser_should_be_the_supplied_one_when_set_with_a_custom_and_the_set_to_null()
+        {
+            var options = new PusherOptions();
+            options.JsonDeserializer = new FakeDeserialiser();
+            options.JsonDeserializer = null;
+
+            Assert.IsInstanceOf<DefaultDeserializer>(options.JsonDeserializer);
+        }
+            Assert.IsInstanceOf<DefaultDeserializer>(options.JsonDeserializer);
+        }
+
+        [Test]
+        public void the_json_serialiser_should_be_the_default_one_when_none_is_set()
+        {
+            var options = new PusherOptions();
+
+            Assert.IsInstanceOf<DefaultSerializer>(options.JsonSerializer);
+        }
+
+        [Test]
+        public void the_json_serialiser_should_be_the_supplied_one_when_set()
+        {
+            var options = new PusherOptions();
+            options.JsonSerializer = new FakeSerialiser();
+
+            Assert.IsInstanceOf<FakeSerialiser>(options.JsonSerializer);
+        }
+
+        [Test]
+        public void the_json_serialiser_should_be_the_default_one_when_set_with_a_custom_and_the_set_to_null()
+        {
+            var options = new PusherOptions();
+            options.JsonSerializer = new FakeSerialiser();
+            options.JsonSerializer = null;
+
+            Assert.IsInstanceOf<DefaultSerializer>(options.JsonSerializer);
+        }
+
+        private class FakeDeserialiser : IDeserializeJsonStrings
+        {
+            public T Deserialize<T>(string stringToDeserialize)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        private class FakeSerialiser : ISerializeObjectsToJson
+        {
+            public string Serialize(object objectToSerialize)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
