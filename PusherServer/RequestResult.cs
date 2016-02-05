@@ -26,10 +26,7 @@ namespace PusherServer
             _body = response.Content;
             _statusCode = response.StatusCode;
 
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                OriginalContent = response.Content;
-            }
+            Response = response;
         }
 
         /// <summary>
@@ -53,6 +50,17 @@ namespace PusherServer
         /// <summary>
         /// Gets the original content that was returned in the response, if the response returned was Bad
         /// </summary>
-        public string OriginalContent { get; private set; }
+        public string OriginalContent
+        {
+            get
+            {
+                return Response != null ? Response.Content : string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Gets the original response from the rest service
+        /// </summary>
+        public IRestResponse Response { get; private set; }
     }
 }

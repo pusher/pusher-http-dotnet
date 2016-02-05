@@ -23,6 +23,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.AreEqual(HttpStatusCode.BadRequest, getResult.StatusCode);
             StringAssert.IsMatch("not json", getResult.OriginalContent);
             StringAssert.IsMatch("The HTTP response could not be deserialized to the expected type. The following exception occurred: ", getResult.Body);
+            Assert.AreEqual(_stubRestResponse, getResult.Response);
         }
 
         [Test]
@@ -34,8 +35,9 @@ namespace PusherServer.Tests.UnitTests
             var getResult = new GetResult<List<string>>(_stubRestResponse, _defaultDeserializer);
 
             Assert.AreNotEqual(HttpStatusCode.BadRequest, getResult.StatusCode);
-            Assert.IsNotNull(getResult.Data);
-            Assert.IsNull(getResult.OriginalContent);
+            Assert.AreEqual(3, getResult.Data.Count);
+            StringAssert.IsMatch("string2", getResult.Data[1]);
+            Assert.AreEqual(_stubRestResponse, getResult.Response);
         }
     }
 }
