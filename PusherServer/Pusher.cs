@@ -336,6 +336,17 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
+        public void FetchStateForChannelAsync<T>(string channelName, object info, Action<IGetResult<T>> callback)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response));
+            });
+        }
+
+        /// <inheritDoc/>
         public IGetResult<T> FetchStateForChannels<T>(object info)
         {
             var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
