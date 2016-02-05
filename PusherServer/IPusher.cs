@@ -123,5 +123,13 @@ namespace PusherServer
         /// <param name="info">An object containing a list of attributes to include in the query</param>
         /// <returns>The result of the Channel State query</returns>
         IGetResult<T> FetchStateForChannel<T>(string channelName, object info);
+
+        /// <summary>
+        /// Queries the Pusher API for the state of all channels based upon the info object
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="info">An object containing a list of attributes to include in the query</param>
+        /// <returns>The result of the Channels State query</returns>
+        IGetResult<T> FetchStateForChannels<T>(object info);
     }
 }
