@@ -116,6 +116,14 @@ namespace PusherServer
         IGetResult<T> FetchUsersFromPrecenceChannel<T>(string channelName);
 
         /// <summary>
+        /// Queries the Pusher API for the Users of a Presence Channel asynchronously
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="channelName">The name of the channel to query</param>
+        /// <param name="callback">The callback to receive the result of the query</param>
+        void FetchUsersFromPrecenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback);
+
+        /// <summary>
         /// Queries the Pusher API for the state of a Channel
         /// </summary>
         /// <typeparam name="T">The type of object that will be returned by the API</typeparam>

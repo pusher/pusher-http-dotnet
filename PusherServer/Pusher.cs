@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using RestSharp;
 using RestSharp.Serializers;
-using System.Reflection;
 
 namespace PusherServer
 {
@@ -246,6 +246,17 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
+        public void FetchUsersFromPrecenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response));
+            });
+        }
+
+        /// <inheritDoc/>
         public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
         {
             var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
@@ -255,6 +266,7 @@ namespace PusherServer
             return new GetResult<T>(response);
         }
 
+        /// <inheritDoc/>
         public IGetResult<T> FetchStateForChannels<T>(object info)
         {
             var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
