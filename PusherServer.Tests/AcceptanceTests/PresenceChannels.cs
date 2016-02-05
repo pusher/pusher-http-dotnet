@@ -12,12 +12,12 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public void Should_get_a_list_of_subscribed_users_when_using_the_correct_channel_name_and_users_are_subscribed()
         {
-            AutoResetEvent reset = new AutoResetEvent(false);
+            var reset = new AutoResetEvent(false);
 
             string channelName = "presence-test-channel-1";
 
-            var pusherServer = CreateServer();
-            var pusherClient = CreateClient(pusherServer, reset, channelName);
+            var pusherServer = ClientServerFactory.CreateServer();
+            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
             var result = pusherServer.FetchUsersFromPrecenceChannel<PresenceChannelMessage>(channelName);
 
@@ -29,11 +29,11 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public void Should_get_an_empty_list_of_subscribed_users_when_using_the_correct_channel_name_and_no_users_are_subscribed()
         {
-            AutoResetEvent reset = new AutoResetEvent(false);
+            var reset = new AutoResetEvent(false);
 
             string channelName = "presence-test-channel2";
 
-            var pusherServer = CreateServer();
+            var pusherServer = ClientServerFactory.CreateServer();
 
             var result = pusherServer.FetchUsersFromPrecenceChannel<PresenceChannelMessage>(channelName);
 
@@ -44,57 +44,84 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public void should_return_bad_request_using_an_incorrect_channel_name_and_users_are_subscribed()
         {
-            AutoResetEvent reset = new AutoResetEvent(false);
+            var reset = new AutoResetEvent(false);
 
             string channelName = "presence-test-channel3";
 
-            var pusherServer = CreateServer();
-            var pusherClient = CreateClient(pusherServer, reset, channelName);
+            var pusherServer = ClientServerFactory.CreateServer();
+            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
             var result = pusherServer.FetchUsersFromPrecenceChannel<PresenceChannelMessage>("test-channel");
 
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
         }
 
-        /// <summary>
-        /// Create a Pusher Client, and subscribes a user
-        /// </summary>
-        /// <param name="pusherServer">Server to connect to</param>
-        /// <param name="reset">The AutoReset to control the subscription by the client</param>
-        /// <param name="channelName">The name of the channel to subscribe to</param>
-        /// <returns>A subscribed client</returns>
-        private static PusherClient.Pusher CreateClient(Pusher pusherServer, AutoResetEvent reset, string channelName)
+        [Test]
+        public void Should_get_a_list_of_subscribed_users_asynchronously_when_using_the_correct_channel_name_and_users_are_subscribed()
         {
-            PusherClient.Pusher pusherClient =
-                new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions()
-                {
-                    Authorizer = new InMemoryAuthorizer(
-                        pusherServer,
-                        new PresenceChannelData()
-                        {
-                            user_id = "Mr Pusher",
-                            user_info = new {twitter_id = "@pusher"}
-                        })
-                });
+            var reset = new AutoResetEvent(false);
 
-            pusherClient.Connected += delegate { reset.Set(); };
+            string channelName = "presence-test-channel-async-1";
 
-            pusherClient.Connect();
+            var pusherServer = ClientServerFactory.CreateServer();
+            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            reset.WaitOne(TimeSpan.FromSeconds(5));
+            IGetResult<PresenceChannelMessage> result = null;
+            pusherServer.FetchUsersFromPrecenceChannelAsync<PresenceChannelMessage>(channelName, getResult =>
+            {
+                result = getResult;
+                reset.Set();
+            });
 
-            var channel = pusherClient.Subscribe(channelName);
+            reset.WaitOne(TimeSpan.FromSeconds(30));
 
-            channel.Subscribed += delegate { reset.Set(); };
-
-            reset.WaitOne(TimeSpan.FromSeconds(5));
-
-            return pusherClient;
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(1, result.Data.Users.Length);
+            Assert.AreEqual("Mr Pusher", result.Data.Users[0].Id);
         }
 
-        private PusherServer.Pusher CreateServer()
+        [Test]
+        public void Should_get_an_empty_list_of_subscribed_users_asynchronously_when_using_the_correct_channel_name_and_no_users_are_subscribed()
         {
-            return new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            var reset = new AutoResetEvent(false);
+
+            string channelName = "presence-test-channel-async-2";
+
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            IGetResult<PresenceChannelMessage> result = null;
+            pusherServer.FetchUsersFromPrecenceChannelAsync<PresenceChannelMessage>(channelName, getResult =>
+            {
+                result = getResult;
+                reset.Set();
+            });
+
+            reset.WaitOne(TimeSpan.FromSeconds(30));
+
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(0, result.Data.Users.Length);
+        }
+
+        [Test]
+        public void should_return_bad_request_asynchronously_using_an_incorrect_channel_name_and_users_are_subscribed()
+        {
+            var reset = new AutoResetEvent(false);
+
+            string channelName = "presence-test-channel-async-3";
+
+            var pusherServer = ClientServerFactory.CreateServer();
+            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+
+            IGetResult<PresenceChannelMessage> result = null;
+            pusherServer.FetchUsersFromPrecenceChannelAsync<PresenceChannelMessage>("test-channel-async", getResult =>
+            {
+                result = getResult;
+                reset.Set();
+            });
+
+            reset.WaitOne(TimeSpan.FromSeconds(30));
+
+            Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
         }
 
         private class PresenceChannelMessage
