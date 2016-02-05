@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Net;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
 using PusherServer.Exceptions;
@@ -42,6 +42,5 @@ namespace PusherServer
             {
                 return this._eventIds;
             }
-        }
     }
 }

@@ -52,14 +52,12 @@
     <Compile Include="ChannelsList.cs" />
     <Compile Include="CryptoHelper.cs" />
     <Compile Include="DefaultDeserializer.cs" />
-    <Compile Include="DefaultJsonBodySerializer.cs" />
     <Compile Include="DefaultSerializer.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="EventIdData.cs" />
     <Compile Include="Exceptions\TriggerResponseException.cs" />
     <Compile Include="GetResult.cs" />
     <Compile Include="IAuthenticationData.cs" />
-    <Compile Include="IBodySerializer.cs" />
     <Compile Include="IDeserializeJsonStrings.cs" />
     <Compile Include="IGetResult.cs" />
     <Compile Include="IPusher.cs" />

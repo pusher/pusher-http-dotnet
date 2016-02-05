@@ -16,7 +16,6 @@ namespace PusherServer
         private readonly string _appKey;
         private readonly string _appSecret;
         private readonly IPusherOptions _options;
-        private IBodySerializer _serializer;
 
         /// <summary>
         /// Pusher library version information.
@@ -74,19 +73,6 @@ namespace PusherServer
             _appKey = appKey;
             _appSecret = appSecret;
             _options = options;
-
-            // todo jmc this needs replacing
-            BodySerializer = new DefaultJsonBodySerializer();
-        }
-
-        /// <summary>
-        /// The serializer to use for the body of the messages.
-        /// </summary>
-        public IBodySerializer BodySerializer
-        {
-            // todo jmc this needs replacing
-            get { return _serializer; }
-            set { _serializer = value ?? new DefaultJsonBodySerializer(); }
         }
 
         #region Trigger
@@ -210,7 +196,7 @@ namespace PusherServer
             TriggerBody bodyData = new TriggerBody()
             {
                 name = eventName,
-                data = BodySerializer.Serialize(data),
+                data = _options.JsonSerializer.Serialize(data),
                 channels = channelNames
             };
 
