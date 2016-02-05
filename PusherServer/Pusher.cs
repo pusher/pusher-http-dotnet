@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using RestSharp;
 using RestSharp.Serializers;
-using System.Reflection;
 
 namespace PusherServer
 {
@@ -50,9 +49,7 @@ namespace PusherServer
         /// <param name="appId">The app id.</param>
         /// <param name="appKey">The app key.</param>
         /// <param name="appSecret">The app secret.</param>
-        public Pusher(string appId, string appKey, string appSecret):
-            this(appId, appKey, appSecret, null)
-
+        public Pusher(string appId, string appKey, string appSecret) : this(appId, appKey, appSecret, null)
         {}
 
         /// <summary>
@@ -78,6 +75,7 @@ namespace PusherServer
             _appSecret = appSecret;
             _options = options;
 
+            // todo jmc this needs replacing
             BodySerializer = new DefaultJsonBodySerializer();
         }
 
@@ -86,6 +84,7 @@ namespace PusherServer
         /// </summary>
         public IBodySerializer BodySerializer
         {
+            // todo jmc this needs replacing
             get { return _serializer; }
             set { _serializer = value ?? new DefaultJsonBodySerializer(); }
         }
@@ -207,6 +206,7 @@ namespace PusherServer
             ValidationHelper.ValidateChannelNames(channelNames);
             ValidationHelper.ValidateSocketId(options.SocketId);
 
+            // todo jmc this needs replacing
             TriggerBody bodyData = new TriggerBody()
             {
                 name = eventName,
@@ -303,7 +303,7 @@ namespace PusherServer
             var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
 
             IRestResponse response = _options.RestClient.Execute(request);
-            return new GetResult<T>(response);
+            return new GetResult<T>(response, _options.JsonDeserializer);
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace PusherServer
             queryParams.Add("auth_version", "1.0");
 
             if (requestBody != null)
-            {   
+            {
                 JsonSerializer serializer = new JsonSerializer();
                 var bodyDataJson = serializer.Serialize(requestBody);
                 var bodyMD5 = CryptoHelper.GetMd5Hash(bodyDataJson);

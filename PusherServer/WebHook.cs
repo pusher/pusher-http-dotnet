@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Script.Serialization;
 
 namespace PusherServer
 {
@@ -9,6 +8,7 @@ namespace PusherServer
     {
         private readonly WebHookData _webHookData;
         private readonly List<string> _validationErrors;
+        private IDeserializeJsonStrings _jsonDeserializer;
 
         internal WebHook(string secret, string signature, string body)
         {
@@ -39,8 +39,7 @@ namespace PusherServer
             {
                 try
                 {
-                    JavaScriptSerializer serializer = new JavaScriptSerializer();
-                    parsedWebHookData = serializer.Deserialize<WebHookData>(body);
+                    parsedWebHookData = JsonDeserializer.Deserialize<WebHookData>(body);
                 }
                 catch (Exception e)
                 {
@@ -95,6 +94,21 @@ namespace PusherServer
             }
         }
 
-    }
+        /// <summary>
+        /// Gets or sets the JSON Deserializer to use
+        /// </summary>
+        public IDeserializeJsonStrings JsonDeserializer
+        {
+            get
+            {
+                if (_jsonDeserializer == null)
+                {
+                    _jsonDeserializer = new DefaultDeserializer();
+                }
 
+                return _jsonDeserializer;
+            }
+            set { _jsonDeserializer = value; }
+        }
+    }
 }
