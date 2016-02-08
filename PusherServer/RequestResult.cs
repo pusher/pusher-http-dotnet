@@ -17,8 +17,11 @@ namespace PusherServer
         /// <param name="response"></param>
         public RequestResult(IRestResponse response)
         {
-            _body = response.Content;
-            _statusCode = response.StatusCode;
+            if (response != null)
+            {
+                _body = response.Content;
+                _statusCode = response.StatusCode;
+            }
         }
 
         /// <summary>

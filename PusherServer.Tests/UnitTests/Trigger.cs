@@ -1,8 +1,9 @@
-﻿using NSubstitute;
+﻿using System;
+using System.Net;
+using NSubstitute;
 using NUnit.Framework;
 using RestSharp;
 using RestSharp.Serializers;
-using System;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -15,6 +16,22 @@ namespace PusherServer.Tests.UnitTests
         string channelName = "my-channel";
         string eventName = "my_event";
         object eventData = new { hello = "world" };
+        Action<ITriggerResult> callback = (Action<ITriggerResult>)((ITriggerResult result) => { });
+
+        private IRestResponse V7_PROTOCOL_SUCCESSFUL_RESPONSE;
+        private IRestResponse V8_PROTOCOL_SUCCESSFUL_RESPONSE;
+
+        [TestFixtureSetUp]
+        public void FixtureSetUp()
+        {
+            V7_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
+            V7_PROTOCOL_SUCCESSFUL_RESPONSE.Content = "{}";
+            V7_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
+
+            V8_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
+            V8_PROTOCOL_SUCCESSFUL_RESPONSE.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
+            V8_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
+        }
 
         [SetUp]
         public void Setup()
@@ -30,6 +47,8 @@ namespace PusherServer.Tests.UnitTests
             Config.AppSecret = "test-app-secret";
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
+
+            _subClient.Execute(Arg.Any<IRestRequest>()).Returns(V8_PROTOCOL_SUCCESSFUL_RESPONSE);
         }
 
         [Test]
@@ -197,6 +216,46 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
+        public void with_async_and_a_single_channel_the_request_is_made()
+        {
+            _pusher.TriggerAsync(channelName, eventName, eventData, callback);
+
+            _subClient.Received().ExecuteAsync(
+                Arg.Any<IRestRequest>(),
+                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>());
+        }
+
+        [Test]
+        public void with_async_and_a_single_channel_and_trigger_options_the_request_is_made()
+        {
+            _pusher.TriggerAsync(channelName, eventName, eventData, new TriggerOptions(), callback);
+
+            _subClient.Received().ExecuteAsync(
+                Arg.Any<IRestRequest>(),
+                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>());
+        }
+
+        [Test]
+        public void with_async_and_multiple_channels_the_request_is_made()
+        {
+            _pusher.TriggerAsync(new string[] { "fish", "pie" }, eventName, eventData, callback);
+
+            _subClient.Received().ExecuteAsync(
+                Arg.Any<IRestRequest>(),
+                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>());
+        }
+
+        [Test]
+        public void with_async_and_multiple_channels_and_trigger_options_the_request_is_made()
+        {
+            _pusher.TriggerAsync(new string[] { "fish", "pie" }, eventName, eventData, new TriggerOptions(), callback);
+
+            _subClient.Received().ExecuteAsync(
+                Arg.Any<IRestRequest>(),
+                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>());
+        }
+
+        [Test]
         public void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
             var expectedSocketId = "123.098";
@@ -216,6 +275,31 @@ namespace PusherServer.Tests.UnitTests
                 Arg.Is<IRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
+            ).Returns(V7_PROTOCOL_SUCCESSFUL_RESPONSE);
+        }
+
+
+        [Test]
+        public void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring_async()
+        {
+            var expectedSocketId = "123.098";
+
+            _pusher.TriggerAsync(
+                channelName,
+                eventName,
+                eventData,
+                new TriggerOptions()
+                {
+                    SocketId = expectedSocketId
+                },
+                callback
+            );
+
+            _subClient.Received().ExecuteAsync(
+                Arg.Is<IRestRequest>(
+                    x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
+                ),
+                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>()
             );
         }
 
@@ -239,6 +323,30 @@ namespace PusherServer.Tests.UnitTests
                 Arg.Is<IRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
+            );
+        }
+
+        [Test]
+        public void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring_async()
+        {
+            var expectedSocketId = "123.456";
+
+            _pusher.TriggerAsync(
+                    new string[] { "my-channel", "my-channel-2" },
+                    eventName,
+                    eventData,
+                    new TriggerOptions()
+                    {
+                        SocketId = expectedSocketId
+                    },
+                    callback
+                );
+
+            _subClient.Received().ExecuteAsync(
+                Arg.Is<IRestRequest>(
+                    x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
+                ),
+                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>()
             );
         }
 

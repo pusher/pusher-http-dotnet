@@ -9,14 +9,6 @@ namespace PusherServer
     public interface IPusherOptions
     {
         /// <summary>
-        /// Gets or sets the rest client. Generally only expected to be used for testing.
-        /// </summary>
-        /// <value>
-        /// The rest client.
-        /// </value>
-        IRestClient RestClient { get; set; }
-
-        /// <summary>
         /// Gets or sets a value indicating whether calls to the Pusher REST API are over HTTP or HTTPS.
         /// </summary>
         /// <value>
@@ -33,9 +25,23 @@ namespace PusherServer
         int Port { get; set; }
 
         /// <summary>
+        /// Gets or sets the rest client. Generally only expected to be used for testing.
+        /// </summary>
+        /// <value>
+        /// The rest client.
+        /// </value>
+        IRestClient RestClient { get; set; }
+
+        /// <summary>
+        /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com
+        /// </summary>
+        /// <exception cref="FormatException">If a scheme is found at the start of the host value</exception>
+        string HostName { get; set; }
+
+        /// <summary>
         /// Gets the base Url based on the set Options
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The constructed URL</returns>
         Uri GetBaseUrl();
     }
 }

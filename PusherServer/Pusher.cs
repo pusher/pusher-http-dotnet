@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using RestSharp;
 using RestSharp.Serializers;
 using System.Reflection;
@@ -139,6 +140,47 @@ namespace PusherServer
         /// <returns>The result of the call to the REST API</returns>
         public ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options)
         {
+
+            var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
+            IRestResponse response = ExecuteTrigger(bodyData);
+            TriggerResult result = new TriggerResult(response);
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public void TriggerAsync(string channelName, string eventName, object data, Action<ITriggerResult> callback)
+        {
+            TriggerAsync(channelName, eventName, data, new TriggerOptions(), callback);
+        }
+
+        /// <inheritdoc/>
+        public void TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback)
+        {
+            TriggerAsync(new string[] { channelName }, eventName, data, options, callback);
+        }
+
+        /// <inheritdoc/>
+        public void TriggerAsync(string[] channelNames, string eventName, object data, Action<ITriggerResult> callback)
+        {
+            TriggerAsync(channelNames, eventName, data, new TriggerOptions(), callback);
+        }
+
+        /// <inheritdoc/>
+        public void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback)
+        {
+            var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
+
+            ExecuteTriggerAsync(bodyData, baseResponse =>
+            {
+                if (callback != null)
+                {
+                    callback(new TriggerResult(baseResponse));
+                }
+            });
+        }
+
+        private TriggerBody CreateTriggerBody(string[] channelNames, string eventName, object data, ITriggerOptions options)
+        {
             ValidationHelper.ValidateChannelNames(channelNames);
             ValidationHelper.ValidateSocketId(options.SocketId);
 
@@ -154,9 +196,7 @@ namespace PusherServer
                 bodyData.socket_id = options.SocketId;
             }
 
-            IRestResponse response = ExecuteTrigger(channelNames, eventName, bodyData);
-            TriggerResult result = new TriggerResult(response);
-            return result;
+            return bodyData;
         }
         #endregion
 
@@ -236,14 +276,36 @@ namespace PusherServer
         }
         #endregion
 
-        private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)
+        private IRestResponse ExecuteTrigger(object requestBody)
         {
-           _options.RestClient.BaseUrl = _options.GetBaseUrl();
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
             var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
 
+            Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
+                Environment.NewLine,
+                request.Method,
+                _options.RestClient.BaseUrl,
+                request.Resource,
+                string.Join(",", Array.ConvertAll(request.Parameters.ConvertAll(p => p.Name + "=" + p.Value).ToArray(), i => i.ToString()))
+            ));
+
             IRestResponse response = _options.RestClient.Execute(request);
+
+            Debug.WriteLine(string.Format("Response{0}StatusCode: {1}{0}Body: {2}",
+                Environment.NewLine,
+                response.StatusCode,
+                response.Content));
+
             return response;
+        }
+
+        private void ExecuteTriggerAsync(object requestBody, Action<IRestResponse> callback)
+        {
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
+
+            var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
+            _options.RestClient.ExecuteAsync(request, callback);
         }
 
         private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody)

@@ -50,6 +50,8 @@
     <Compile Include="ChannelsList.cs" />
     <Compile Include="CryptoHelper.cs" />
     <Compile Include="DefaultJsonBodySerializer.cs" />
+    <Compile Include="EventIdData.cs" />
+    <Compile Include="Exceptions\TriggerResponseException.cs" />
     <Compile Include="GetResult.cs" />
     <Compile Include="IAuthenticationData.cs" />
     <Compile Include="IBodySerializer.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="TriggerBody.cs" />
     <Compile Include="TriggerOptions.cs" />
     <Compile Include="TriggerResult.cs" />
+    <Compile Include="Util\ReadOnlyDictionary.cs" />
     <Compile Include="ValidationHelper.cs" />
     <Compile Include="WebHook.cs" />
     <Compile Include="WebHookData.cs" />
@@ -77,6 +80,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

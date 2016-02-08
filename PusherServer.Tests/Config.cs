@@ -8,7 +8,7 @@ namespace PusherServer.Tests
         private const string PUSHER_APP_ID = "PUSHER_APP_ID";
         private const string PUSHER_APP_KEY = "PUSHER_APP_KEY";
         private const string PUSHER_APP_SECRET = "PUSHER_APP_SECRET";
-        private const string PUSHER_HTTP_HOST = "PUSHER_HTTP_HOST";
+        private const string PUSHER_HTTP_HOST = "PUSHER_APP_HOST";
         private const string PUSHER_WEBSOCKET_HOST = "PUSHER_WEBSOCKET_HOST";
 
         private static string _appId;

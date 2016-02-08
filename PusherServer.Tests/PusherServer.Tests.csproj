@@ -74,6 +74,7 @@
     <Compile Include="UnitTests\PusherOptions.cs" />
     <Compile Include="UnitTests\RawBodySerializer.cs" />
     <Compile Include="UnitTests\Trigger.cs" />
+    <Compile Include="UnitTests\TriggerResult.cs" />
     <Compile Include="UnitTests\WebHook.cs" />
   </ItemGroup>
   <ItemGroup>
