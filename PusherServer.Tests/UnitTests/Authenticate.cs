@@ -130,8 +130,6 @@ namespace PusherServer.Tests.UnitTests
             string channelName = "my-channel";
             string socketId = "some_socket_id";
 
-            var serializer = new JsonSerializer();
-
             PresenceChannelData data = null;
             _pusher.Authenticate(channelName, socketId, data);
         }

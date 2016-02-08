@@ -74,8 +74,9 @@ namespace PusherServer.Tests.UnitTests
         {
             IRestResponse response = Substitute.For<IRestResponse>();
             response.Content = "FISH";
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            var triggerResult = new TriggerResult(response);
+            response.StatusCode = HttpStatusCode.OK;
+
+            new TriggerResult(response);
         }
 
         [Test]

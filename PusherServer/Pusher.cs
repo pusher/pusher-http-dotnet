@@ -188,6 +188,7 @@ namespace PusherServer
             });
         }
 
+        ///<inheritDoc/>
         public void TriggerAsync(Event[] events, Action<ITriggerResult> callback)
         {
             var bodyData = CreateBatchTriggerBody(events);

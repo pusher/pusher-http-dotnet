@@ -1,7 +1,5 @@
-﻿using NUnit.Framework;
-using System;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System;
+using NUnit.Framework;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -66,7 +64,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                var webHook = new WebHook(null, validSignature, validBody);
+                new WebHook(null, validSignature, validBody);
             }
             catch (ArgumentException ex)
             {
@@ -83,7 +81,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                var webHook = new WebHook(string.Empty, validSignature, validBody);
+                new WebHook(string.Empty, validSignature, validBody);
             }
             catch (ArgumentException ex)
             {

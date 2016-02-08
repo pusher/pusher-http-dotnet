@@ -118,7 +118,7 @@ namespace PusherServer.Tests.AcceptanceTests
             });
 
             Debug.WriteLine("Bound. Triggering");
-            ITriggerResult result = _pusher.Trigger(channelName, eventName, new {hello = "world"});
+            _pusher.Trigger(channelName, eventName, new {hello = "world"});
 
             Debug.WriteLine("waiting for event to be received");
             reset.WaitOne(TimeSpan.FromSeconds(10));

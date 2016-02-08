@@ -61,12 +61,7 @@ namespace PusherServer.Tests.UnitTests
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
 
-            ITriggerResult result =
-                _pusher.Trigger(
-                    channelName,
-                    eventName,
-                    eventData
-                );
+            _pusher.Trigger(channelName, eventName, eventData);
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
@@ -86,12 +81,7 @@ namespace PusherServer.Tests.UnitTests
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
 
-            ITriggerResult result =
-                _pusher.Trigger(
-                    channelName,
-                    eventName,
-                    eventData
-                );
+            _pusher.Trigger(channelName, eventName, eventData);
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
@@ -117,12 +107,7 @@ namespace PusherServer.Tests.UnitTests
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
 
-            ITriggerResult result =
-                _pusher.Trigger(
-                    channelName,
-                    eventName,
-                    eventData
-                );
+            _pusher.Trigger(channelName, eventName, eventData);
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
@@ -143,12 +128,7 @@ namespace PusherServer.Tests.UnitTests
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
 
-            ITriggerResult result =
-                _pusher.Trigger(
-                    channelName,
-                    eventName,
-                    eventData
-                );
+            _pusher.Trigger(channelName, eventName, eventData);
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
@@ -165,12 +145,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public void url_resource_is_in_expected_format()
         {
-            ITriggerResult result =
-                _pusher.Trigger(
-                    channelName,
-                    eventName,
-                    eventData
-                );
+            _pusher.Trigger(channelName, eventName, eventData);
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
@@ -187,12 +162,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public void post_payload_contains_channelName_eventName_and_eventData()
         {
-            ITriggerResult result =
-                _pusher.Trigger(
-                    channelName,
-                    eventName,
-                    eventData
-                );
+            _pusher.Trigger(channelName, eventName, eventData);
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
@@ -209,6 +179,7 @@ namespace PusherServer.Tests.UnitTests
                 channels = new string[]{channelName},
                 data = serializer.Serialize(eventData)
             };
+
             var expected = serializer.Serialize(expectedBody);
 
             return request.Parameters[0].Type == ParameterType.RequestBody &&
@@ -260,16 +231,10 @@ namespace PusherServer.Tests.UnitTests
         {
             var expectedSocketId = "123.098";
             
-            ITriggerResult result =
-                _pusher.Trigger(
-                    channelName,
-                    eventName,
-                    eventData,
-                    new TriggerOptions()
+            _pusher.Trigger(channelName, eventName, eventData, new TriggerOptions()
                     {
                         SocketId = expectedSocketId
-                    }
-                );
+                    });
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
@@ -308,16 +273,10 @@ namespace PusherServer.Tests.UnitTests
         {
             var expectedSocketId = "123.456";
 
-            ITriggerResult result =
-                _pusher.Trigger(
-                    new string[]{ "my-channel", "my-channel-2" },
-                    eventName,
-                    eventData,
-                    new TriggerOptions()
+            _pusher.Trigger(new string[]{ "my-channel", "my-channel-2" }, eventName, eventData, new TriggerOptions()
                     {
                         SocketId = expectedSocketId
-                    }
-                );
+                    });
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
@@ -353,8 +312,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public void libary_name_header_is_set_with_trigger_request()
         {
-            ITriggerResult result =_pusher.Trigger(channelName, eventName, eventData
-                );
+            _pusher.Trigger(channelName, eventName, eventData);
 
             _subClient.Received().Execute(
                 Arg.Is<IRestRequest>(
