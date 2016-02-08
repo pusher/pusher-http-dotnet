@@ -106,6 +106,55 @@ namespace PusherServer
         /// <param name="body">The body of the incoming Webhook request</param>
         /// <returns>A WebHook helper.</returns>
         IWebHook ProcessWebHook(string signature, string body);
-    }
 
+        /// <summary>
+        /// Queries the Pusher API for the Users of a Presence Channel
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="channelName">The name of the channel to query</param>
+        /// <returns>The result of the Presence Channel Users query</returns>
+        IGetResult<T> FetchUsersFromPresenceChannel<T>(string channelName);
+
+        /// <summary>
+        /// Queries the Pusher API for the Users of a Presence Channel asynchronously
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="channelName">The name of the channel to query</param>
+        /// <param name="callback">The callback to receive the result of the query</param>
+        void FetchUsersFromPresenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback);
+
+        /// <summary>
+        /// Queries the Pusher API for the state of a Channel
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="channelName">The name of the channel to query</param>
+        /// <param name="info">An object containing a list of attributes to include in the query</param>
+        /// <returns>The result of the Channel State query</returns>
+        IGetResult<T> FetchStateForChannel<T>(string channelName, object info);
+
+        /// <summary>
+        /// Queries the Pusher API for the state of a Channel asynchronously
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="channelName">The name of the channel to query</param>
+        /// <param name="info">An object containing a list of attributes to include in the query</param>
+        /// <param name="callback">The callback to receive the result of the query</param>
+        void FetchStateForChannelAsync<T>(string channelName, object info, Action<IGetResult<T>> callback);
+
+        /// <summary>
+        /// Queries the Pusher API for the state of all channels based upon the info object
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="info">An object containing a list of attributes to include in the query</param>
+        /// <returns>The result of the Channels State query</returns>
+        IGetResult<T> FetchStateForChannels<T>(object info);
+
+        /// <summary>
+        /// Queries the Pusher API for the state of all channels based upon the info object
+        /// </summary>
+        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
+        /// <param name="info">An object containing a list of attributes to include in the query</param>
+        /// <param name="callback">The callback to receive the result of the query</param>
+        void FetchStateForChannelsAsync<T>(object info, Action<IGetResult<T>> callback);
+    }
 }

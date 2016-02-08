@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using RestSharp;
 using RestSharp.Serializers;
-using System.Reflection;
 
 namespace PusherServer
 {
@@ -12,6 +12,10 @@ namespace PusherServer
     /// </summary>
     public class Pusher : IPusher
     {
+        private const string ChannelUsersResource = "/channels/{0}/users";
+        private const string ChannelResource = "/channels/{0}";
+        private const string MultipleChannelsResource = "/channels";
+
         private readonly string _appId;
         private readonly string _appKey;
         private readonly string _appSecret;
@@ -202,8 +206,6 @@ namespace PusherServer
         /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource)
         {
-            _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             return Get<T>(resource, null);
         }
 
@@ -216,8 +218,6 @@ namespace PusherServer
         /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource, object parameters)
         {
-            _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
 
             IRestResponse response = _options.RestClient.Execute(request);
@@ -234,12 +234,82 @@ namespace PusherServer
         {
             return new WebHook(this._appSecret, signature, body);
         }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchUsersFromPresenceChannel<T>(string channelName)
+        {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response);
+        }
+
+        /// <inheritDoc/>
+        public void FetchUsersFromPresenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
+        {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response));
+            });
+        }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
+        {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response);
+        }
+
+        /// <inheritDoc/>
+        public void FetchStateForChannelAsync<T>(string channelName, object info, Action<IGetResult<T>> callback)
+        {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response));
+            });
+        }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchStateForChannels<T>(object info)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response);
+        }
+
+        /// <inheritDoc/>
+        public void FetchStateForChannelsAsync<T>(object info, Action<IGetResult<T>> callback)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response));
+            });
+        }
+
         #endregion
 
         private IRestResponse ExecuteTrigger(string[] channelNames, string eventName, object requestBody)
         {
-           _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
 
             IRestResponse response = _options.RestClient.Execute(request);

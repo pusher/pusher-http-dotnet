@@ -6,7 +6,7 @@ namespace PusherServer
     /// <summary>
     /// Abstract base class for results coming back from request to the Pusher servers
     /// </summary>
-    public abstract class RequestResult: IRequestResult
+    public abstract class RequestResult : IRequestResult
     {
         string _body = null;
         private HttpStatusCode _statusCode;
@@ -19,6 +19,11 @@ namespace PusherServer
         {
             _body = response.Content;
             _statusCode = response.StatusCode;
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                OriginalContent = response.Content;
+            }
         }
 
         /// <summary>
@@ -38,5 +43,10 @@ namespace PusherServer
             get { return _body; }
             protected set { _body = value;  }
         }
+
+        /// <summary>
+        /// Gets the original content that was returned in the response, if the response returned was Bad
+        /// </summary>
+        public string OriginalContent { get; private set; }
     }
 }
