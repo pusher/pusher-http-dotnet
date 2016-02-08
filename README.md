@@ -35,8 +35,16 @@ var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello w
 
 #### Multiple channels
 
-```
+```cs
 var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
+```
+
+or asynchronously
+
+```
+pusher.TriggeAsync( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" }, (ITriggerResult result) => 
+{
+});
 ```
 
 ### Excluding event recipients
