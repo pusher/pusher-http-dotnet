@@ -164,9 +164,14 @@ else {
 
 * Developed using Visual Studio Community 2013
 * The NUnit test framework is used for testing, your copy of Visual Studio needs the "NUnit test adapter" installed from Tools -> Extensions and Updates if you wish to run the test from the IDE.
-* PusherServer acceptance tests depends on [PusherClient](https://github.com/leggetter/pusher-dotnet-client).
+* PusherServer acceptance tests depends on [PusherClient](https://github.com/pusher/pusher-dotnet-client).
 
 ## Publish to NuGet
+### Running Tests
+
+In order to run the tests modify `PusherServer.Tests/App.config` and replace the configuration values with Pusher application credtials. Then run the tests in Visual Studio.
+
+### Publish to NuGet
 
 You should be familiar with [creating an publishing NuGet packages](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package).
 

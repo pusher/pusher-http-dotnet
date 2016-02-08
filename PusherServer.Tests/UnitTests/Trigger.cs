@@ -92,7 +92,8 @@ namespace PusherServer.Tests.UnitTests
             IPusherOptions options = new PusherOptions()
             {
                 RestClient = _subClient,
-                Encrypted = true
+                Encrypted = true,
+                HostName = Config.HttpHost
             };
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);

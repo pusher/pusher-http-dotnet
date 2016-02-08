@@ -15,14 +15,18 @@ namespace PusherServer.Tests.AcceptanceTests
         public void Setup()
         {
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
-
         }
 
         [Test]
         public void It_should_return_a_200_response()
         {
-            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost
+            });
+
             ITriggerResult result = pusher.Trigger("my-channel", "my_event", new { hello = "world" });
+
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
@@ -35,6 +39,7 @@ namespace PusherServer.Tests.AcceptanceTests
             bool eventReceived = false;
             AutoResetEvent reset = new AutoResetEvent(false);
             var client = new PusherClient.Pusher(Config.AppKey);
+            client.Host = Config.WebSocketHost;
             client.Connected += new PusherClient.ConnectedEventHandler(delegate(object sender)
             {
                 Debug.WriteLine("connected");
@@ -67,7 +72,10 @@ namespace PusherServer.Tests.AcceptanceTests
             reset.WaitOne(TimeSpan.FromSeconds(5));
 
             Debug.WriteLine("triggering");
-            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost
+            });
             ITriggerResult result = pusher.Trigger(channelName, eventName, new { hello = "world" });
 
             Debug.WriteLine("waiting for event to be received");
@@ -82,8 +90,12 @@ namespace PusherServer.Tests.AcceptanceTests
             var eventJSON = File.ReadAllText("AcceptanceTests/percent-message.json");
             var message = new JavaScriptSerializer().Deserialize(eventJSON, typeof(object));
 
-            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost
+            });
             ITriggerResult result = pusher.Trigger("my-channel", "my_event", message);
+
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
     }
@@ -94,8 +106,12 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public void It_should_return_a_202_response()
         {
-            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost
+            });
             ITriggerResult result = pusher.Trigger(new string[] { "my-channel-1", "my-channel-2" }, "my_event", new { hello = "world" });
+
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
     }
@@ -112,8 +128,13 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public void It_should_return_a_202_response()
         {
-            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions() { Encrypted = true } );
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                Encrypted = true,
+                HostName = Config.HttpHost
+            } );
             ITriggerResult result = pusher.Trigger("my-channel", "my_event", new { hello = "world" });
+
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
     }

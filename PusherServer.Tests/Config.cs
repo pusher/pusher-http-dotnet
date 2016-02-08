@@ -8,29 +8,45 @@ namespace PusherServer.Tests
         private const string PUSHER_APP_ID = "PUSHER_APP_ID";
         private const string PUSHER_APP_KEY = "PUSHER_APP_KEY";
         private const string PUSHER_APP_SECRET = "PUSHER_APP_SECRET";
+        private const string PUSHER_HTTP_HOST = "PUSHER_HTTP_HOST";
+        private const string PUSHER_WEBSOCKET_HOST = "PUSHER_WEBSOCKET_HOST";
 
-        private static string appId;
-        private static string appKey;
-        private static string appSecret;
+        private static string _appId;
+        private static string _appKey;
+        private static string _appSecret;
+        private static string _httpHost;
+        private static string _websocketHost;
 
         static Config()
         {
-            appId = Environment.GetEnvironmentVariable(PUSHER_APP_ID);
-            if (string.IsNullOrEmpty(appId))
+            _appId = Environment.GetEnvironmentVariable(PUSHER_APP_ID);
+            if (string.IsNullOrEmpty(_appId))
             {
-                appId = ConfigurationManager.AppSettings.Get(PUSHER_APP_ID);
+                _appId = ConfigurationManager.AppSettings.Get(PUSHER_APP_ID);
             }
 
-            appKey = Environment.GetEnvironmentVariable(PUSHER_APP_KEY);
-            if (string.IsNullOrEmpty(appKey))
+            _appKey = Environment.GetEnvironmentVariable(PUSHER_APP_KEY);
+            if (string.IsNullOrEmpty(_appKey))
             {
-                appKey = ConfigurationManager.AppSettings.Get(PUSHER_APP_KEY);
+                _appKey = ConfigurationManager.AppSettings.Get(PUSHER_APP_KEY);
             }
 
-            appSecret = Environment.GetEnvironmentVariable(PUSHER_APP_SECRET);
-            if (string.IsNullOrEmpty(appSecret))
+            _appSecret = Environment.GetEnvironmentVariable(PUSHER_APP_SECRET);
+            if (string.IsNullOrEmpty(_appSecret))
             {
-                appSecret = ConfigurationManager.AppSettings.Get(PUSHER_APP_SECRET);
+                _appSecret = ConfigurationManager.AppSettings.Get(PUSHER_APP_SECRET);
+            }
+
+            _httpHost = Environment.GetEnvironmentVariable(PUSHER_HTTP_HOST);
+            if (string.IsNullOrEmpty(_httpHost))
+            {
+                _httpHost = ConfigurationManager.AppSettings.Get(PUSHER_HTTP_HOST);
+            }
+
+            _websocketHost = Environment.GetEnvironmentVariable(PUSHER_WEBSOCKET_HOST);
+            if (string.IsNullOrEmpty(_websocketHost))
+            {
+                _websocketHost = ConfigurationManager.AppSettings.Get(PUSHER_WEBSOCKET_HOST);
             }
         }
 
@@ -38,11 +54,11 @@ namespace PusherServer.Tests
         {
             get
             {
-                return appId;
+                return _appId;
             }
             set
             {
-                appId = value;
+                _appId = value;
             }
         }
 
@@ -50,11 +66,11 @@ namespace PusherServer.Tests
         {
             get
             {
-                return appKey;
+                return _appKey;
             }
             set
             {
-                appKey = value;
+                _appKey = value;
             }
         }
 
@@ -62,11 +78,35 @@ namespace PusherServer.Tests
         {
             get
             {
-                return appSecret;
+                return _appSecret;
             }
             set
             {
-                appSecret = value;
+                _appSecret = value;
+            }
+        }
+
+        public static string HttpHost
+        {
+            get
+            {
+                return _httpHost;
+            }
+            set
+            {
+                _httpHost = value;
+            }
+        }
+
+        public static string WebSocketHost
+        {
+            get
+            {
+                return _websocketHost;
+            }
+            set
+            {
+                _websocketHost = value;
             }
         }
     }
