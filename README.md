@@ -108,6 +108,33 @@ Retrive information about a single channel:
 IGetResult<object> result = pusher.Get<object>("/channels/my_channel" );
 ```
 
+or
+
+```
+IGetResult<object> result = pusher.FetchStateForChannel<object>("my_channel");
+```
+
+There is also an asynchronous variation
+
+```
+pusher.FetchStateForChannelAsync<object>("my_channel", (ITriggerResult result) => 
+{
+});
+```
+
+Retrive information about multiple channels:
+
+```
+IGetResult<object> result = pusher.FetchStateForChannels<object>();
+```
+
+There is also an asynchronous variation
+
+```
+pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) => 
+{
+});
+
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
 
 #### Fetch a list of users on a presence channel
@@ -116,6 +143,20 @@ Retrive a list of users that are on a presence channel:
 
 ```
 IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users" );
+```
+
+or
+
+```
+IGetResult<object> result = pusher.FetchUsersFromPresenceChannel<object>("my_channel");
+```
+
+There is also an asynchronous variation
+
+```
+pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel", (ITriggerResult result) => 
+{
+});
 ```
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
