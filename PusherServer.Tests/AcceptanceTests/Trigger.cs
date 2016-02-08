@@ -91,6 +91,7 @@ namespace PusherServer.Tests.AcceptanceTests
                 Debug.WriteLine("connected");
                 reset.Set();
             });
+            client.Host = Config.WebSocketHost;
 
             Debug.WriteLine("connecting");
             client.Connect();
