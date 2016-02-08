@@ -62,6 +62,13 @@ namespace PusherServer
         ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options);
 
         /// <summary>
+        /// Triggers the events in the passed in array
+        /// </summary>
+        /// <param name="events">The events to trigger</param>
+        /// <returns>The result of the call to the REST API</returns>
+        ITriggerResult Trigger(Event[] events);
+
+        /// <summary>
         /// Triggers an event on the specified channels in the background.
         /// </summary>
         /// <param name="channelName">The name of the channel to trigger the event on</param>
@@ -98,6 +105,14 @@ namespace PusherServer
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
         /// <param name="callback">Method to call when the request has returned.</param>
         void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
+
+        /// <summary>
+        /// Triggers the events in the passed in array asynchronously
+        /// </summary>
+        /// <param name="events">The events to trigger</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        /// <returns>The result of the call to the REST API</returns>
+        void TriggerAsync(Event[] events, Action<ITriggerResult> callback);
 
         #endregion
 

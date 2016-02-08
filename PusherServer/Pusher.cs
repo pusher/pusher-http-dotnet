@@ -142,7 +142,16 @@ namespace PusherServer
         {
 
             var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
-            IRestResponse response = ExecuteTrigger(bodyData);
+            IRestResponse response = ExecuteTrigger("/events", bodyData);
+            TriggerResult result = new TriggerResult(response);
+            return result;
+        }
+
+        /// <inheritDoc/>
+        public ITriggerResult Trigger(Event[] events)
+        {
+            var bodyData = CreateBatchTriggerBody(events);
+            IRestResponse response = ExecuteTrigger("/batch_events", bodyData);
             TriggerResult result = new TriggerResult(response);
             return result;
         }
@@ -170,7 +179,20 @@ namespace PusherServer
         {
             var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
 
-            ExecuteTriggerAsync(bodyData, baseResponse =>
+            ExecuteTriggerAsync("/events", bodyData, baseResponse =>
+            {
+                if (callback != null)
+                {
+                    callback(new TriggerResult(baseResponse));
+                }
+            });
+        }
+
+        public void TriggerAsync(Event[] events, Action<ITriggerResult> callback)
+        {
+            var bodyData = CreateBatchTriggerBody(events);
+
+            ExecuteTriggerAsync("/batch_events", bodyData, baseResponse =>
             {
                 if (callback != null)
                 {
@@ -198,6 +220,25 @@ namespace PusherServer
 
             return bodyData;
         }
+
+        private BatchTriggerBody CreateBatchTriggerBody(Event[] events)
+        {
+            ValidationHelper.ValidateBatchEvents(events);
+
+            var batchEvents = Array.ConvertAll(events, e => new BatchEvent
+            {
+                name = e.EventName,
+                channel = e.Channel,
+                socket_id = e.SocketId,
+                data = BodySerializer.Serialize(e.Data)
+            });
+
+            return new BatchTriggerBody()
+            {
+                batch = batchEvents
+            };
+        }
+
         #endregion
 
         #region Authentication
@@ -276,11 +317,11 @@ namespace PusherServer
         }
         #endregion
 
-        private IRestResponse ExecuteTrigger(object requestBody)
+        private IRestResponse ExecuteTrigger(string path, object requestBody)
         {
             _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
-            var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
+            var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
 
             Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
                 Environment.NewLine,
@@ -300,11 +341,11 @@ namespace PusherServer
             return response;
         }
 
-        private void ExecuteTriggerAsync(object requestBody, Action<IRestResponse> callback)
+        private void ExecuteTriggerAsync(string path, object requestBody, Action<IRestResponse> callback)
         {
             _options.RestClient.BaseUrl = _options.GetBaseUrl();
 
-            var request = CreateAuthenticatedRequest(Method.POST, "/events", null, requestBody);
+            var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
             _options.RestClient.ExecuteAsync(request, callback);
         }
 

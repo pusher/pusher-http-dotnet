@@ -17,22 +17,6 @@ namespace PusherServer
         /// <param name="response">The Rest Response which will form the basis of this Trigger Result</param>
         public TriggerResult(IRestResponse response) : base(response)
         {
-            if (response == null)
-            {
-                throw new ArgumentNullException(nameof(response), "The response cannot be null");
-            }
-
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                var msg = string.Format("The response from the Pusher HTTP API was not 200 OK. It was {0}", response.StatusCode);
-                throw new TriggerResponseException(msg);
-            }
-
-            if (string.IsNullOrEmpty(response.Content))
-            {
-                throw new TriggerResponseException("The response body from the Pusher HTTP API was either null or empty");
-            }
-
             EventIdData eventIdData = null;
             try
             {

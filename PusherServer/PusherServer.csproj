@@ -47,9 +47,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationData.cs" />
+    <Compile Include="BatchEvent.cs" />
+    <Compile Include="BatchTriggerBody.cs" />
     <Compile Include="ChannelsList.cs" />
     <Compile Include="CryptoHelper.cs" />
     <Compile Include="DefaultJsonBodySerializer.cs" />
+    <Compile Include="Event.cs" />
     <Compile Include="EventIdData.cs" />
     <Compile Include="Exceptions\TriggerResponseException.cs" />
     <Compile Include="GetResult.cs" />

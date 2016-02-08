@@ -29,8 +29,16 @@ To trigger an event on one or more channels use the trigger function.
 
 #### A single channel
 
-```
+```cs
 var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
+```
+
+or asynchronously
+
+```cs
+pusher.TriggerAsync( "channel-1", "test_event", new { message = "hello world" }, (ITriggerResult result) => 
+{
+});
 ```
 
 #### Multiple channels

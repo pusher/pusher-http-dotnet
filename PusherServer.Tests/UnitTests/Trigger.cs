@@ -460,11 +460,19 @@ namespace PusherServer.Tests.UnitTests
             {
                 SocketId = socketId
             });
+
+            _pusher.TriggerAsync(channelName, eventName, eventData, (ITriggerResult result) =>
+            {
+            });
         }
 
         private void TriggerWithChannelName(string channelName)
         {
             _pusher.Trigger(channelName, eventName, eventData);
+
+            _pusher.TriggerAsync(channelName, eventName, eventData, new TriggerOptions(), (ITriggerResult result) =>
+            {
+            });
         }
 
         private static bool CheckRequestContainsSocketIdParameter(IRestRequest request, string expectedSocketId) {

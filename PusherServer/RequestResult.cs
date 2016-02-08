@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using RestSharp;
 
 namespace PusherServer
@@ -17,11 +18,14 @@ namespace PusherServer
         /// <param name="response"></param>
         public RequestResult(IRestResponse response)
         {
-            if (response != null)
+            if (response == null)
             {
-                _body = response.Content;
-                _statusCode = response.StatusCode;
+                throw new ArgumentNullException(nameof(response));
             }
+
+            _body = response.Content;
+            _statusCode = response.StatusCode;
+            
         }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public void It_should_return_a_200_response()
         {
-            ITriggerResult result = _pusher.Trigger("my-channel", "my_event", new { hello = "world" });
+            ITriggerResult result = _pusher.Trigger("my-channel", "my_event", new {hello = "world"});
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
@@ -36,7 +36,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var waiting = new AutoResetEvent(false);
 
             ITriggerResult asyncResult = null;
-            _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" }, (ITriggerResult result) =>
+            _pusher.TriggerAsync("my-channel", "my_event", new {hello = "world"}, (ITriggerResult result) =>
             {
                 asyncResult = result;
                 waiting.Set();
@@ -51,7 +51,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
         public void it_should_expose_the_event_id()
         {
-            ITriggerResult result = _pusher.Trigger("my-channel", "my_event", new { hello = "world" });
+            ITriggerResult result = _pusher.Trigger("my-channel", "my_event", new {hello = "world"});
             Assert.IsTrue(string.IsNullOrEmpty(result.EventIds["my-channel"]) == false);
         }
 
@@ -63,7 +63,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             ITriggerResult asyncResult = null;
 
-            _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" }, (ITriggerResult result) =>
+            _pusher.TriggerAsync("my-channel", "my_event", new {hello = "world"}, (ITriggerResult result) =>
             {
                 asyncResult = result;
 
@@ -86,12 +86,11 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var client = new PusherClient.Pusher(Config.AppKey);
             client.Host = Config.WebSocketHost;
-            client.Connected += new PusherClient.ConnectedEventHandler(delegate (object sender)
+            client.Connected += new PusherClient.ConnectedEventHandler(delegate(object sender)
             {
                 Debug.WriteLine("connected");
                 reset.Set();
             });
-            client.Host = Config.WebSocketHost;
 
             Debug.WriteLine("connecting");
             client.Connect();
@@ -101,7 +100,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             Debug.WriteLine("subscribing");
             var channel = client.Subscribe(channelName);
-            channel.Subscribed += new PusherClient.SubscriptionEventHandler(delegate (object s)
+            channel.Subscribed += new PusherClient.SubscriptionEventHandler(delegate(object s)
             {
                 Debug.WriteLine("subscribed");
                 reset.Set();
@@ -111,7 +110,7 @@ namespace PusherServer.Tests.AcceptanceTests
             reset.WaitOne(TimeSpan.FromSeconds(5));
 
             Debug.WriteLine("binding");
-            channel.Bind(eventName, delegate (dynamic data)
+            channel.Bind(eventName, delegate(dynamic data)
             {
                 Debug.WriteLine("event received");
                 eventReceived = true;
@@ -119,7 +118,7 @@ namespace PusherServer.Tests.AcceptanceTests
             });
 
             Debug.WriteLine("Bound. Triggering");
-            ITriggerResult result = _pusher.Trigger(channelName, eventName, new { hello = "world" });
+            ITriggerResult result = _pusher.Trigger(channelName, eventName, new {hello = "world"});
 
             Debug.WriteLine("waiting for event to be received");
             reset.WaitOne(TimeSpan.FromSeconds(10));
@@ -131,7 +130,7 @@ namespace PusherServer.Tests.AcceptanceTests
         public void it_can_trigger_an_event_with_a_percent_in_the_message()
         {
             var eventJSON = File.ReadAllText("AcceptanceTests/percent-message.json");
-            var message = new JavaScriptSerializer().Deserialize(eventJSON, typeof(object));
+            var message = new JavaScriptSerializer().Deserialize(eventJSON, typeof (object));
 
             ITriggerResult result = _pusher.Trigger("my-channel", "my_event", message);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
@@ -149,7 +148,8 @@ namespace PusherServer.Tests.AcceptanceTests
             {
                 HostName = Config.HttpHost
             });
-            ITriggerResult result = pusher.Trigger(new string[] { "my-channel-1", "my-channel-2" }, "my_event", new { hello = "world" });
+            ITriggerResult result = pusher.Trigger(new string[] {"my-channel-1", "my-channel-2"}, "my_event",
+                new {hello = "world"});
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
@@ -164,10 +164,82 @@ namespace PusherServer.Tests.AcceptanceTests
             {
                 HostName = Config.HttpHost
             });
-            pusher.TriggerAsync(new string[] { "my-channel-1", "my-channel-2" }, "my_event", new { hello = "world" }, (ITriggerResult result) =>
+            pusher.TriggerAsync(new string[] {"my-channel-1", "my-channel-2"}, "my_event", new {hello = "world"},
+                (ITriggerResult result) =>
+                {
+                    asyncResult = result;
+
+                    waiting.Set();
+                });
+
+            waiting.WaitOne(5000);
+
+            Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
+        }
+    }
+
+    [TestFixture]
+    public class When_Triggering_a_Batch_of_Events
+    {
+        [Test]
+        public void It_should_return_a_200_response()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost
+            });
+
+            var events = new Event[]
+            {
+                new Event
+                {
+                    Channel = "my-channel-1",
+                    EventName = "my_event",
+                    Data = new {hello = "world"}
+                },
+                new Event
+                {
+                    Channel = "my-channel-2",
+                    EventName = "my_other_event",
+                    Data = new {hello = "other worlds"}
+                },
+            };
+
+            ITriggerResult result = pusher.Trigger(events);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Test]
+        public void It_should_return_a_200_response_async()
+        {
+            var waiting = new AutoResetEvent(false);
+
+            ITriggerResult asyncResult = null;
+
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost
+            });
+
+            var events = new Event[]
+            {
+                new Event
+                {
+                    Channel = "my-channel-1",
+                    EventName = "my_event",
+                    Data = new {hello = "world"}
+                },
+                new Event
+                {
+                    Channel = "my-channel-2",
+                    EventName = "my_other_event",
+                    Data = new {hello = "other worlds"}
+                },
+            };
+
+            pusher.TriggerAsync(events, (ITriggerResult result) =>
             {
                 asyncResult = result;
-
                 waiting.Set();
             });
 
@@ -197,7 +269,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public void It_should_return_a_200_response()
         {
-            ITriggerResult result = _pusher.Trigger("my-channel", "my_event", new { hello = "world" });
+            ITriggerResult result = _pusher.Trigger("my-channel", "my_event", new {hello = "world"});
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
@@ -205,7 +277,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
         public void It_should_expose_a_single_event_id_when_publishing_to_a_single_channel()
         {
-            ITriggerResult result = _pusher.Trigger("ch1", "my_event", new { hello = "world" });
+            ITriggerResult result = _pusher.Trigger("ch1", "my_event", new {hello = "world"});
             Assert.IsTrue(result.EventIds.ContainsKey("ch1"));
             Assert.AreEqual(1, result.EventIds.Count);
         }
@@ -214,8 +286,8 @@ namespace PusherServer.Tests.AcceptanceTests
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
         public void It_should_expose_a_multiple_event_ids_when_publishing_to_multiple_channels()
         {
-            var channels = new string[] { "ch1", "ch2", "ch3" };
-            ITriggerResult result = _pusher.Trigger(channels, "my_event", new { hello = "world" });
+            var channels = new string[] {"ch1", "ch2", "ch3"};
+            ITriggerResult result = _pusher.Trigger(channels, "my_event", new {hello = "world"});
             Assert.IsTrue(result.EventIds.ContainsKey("ch1"));
             Assert.IsTrue(result.EventIds.ContainsKey("ch2"));
             Assert.IsTrue(result.EventIds.ContainsKey("ch3"));

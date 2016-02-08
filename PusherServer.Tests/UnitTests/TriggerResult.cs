@@ -70,39 +70,11 @@ namespace PusherServer.Tests.UnitTests
 
         [Test]
         [ExpectedException(typeof(TriggerResponseException))]
-        public void it_should_treat_empty_content_in_the_request_body_as_a_failed_request()
-        {
-            IRestResponse response = Substitute.For<IRestResponse>();
-            response.Content = "";
-            response.StatusCode = System.Net.HttpStatusCode.OK;
-            var triggerResult = new TriggerResult(response);
-        }
-
-        [Test]
-        [ExpectedException(typeof(TriggerResponseException))]
         public void it_should_treat_non_JSON_content_in_the_request_body_as_a_failed_request()
         {
             IRestResponse response = Substitute.For<IRestResponse>();
             response.Content = "FISH";
             response.StatusCode = System.Net.HttpStatusCode.OK;
-            var triggerResult = new TriggerResult(response);
-        }
-
-        [Test]
-        [ExpectedException(typeof(TriggerResponseException))]
-        public void it_should_treat_a_non_200_response_as_a_failed_request()
-        {
-            IRestResponse response = Substitute.For<IRestResponse>();
-            response.StatusCode = System.Net.HttpStatusCode.NotFound;
-            var triggerResult = new TriggerResult(response);
-        }
-
-        [Test]
-        [ExpectedException(typeof(TriggerResponseException))]
-        public void it_should_treat_a_JSON_response_with_no_event_ids_as_a_failed_request()
-        {
-            IRestResponse response = Substitute.For<IRestResponse>();
-            response.Content = "{\"event_ids\":{}}";
             var triggerResult = new TriggerResult(response);
         }
 
