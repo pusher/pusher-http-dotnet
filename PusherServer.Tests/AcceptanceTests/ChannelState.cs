@@ -100,6 +100,100 @@ namespace PusherServer.Tests.AcceptanceTests
             StringAssert.IsMatch("info should be a comma separated list of attributes", (result as GetResult<ChannelStateMessage>).OriginalContent);
         }
 
+        [Test]
+        public void It_should_throw_an_exception_when_given_an_empty_string_as_a_channel_name()
+        {
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            var info = new { info = "user_count" };
+
+            ArgumentException caughtException = null;
+
+            try
+            {
+                pusherServer.FetchStateForChannel<ChannelStateMessage>(string.Empty, info);
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
+        }
+
+        [Test]
+        public void It_should_throw_an_exception_when_given_a_null_as_a_channel_name()
+        {
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            var info = new { info = "user_count" };
+
+            ArgumentException caughtException = null;
+
+            try
+            {
+                pusherServer.FetchStateForChannel<ChannelStateMessage>(null, info);
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
+        }
+
+        [Test]
+        public void It_should_throw_an_exception_when_given_an_empty_string_as_a_channel_name_async()
+        {
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            var info = new { info = "user_count" };
+
+            ArgumentException caughtException = null;
+
+            IGetResult<ChannelStateMessage> result = null;
+
+            try
+            {
+                pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(string.Empty, info, getResult =>
+                {
+                    result = getResult;
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
+        }
+
+        [Test]
+        public void It_should_throw_an_exception_when_given_a_null_as_a_channel_name_async()
+        {
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            var info = new { info = "user_count" };
+
+            ArgumentException caughtException = null;
+
+            IGetResult<ChannelStateMessage> result = null;
+
+            try
+            {
+                pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(string.Empty, info, getResult =>
+                {
+                    result = getResult;
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
+        }
+
         private class ChannelStateMessage
         {
             public bool Occupied { get; set; }

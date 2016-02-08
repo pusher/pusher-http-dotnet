@@ -304,8 +304,10 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IGetResult<T> FetchUsersFromPrecenceChannel<T>(string channelName)
+        public IGetResult<T> FetchUsersFromPresenceChannel<T>(string channelName)
         {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
             var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
 
             var response = _options.RestClient.Execute(request);
@@ -314,8 +316,10 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public void FetchUsersFromPrecenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
+        public void FetchUsersFromPresenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
         {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
             var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
 
             _options.RestClient.ExecuteAsync(request, response =>
@@ -327,6 +331,8 @@ namespace PusherServer
         /// <inheritDoc/>
         public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
         {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
             var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
 
             var response = _options.RestClient.Execute(request);
@@ -348,6 +354,8 @@ namespace PusherServer
         /// <inheritDoc/>
         public void FetchStateForChannelAsync<T>(string channelName, object info, Action<IGetResult<T>> callback)
         {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
             var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
 
             _options.RestClient.ExecuteAsync(request, response =>
