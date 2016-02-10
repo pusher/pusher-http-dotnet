@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using RestSharp;
 
 namespace PusherServer
@@ -22,12 +23,7 @@ namespace PusherServer
         int _port = DEFAULT_HTTP_PORT;
         string _hostName = null;
 
-        /// <summary>
-        /// Gets or sets a value indicating whether calls to the Pusher REST API are over HTTP or HTTPS.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if encrypted; otherwise, <c>false</c>.
-        /// </value>
+        /// <inheritedDoc/>
         public bool Encrypted
         {
             get
@@ -44,12 +40,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Gets or sets the REST API port that the HTTP calls will be made to.
-        /// </summary>
-        /// <value>
-        /// The port.
-        /// </value>
+        /// <inheritDoc/>
         public int Port
         {
             get
@@ -63,12 +54,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Gets or sets the rest client. Generally only expected to be used for testing.
-        /// </summary>
-        /// <value>
-        /// The rest client.
-        /// </value>
+        /// <inheritDoc/>
         public IRestClient RestClient
         {
             get
@@ -91,19 +77,24 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Gets or sets the HostName to use in the base URL
-        /// </summary>
+        /// <inheritDoc/>
         public string HostName
         {
             get { return _hostName ?? DEFAULT_REST_API_HOST; }
-            set { _hostName = value; }
+            set
+            {
+
+                if (Regex.IsMatch(value, "^.*://"))
+                {
+                    string msg = string.Format("The scheme should not be present in the host value: {0}", value);
+                    throw new FormatException(msg);
+                }
+
+                _hostName = value;
+            }
         }
 
-        /// <summary>
-        /// Gets the base Url based on the set Options
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritDoc/>
         public Uri GetBaseUrl()
         {
             string baseUrl = (Encrypted ? "https" : "http") + "://" + HostName + GetPort();

@@ -17,6 +17,9 @@ namespace PusherServer
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(string channelName, string eventName, object data);
 
         /// <summary>
@@ -26,7 +29,11 @@ namespace PusherServer
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data);
+
 
         /// <summary>
         /// Triggers an event on the specified channel.
@@ -36,6 +43,9 @@ namespace PusherServer
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions"/>.</param>
         /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(string channelName, string eventName, object data, ITriggerOptions options);
 
         /// <summary>
@@ -46,15 +56,63 @@ namespace PusherServer
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions"/>.</param>
         /// <returns>The result of the call to the REST API</returns>
+        /// <exception cref="Exceptions.TriggerResponseException">
+        /// For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON
+        /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options);
 
-        //void TriggerAsync(string channelName, string eventName object data, Action<IRestResponse, RestRequestAsyncHandle> callback);
+        /// <summary>
+        /// Triggers the events in the passed in array
+        /// </summary>
+        /// <param name="events">The events to trigger</param>
+        /// <returns>The result of the call to the REST API</returns>
+        ITriggerResult Trigger(Event[] events);
 
-        //void TriggerAsync(string channelName, string eventName object data, ITriggerOptions options, Action<IRestResponse, RestRequestAsyncHandle> callback);
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelName">The name of the channel to trigger the event on</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        void TriggerAsync(string channelName, string eventName, object data, Action<ITriggerResult> callback);
 
-        //void TriggerAsync(string[] channelNames, string eventName object data, Action<IRestResponse, RestRequestAsyncHandle> callback);
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelName">The name of the channel to trigger the event on</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        void TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
 
-        //void TriggerAsync(string[] channelNames, string eventName object data, ITriggerOptions options, Action<IRestResponse, RestRequestAsyncHandle> callback);
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelNames">The channels to trigger the event on</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        void TriggerAsync(string[] channelNames, string eventName, object data, Action<ITriggerResult> callback);
+
+        /// <summary>
+        /// Triggers an event on the specified channels in the background.
+        /// </summary>
+        /// <param name="channelNames">The channels to trigger the event on</param>
+        /// <param name="eventName">The name of the event.</param>
+        /// <param name="data">The data to be sent with the event. The event payload.</param>
+        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
+
+        /// <summary>
+        /// Triggers the events in the passed in array asynchronously
+        /// </summary>
+        /// <param name="events">The events to trigger</param>
+        /// <param name="callback">Method to call when the request has returned.</param>
+        /// <returns>The result of the call to the REST API</returns>
+        void TriggerAsync(Event[] events, Action<ITriggerResult> callback);
 
         #endregion
 

@@ -71,5 +71,29 @@ namespace PusherServer.Tests.UnitTests
 
             StringAssert.IsMatch("https://api.pusherapp.com:100", options.GetBaseUrl().AbsoluteUri);
         }
+
+        [Test]
+        [ExpectedException(typeof(FormatException))]
+        public void https_scheme_is_not_allowed_when_setting_host()
+        {
+            var httpsOptions = new PusherOptions();
+            httpsOptions.HostName = "https://api.pusherapp.com";
+        }
+
+        [Test]
+        [ExpectedException(typeof(FormatException))]
+        public void http_scheme_is_not_allowed_when_setting_host()
+        {
+            var httpsOptions = new PusherOptions();
+            httpsOptions.HostName = "http://api.pusherapp.com";
+        }
+
+        [Test]
+        [ExpectedException(typeof(FormatException))]
+        public void ftp_scheme_is_not_allowed_when_setting_host()
+        {
+            var httpsOptions = new PusherOptions();
+            httpsOptions.HostName = "ftp://api.pusherapp.com";
+        }
     }
 }
