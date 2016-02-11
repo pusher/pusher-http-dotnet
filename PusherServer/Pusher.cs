@@ -329,7 +329,7 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
+        public IGetResult<T> FetchStateForChannel<T>(string channelName, object info = null)
         {
             ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
 
@@ -341,14 +341,9 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public void FetchUsersFromPrecenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
+        public void FetchStateForChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
         {
-            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
-
-            _options.RestClient.ExecuteAsync(request, response =>
-            {
-                callback(new GetResult<T>(response, _options.JsonDeserializer));
-            });
+            FetchStateForChannelAsync<T>(channelName, null, callback);
         }
 
         /// <inheritDoc/>
@@ -365,13 +360,19 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IGetResult<T> FetchStateForChannels<T>(object info)
+        public IGetResult<T> FetchStateForChannels<T>(object info = null)
         {
             var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
 
             var response = _options.RestClient.Execute(request);
 
             return new GetResult<T>(response, _options.JsonDeserializer);
+        }
+
+        /// <inheritDoc/>
+        public void FetchStateForChannelsAsync<T>(Action<IGetResult<T>> callback)
+        {
+            FetchStateForChannelsAsync<T>(null, callback);
         }
 
         /// <inheritDoc/>

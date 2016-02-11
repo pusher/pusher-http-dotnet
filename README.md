@@ -29,30 +29,14 @@ To trigger an event on one or more channels use the trigger function.
 
 #### A single channel
 
-```cs
-var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
 ```
-
-or asynchronously
-
-```cs
-pusher.TriggerAsync( "channel-1", "test_event", new { message = "hello world" }, (ITriggerResult result) => 
-{
-});
+var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
 ```
 
 #### Multiple channels
 
-```cs
+```
 var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
-```
-
-or asynchronously
-
-```
-pusher.TriggeAsync( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" }, (ITriggerResult result) => 
-{
-});
 ```
 
 ### Excluding event recipients
@@ -110,15 +94,35 @@ You can get a list of channels that are present within your application:
 IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels");
 ```
 
+or 
+
+```
+IGetResult<ChannelsList> result = pusher.FetchStateForChannels<ChannelsList>();
+```
+
 You can provide additional parameters to filter the list of channels that is returned.
 
 ```
 IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels", new { filter_by_prefix = "presence-" } );
 ```
 
+or
+
+```
+IGetResult<ChannelsList> result = pusher.FetchStateForChannels<ChannelsList>(new { filter_by_prefix = "presence-" } );
+```
+
+There is also an asynchronous variation
+
+```
+pusher.FetchStateForChannelsAsync<ChannelsList>((IGetResult<ChannelsList> result) =>
+{
+});
+```
+
 #### Fetch channel information
 
-Retrive information about a single channel:
+Retrieve information about a single channel:
 
 ```
 IGetResult<object> result = pusher.Get<object>("/channels/my_channel" );
@@ -138,7 +142,7 @@ pusher.FetchStateForChannelAsync<object>("my_channel", (ITriggerResult result) =
 });
 ```
 
-Retrive information about multiple channels:
+Retrieve information about multiple channels:
 
 ```
 IGetResult<object> result = pusher.FetchStateForChannels<object>();
@@ -155,10 +159,10 @@ pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) =>
 
 #### Fetch a list of users on a presence channel
 
-Retrive a list of users that are on a presence channel:
+Retrieve a list of users that are on a presence channel:
 
 ```
-IGetResult<object> result = pusher.Get<object>("/channels/presence-channel/users" );
+IGetResult<object> result = pusher.FetchUsersFromPresence<object>("/channels/presence-channel/users" );
 ```
 
 or
@@ -221,14 +225,9 @@ else {
 
 * Developed using Visual Studio Community 2013
 * The NUnit test framework is used for testing, your copy of Visual Studio needs the "NUnit test adapter" installed from Tools -> Extensions and Updates if you wish to run the test from the IDE.
-* PusherServer acceptance tests depends on [PusherClient](https://github.com/pusher/pusher-dotnet-client).
+* PusherServer acceptance tests depends on [PusherClient](https://github.com/pusher-community/pusher-websocket-dotnet).
 
 ## Publish to NuGet
-### Running Tests
-
-In order to run the tests modify `PusherServer.Tests/App.config` and replace the configuration values with Pusher application credtials. Then run the tests in Visual Studio.
-
-### Publish to NuGet
 
 You should be familiar with [creating an publishing NuGet packages](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package).
 
