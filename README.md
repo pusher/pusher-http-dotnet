@@ -225,7 +225,7 @@ else {
 
 * Developed using Visual Studio Community 2013
 * The NUnit test framework is used for testing, your copy of Visual Studio needs the "NUnit test adapter" installed from Tools -> Extensions and Updates if you wish to run the test from the IDE.
-* PusherServer acceptance tests depends on [PusherClient](https://github.com/leggetter/pusher-dotnet-client).
+* PusherServer acceptance tests depends on [PusherClient](https://github.com/pusher-community/pusher-websocket-dotnet).
 
 ## Publish to NuGet
 
