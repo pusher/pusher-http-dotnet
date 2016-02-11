@@ -162,7 +162,7 @@ pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) =>
 Retrive a list of users that are on a presence channel:
 
 ```
-IGetResult<object> result = pusher.FetchUsersFromPrecence<object>("/channels/presence-channel/users" );
+IGetResult<object> result = pusher.FetchUsersFromPresence<object>("/channels/presence-channel/users" );
 ```
 
 or
