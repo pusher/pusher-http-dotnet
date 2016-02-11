@@ -14,7 +14,7 @@ namespace PusherServer
         {
             if(string.IsNullOrEmpty(secret))
             {
-                throw new ArgumentException("A secret must be provided", nameof(secret));
+                throw new ArgumentException("A secret must be provided", "secret");
             }
 
             this._validationErrors = new List<string>();

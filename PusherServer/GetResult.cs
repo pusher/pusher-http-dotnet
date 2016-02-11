@@ -19,7 +19,7 @@ namespace PusherServer
         {
             if (deserializer == null)
             {
-                throw new ArgumentNullException(nameof(deserializer), "An instance of a deserializer needs to be provided");
+                throw new ArgumentNullException("deserializer", "An instance of a deserializer needs to be provided");
             }
 
             DeserializeResponse(response, deserializer);

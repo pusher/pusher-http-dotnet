@@ -20,7 +20,7 @@ namespace PusherServer
         {
             if (response == null)
             {
-                throw new ArgumentNullException(nameof(response));
+                throw new ArgumentNullException("response");
             }
 
             _body = response.Content;
