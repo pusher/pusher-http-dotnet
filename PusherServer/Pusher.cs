@@ -197,7 +197,6 @@ namespace PusherServer
             ValidationHelper.ValidateChannelNames(channelNames);
             ValidationHelper.ValidateSocketId(options.SocketId);
 
-            // todo jmc this needs replacing
             TriggerBody bodyData = new TriggerBody()
             {
                 name = eventName,
