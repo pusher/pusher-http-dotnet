@@ -12,7 +12,7 @@
     <description>The .NET library for interacting with the Pusher HTTP API.
 Register at https://pusher.com and use the application credentials within your app as shown below.</description>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright 2015</copyright>
+    <copyright>Copyright 2016</copyright>
     <tags>pusher realtime</tags>
     <dependencies>
         <dependency id="RestSharp" version="105.0.1" />
