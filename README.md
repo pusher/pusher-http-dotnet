@@ -232,7 +232,7 @@ else {
 
 The solution can be opened and compiled in Xamarin Studio on OSX.
 
-Alternatively, the solution can be built from the command line is mono is installed.  First of all, open up a terminal and navigate to the root directory of the solution. The second step is to restore the Nuget packages, which can be done with this command
+Alternatively, the solution can be built from the command line if Mono is installed.  First of all, open up a terminal and navigate to the root directory of the solution. The second step is to restore the Nuget packages, which can be done with this command
 
 ```
 nuget restore pusher-dotnet-server.sln
