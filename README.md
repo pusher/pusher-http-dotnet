@@ -122,7 +122,7 @@ pusher.FetchStateForChannelsAsync<ChannelsList>((IGetResult<ChannelsList> result
 
 #### Fetch channel information
 
-Retrive information about a single channel:
+Retrieve information about a single channel:
 
 ```
 IGetResult<object> result = pusher.Get<object>("/channels/my_channel" );
@@ -142,7 +142,7 @@ pusher.FetchStateForChannelAsync<object>("my_channel", (ITriggerResult result) =
 });
 ```
 
-Retrive information about multiple channels:
+Retrieve information about multiple channels:
 
 ```
 IGetResult<object> result = pusher.FetchStateForChannels<object>();
@@ -159,7 +159,7 @@ pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) =>
 
 #### Fetch a list of users on a presence channel
 
-Retrive a list of users that are on a presence channel:
+Retrieve a list of users that are on a presence channel:
 
 ```
 IGetResult<object> result = pusher.FetchUsersFromPresence<object>("/channels/presence-channel/users" );
