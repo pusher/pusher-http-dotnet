@@ -3,9 +3,9 @@
 namespace PusherServer
 {
     /// <summary>
-    /// An implementation of the <see cref="IBodySerializer"/> that passes through the raw string.
+    /// An implementation of the <see cref="ISerializeObjectsToJson"/> that passes through the raw string.
     /// </summary>
-    public class RawBodySerializer : IBodySerializer
+    public class RawBodySerializer : ISerializeObjectsToJson
     {
         /// <summary>
         /// Presumes we are getting a string as the body, and passes it through.

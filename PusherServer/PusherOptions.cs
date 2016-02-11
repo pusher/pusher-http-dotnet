@@ -7,7 +7,7 @@ namespace PusherServer
     /// <summary>
     /// Options to be set on the <see cref="Pusher">Pusher</see> instance.
     /// </summary>
-    public class PusherOptions: IPusherOptions
+    public class PusherOptions : IPusherOptions
     {
         /// <summary>
         /// The default Rest API Host for contacting the Pusher server, it does not contain a cluster name
@@ -22,6 +22,8 @@ namespace PusherServer
         bool _portModified = false;
         int _port = DEFAULT_HTTP_PORT;
         string _hostName = null;
+        ISerializeObjectsToJson _jsonSerializer;
+        IDeserializeJsonStrings _jsonDeserializer;
 
         /// <inheritedDoc/>
         public bool Encrypted
@@ -66,24 +68,20 @@ namespace PusherServer
 
                 return _client;
             }
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("RestClient cannot be null");
-                }
-
-                _client = value;
-            }
+            set { _client = value; }
         }
 
-        /// <inheritDoc/>
+        /// <summary>
+        /// Gets or sets the HostName to use in the base URL
+        /// </summary>
         public string HostName
         {
-            get { return _hostName ?? DEFAULT_REST_API_HOST; }
+            get
+            {
+                return _hostName ?? DEFAULT_REST_API_HOST;
+            }
             set
             {
-
                 if (Regex.IsMatch(value, "^.*://"))
                 {
                     string msg = string.Format("The scheme should not be present in the host value: {0}", value);
@@ -91,6 +89,44 @@ namespace PusherServer
                 }
 
                 _hostName = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Json Serializer
+        /// </summary>
+        public ISerializeObjectsToJson JsonSerializer
+        {
+            get
+            {
+                if (_jsonSerializer == null)
+                {
+                    _jsonSerializer = new DefaultSerializer();
+                }
+
+                return _jsonSerializer;
+                
+            }
+            set { _jsonSerializer = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the Json Deserializer
+        /// </summary>
+        public IDeserializeJsonStrings JsonDeserializer
+        {
+            get
+            {
+                if (_jsonDeserializer == null)
+                {
+                    _jsonDeserializer = new DefaultDeserializer();
+                }
+
+                return _jsonDeserializer; 
+            }
+            set
+            {
+                _jsonDeserializer = value;
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Web.Script.Serialization;
 using PusherServer.Exceptions;
@@ -38,10 +39,7 @@ namespace PusherServer
         /// <inheritDoc/>
         public IDictionary<string, string> EventIds
         {
-            get
-            {
-                return this._eventIds;
-            }
+            get { return this._eventIds; }
         }
     }
 }

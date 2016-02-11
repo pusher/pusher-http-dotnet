@@ -25,6 +25,16 @@ namespace PusherServer
         int Port { get; set; }
 
         /// <summary>
+        /// Gets or sets the Json Serializer
+        /// </summary>
+        ISerializeObjectsToJson JsonSerializer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Json Deserializer
+        /// </summary>
+        IDeserializeJsonStrings JsonDeserializer { get; set; }
+
+        /// <summary>
         /// Gets or sets the rest client. Generally only expected to be used for testing.
         /// </summary>
         /// <value>

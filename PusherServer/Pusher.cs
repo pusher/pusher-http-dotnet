@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using RestSharp;
 using RestSharp.Serializers;
-using System.Reflection;
 
 namespace PusherServer
 {
@@ -13,11 +13,14 @@ namespace PusherServer
     /// </summary>
     public class Pusher : IPusher
     {
+        private const string ChannelUsersResource = "/channels/{0}/users";
+        private const string ChannelResource = "/channels/{0}";
+        private const string MultipleChannelsResource = "/channels";
+
         private readonly string _appId;
         private readonly string _appKey;
         private readonly string _appSecret;
         private readonly IPusherOptions _options;
-        private IBodySerializer _serializer;
 
         /// <summary>
         /// Pusher library version information.
@@ -50,9 +53,7 @@ namespace PusherServer
         /// <param name="appId">The app id.</param>
         /// <param name="appKey">The app key.</param>
         /// <param name="appSecret">The app secret.</param>
-        public Pusher(string appId, string appKey, string appSecret):
-            this(appId, appKey, appSecret, null)
-
+        public Pusher(string appId, string appKey, string appSecret) : this(appId, appKey, appSecret, null)
         {}
 
         /// <summary>
@@ -77,17 +78,6 @@ namespace PusherServer
             _appKey = appKey;
             _appSecret = appSecret;
             _options = options;
-
-            BodySerializer = new DefaultJsonBodySerializer();
-        }
-
-        /// <summary>
-        /// The serializer to use for the body of the messages.
-        /// </summary>
-        public IBodySerializer BodySerializer
-        {
-            get { return _serializer; }
-            set { _serializer = value ?? new DefaultJsonBodySerializer(); }
         }
 
         #region Trigger
@@ -210,7 +200,7 @@ namespace PusherServer
             TriggerBody bodyData = new TriggerBody()
             {
                 name = eventName,
-                data = BodySerializer.Serialize(data),
+                data = _options.JsonSerializer.Serialize(data),
                 channels = channelNames
             };
 
@@ -231,7 +221,7 @@ namespace PusherServer
                 name = e.EventName,
                 channel = e.Channel,
                 socket_id = e.SocketId,
-                data = BodySerializer.Serialize(e.Data)
+                data = _options.JsonSerializer.Serialize(e.Data)
             });
 
             return new BatchTriggerBody()
@@ -284,8 +274,6 @@ namespace PusherServer
         /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource)
         {
-            _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             return Get<T>(resource, null);
         }
 
@@ -298,12 +286,10 @@ namespace PusherServer
         /// <returns>The result of the Get</returns>
         public IGetResult<T> Get<T>(string resource, object parameters)
         {
-            _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
 
             IRestResponse response = _options.RestClient.Execute(request);
-            return new GetResult<T>(response);
+            return new GetResult<T>(response, _options.JsonDeserializer);
         }
 
         /// <summary>
@@ -316,12 +302,75 @@ namespace PusherServer
         {
             return new WebHook(this._appSecret, signature, body);
         }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchUsersFromPrecenceChannel<T>(string channelName)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response, _options.JsonDeserializer);
+        }
+
+        /// <inheritDoc/>
+        public void FetchUsersFromPrecenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response, _options.JsonDeserializer));
+            });
+        }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response, _options.JsonDeserializer);
+        }
+
+        /// <inheritDoc/>
+        public void FetchStateForChannelAsync<T>(string channelName, object info, Action<IGetResult<T>> callback)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response, _options.JsonDeserializer));
+            });
+        }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchStateForChannels<T>(object info)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response, _options.JsonDeserializer);
+        }
+
+        /// <inheritDoc/>
+        public void FetchStateForChannelsAsync<T>(object info, Action<IGetResult<T>> callback)
+        {
+            var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response, _options.JsonDeserializer));
+            });
+        }
+
         #endregion
 
         private IRestResponse ExecuteTrigger(string path, object requestBody)
         {
             _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
 
             Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
@@ -360,7 +409,7 @@ namespace PusherServer
             queryParams.Add("auth_version", "1.0");
 
             if (requestBody != null)
-            {   
+            {
                 JsonSerializer serializer = new JsonSerializer();
                 var bodyDataJson = serializer.Serialize(requestBody);
                 var bodyMD5 = CryptoHelper.GetMd5Hash(bodyDataJson);

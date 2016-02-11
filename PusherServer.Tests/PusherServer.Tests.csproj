@@ -61,7 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcceptanceTests\Authenticate.cs" />
+    <Compile Include="AcceptanceTests\ChannelState.cs" />
+    <Compile Include="Helpers\ClientServerFactory.cs" />
     <Compile Include="AcceptanceTests\Get.cs" />
+    <Compile Include="AcceptanceTests\PresenceChannels.cs" />
     <Compile Include="Helpers\InMemoryAuthorizer.cs" />
     <Compile Include="AcceptanceTests\Trigger.cs" />
     <Compile Include="Config.cs" />
