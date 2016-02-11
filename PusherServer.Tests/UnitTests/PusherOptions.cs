@@ -122,8 +122,6 @@ namespace PusherServer.Tests.UnitTests
 
             Assert.IsInstanceOf<DefaultDeserializer>(options.JsonDeserializer);
         }
-            Assert.IsInstanceOf<DefaultDeserializer>(options.JsonDeserializer);
-        }
 
         [Test]
         public void the_json_serialiser_should_be_the_default_one_when_none_is_set()

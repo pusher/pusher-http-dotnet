@@ -76,8 +76,20 @@ namespace PusherServer
         /// </summary>
         public string HostName
         {
-            get { return _hostName ?? DEFAULT_REST_API_HOST; }
-            set { _hostName = value; }
+            get
+            {
+                return _hostName ?? DEFAULT_REST_API_HOST;
+            }
+            set
+            {
+                if (Regex.IsMatch(value, "^.*://"))
+                {
+                    string msg = string.Format("The scheme should not be present in the host value: {0}", value);
+                    throw new FormatException(msg);
+                }
+
+                _hostName = value;
+            }
         }
 
         /// <summary>
@@ -112,10 +124,9 @@ namespace PusherServer
 
                 return _jsonDeserializer; 
             }
-            set { _jsonDeserializer = value; }
-                }
-
-                _hostName = value;
+            set
+            {
+                _jsonDeserializer = value;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using RestSharp;
 using RestSharp.Serializers;
 
@@ -217,7 +218,7 @@ namespace PusherServer
                 name = e.EventName,
                 channel = e.Channel,
                 socket_id = e.SocketId,
-                data = BodySerializer.Serialize(e.Data)
+                data = _options.JsonSerializer.Serialize(e.Data)
             });
 
             return new BatchTriggerBody()

@@ -25,19 +25,6 @@ namespace PusherServer
         int Port { get; set; }
 
         /// <summary>
-        /// Gets or sets the rest client. Generally only expected to be used for testing.
-        /// </summary>
-        /// <value>
-        /// The rest client.
-        /// </value>
-        IRestClient RestClient { get; set; }
-
-        /// <summary>
-        /// Gets or sets the HostName to use in the base URL
-        /// </summary>
-        string HostName { get; set; }
-
-        /// <summary>
         /// Gets or sets the Json Serializer
         /// </summary>
         ISerializeObjectsToJson JsonSerializer { get; set; }
