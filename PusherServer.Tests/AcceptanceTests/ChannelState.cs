@@ -74,6 +74,30 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
+        public void It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
+        {
+            var reset = new AutoResetEvent(false);
+
+            var channelName = "presence-state-channel-async-1";
+
+            var pusherServer = ClientServerFactory.CreateServer();
+            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+
+            IGetResult<ChannelStateMessage> result = null;
+
+            pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName, getResult =>
+            {
+                result = getResult;
+                reset.Set();
+            });
+
+            reset.WaitOne(TimeSpan.FromSeconds(30));
+
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.IsTrue(result.Data.Occupied);
+        }
+
+        [Test]
         public void It_should_not_return_the_state_based_asynchronously_When_given_a_channel_name_that_exists_an_bad_attributes()
         {
             var reset = new AutoResetEvent(false);
@@ -218,7 +242,6 @@ namespace PusherServer.Tests.AcceptanceTests
             var result = pusherServer.FetchStateForChannels<object>(info);
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-            // Really need to introduce a mechanism to use a different deserialiser!
             Assert.AreEqual(1, ((((Dictionary<string, object>)result.Data)["channels"] as Dictionary<string, object>)["presence-multiple-state-channel3"] as Dictionary<string, object>)["user_count"]);
         }
 
@@ -263,8 +286,30 @@ namespace PusherServer.Tests.AcceptanceTests
             reset.WaitOne(TimeSpan.FromSeconds(30));
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-            // Really need to introduce a mechanism to use a different deserialiser!
             Assert.AreEqual(1, ((((Dictionary<string, object>)result.Data)["channels"] as Dictionary<string, object>)["presence-multiple-state-channel-async-3"] as Dictionary<string, object>)["user_count"]);
+        }
+
+        [Test]
+        public void It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
+        {
+            var reset = new AutoResetEvent(false);
+
+            var channelName = "presence-multiple-state-channel-async-3";
+
+            var pusherServer = ClientServerFactory.CreateServer();
+            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+
+            IGetResult<object> result = null;
+
+            pusherServer.FetchStateForChannelsAsync<object>(getResult =>
+            {
+                result = getResult;
+                reset.Set();
+            });
+
+            reset.WaitOne(TimeSpan.FromSeconds(30));
+
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
         [Test]
