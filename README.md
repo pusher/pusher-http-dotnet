@@ -228,6 +228,24 @@ else {
 * The NUnit test framework is used for testing, your copy of Visual Studio needs the "NUnit test adapter" installed from Tools -> Extensions and Updates if you wish to run the test from the IDE.
 * PusherServer acceptance tests depends on [PusherClient](https://github.com/pusher-community/pusher-websocket-dotnet).
 
+### Alternative environments
+
+The solution can be opened and compiled in Xamarin Studio on OSX.
+
+Alternatively, the solution can be built from the command line is mono is installed.  First of all, open up a terminal and navigate to the root directory of the solution. The second step is to restore the Nuget packages, which can be done with this command
+
+```
+nuget restore pusher-dotnet-server.sln
+```
+
+and finally build the solution, now that the packages have been restored
+
+```
+xbuild pusher-dotnet-server.sln
+```
+
+During the build, there will be a warning about a section called TestCaseManagementSettings in the GlobalSection.  Please ignore this, as it is a Visual Studio specific setting.
+
 ## Publish to NuGet
 
 You should be familiar with [creating an publishing NuGet packages](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package).
