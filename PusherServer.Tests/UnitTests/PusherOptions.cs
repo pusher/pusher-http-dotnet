@@ -72,7 +72,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("https://api.pusherapp.com:100", options.GetBaseUrl().AbsoluteUri);
         }
 
-                [Test]
+        [Test]
         [ExpectedException(typeof(FormatException))]
         public void https_scheme_is_not_allowed_when_setting_host()
         {
