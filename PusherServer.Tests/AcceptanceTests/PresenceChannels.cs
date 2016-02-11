@@ -19,7 +19,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            var result = pusherServer.FetchUsersFromPrecenceChannel<PresenceChannelMessage>(channelName);
+            var result = pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>(channelName);
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             Assert.AreEqual(1, result.Data.Users.Length);
@@ -35,7 +35,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var pusherServer = ClientServerFactory.CreateServer();
 
-            var result = pusherServer.FetchUsersFromPrecenceChannel<PresenceChannelMessage>(channelName);
+            var result = pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>(channelName);
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             Assert.AreEqual(0, result.Data.Users.Length);
@@ -51,7 +51,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            var result = pusherServer.FetchUsersFromPrecenceChannel<PresenceChannelMessage>("test-channel");
+            var result = pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>("test-channel");
 
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
         }
@@ -67,7 +67,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
             IGetResult<PresenceChannelMessage> result = null;
-            pusherServer.FetchUsersFromPrecenceChannelAsync<PresenceChannelMessage>(channelName, getResult =>
+            pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName, getResult =>
             {
                 result = getResult;
                 reset.Set();
@@ -90,7 +90,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
 
             IGetResult<PresenceChannelMessage> result = null;
-            pusherServer.FetchUsersFromPrecenceChannelAsync<PresenceChannelMessage>(channelName, getResult =>
+            pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName, getResult =>
             {
                 result = getResult;
                 reset.Set();
@@ -113,7 +113,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
             IGetResult<PresenceChannelMessage> result = null;
-            pusherServer.FetchUsersFromPrecenceChannelAsync<PresenceChannelMessage>("test-channel-async", getResult =>
+            pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>("test-channel-async", getResult =>
             {
                 result = getResult;
                 reset.Set();
@@ -122,6 +122,97 @@ namespace PusherServer.Tests.AcceptanceTests
             reset.WaitOne(TimeSpan.FromSeconds(30));
 
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [Test]
+        public void should_throw_an_exception_when_given_a_null_for_a_channel_name()
+        {
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            ArgumentException caughtException = null;
+
+            try
+            {
+                pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>(null);
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+            
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
+        }
+
+        [Test]
+        public void should_throw_an_exception_when_given_an_empty_string_for_a_channel_name()
+        {
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            ArgumentException caughtException = null;
+
+            try
+            {
+                pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>(string.Empty);
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
+        }
+
+        [Test]
+        public void should_throw_an_exception_when_given_a_null_for_a_channel_name_async()
+        {
+            var reset = new AutoResetEvent(false);
+
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            IGetResult<PresenceChannelMessage> result = null;
+
+            ArgumentException caughtException = null;
+
+            try
+            {
+                pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(null, getResult =>
+                {
+                    result = getResult;
+                    reset.Set();
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
+        }
+
+        [Test]
+        public void should_throw_an_exception_when_given_an_empty_string_for_a_channel_name_async()
+        {
+            var reset = new AutoResetEvent(false);
+
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            ArgumentException caughtException = null;
+
+            IGetResult<PresenceChannelMessage> result = null;
+            try
+            {
+                pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(string.Empty, getResult =>
+                {
+                    result = getResult;
+                    reset.Set();
+                });
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
         }
 
         private class PresenceChannelMessage

@@ -304,9 +304,36 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IGetResult<T> FetchUsersFromPrecenceChannel<T>(string channelName)
+        public IGetResult<T> FetchUsersFromPresenceChannel<T>(string channelName)
         {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
             var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+
+            var response = _options.RestClient.Execute(request);
+
+            return new GetResult<T>(response, _options.JsonDeserializer);
+        }
+
+        /// <inheritDoc/>
+        public void FetchUsersFromPresenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
+        {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+
+            _options.RestClient.ExecuteAsync(request, response =>
+            {
+                callback(new GetResult<T>(response, _options.JsonDeserializer));
+            });
+        }
+
+        /// <inheritDoc/>
+        public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
+        {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
+            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
 
             var response = _options.RestClient.Execute(request);
 
@@ -325,18 +352,10 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IGetResult<T> FetchStateForChannel<T>(string channelName, object info)
-        {
-            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
-
-            var response = _options.RestClient.Execute(request);
-
-            return new GetResult<T>(response, _options.JsonDeserializer);
-        }
-
-        /// <inheritDoc/>
         public void FetchStateForChannelAsync<T>(string channelName, object info, Action<IGetResult<T>> callback)
         {
+            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
+
             var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
 
             _options.RestClient.ExecuteAsync(request, response =>
@@ -372,7 +391,6 @@ namespace PusherServer
         {
             _options.RestClient.BaseUrl = _options.GetBaseUrl();
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
-
             Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
                 Environment.NewLine,
                 request.Method,
