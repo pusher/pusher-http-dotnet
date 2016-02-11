@@ -311,7 +311,7 @@ namespace PusherServer
 
             var response = _options.RestClient.Execute(request);
 
-            return new GetResult<T>(response);
+            return new GetResult<T>(response, _options.JsonDeserializer);
         }
 
         /// <inheritDoc/>
@@ -321,7 +321,7 @@ namespace PusherServer
 
             _options.RestClient.ExecuteAsync(request, response =>
             {
-                callback(new GetResult<T>(response));
+                callback(new GetResult<T>(response, _options.JsonDeserializer));
             });
         }
 
@@ -332,7 +332,7 @@ namespace PusherServer
 
             var response = _options.RestClient.Execute(request);
 
-            return new GetResult<T>(response);
+            return new GetResult<T>(response, _options.JsonDeserializer);
         }
 
         /// <inheritDoc/>
@@ -342,7 +342,7 @@ namespace PusherServer
 
             _options.RestClient.ExecuteAsync(request, response =>
             {
-                callback(new GetResult<T>(response));
+                callback(new GetResult<T>(response, _options.JsonDeserializer));
             });
         }
 
@@ -353,7 +353,7 @@ namespace PusherServer
 
             var response = _options.RestClient.Execute(request);
 
-            return new GetResult<T>(response);
+            return new GetResult<T>(response, _options.JsonDeserializer);
         }
 
         /// <inheritDoc/>
@@ -363,7 +363,7 @@ namespace PusherServer
 
             _options.RestClient.ExecuteAsync(request, response =>
             {
-                callback(new GetResult<T>(response));
+                callback(new GetResult<T>(response, _options.JsonDeserializer));
             });
         }
 
