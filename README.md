@@ -154,6 +154,7 @@ There is also an asynchronous variation
 pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) => 
 {
 });
+```
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
 
