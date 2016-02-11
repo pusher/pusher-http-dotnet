@@ -324,7 +324,7 @@ namespace PusherServer
 
             _options.RestClient.ExecuteAsync(request, response =>
             {
-                callback(new GetResult<T>(response));
+                callback(new GetResult<T>(response, _options.JsonDeserializer));
             });
         }
 
@@ -382,17 +382,6 @@ namespace PusherServer
             _options.RestClient.ExecuteAsync(request, response =>
             {
                 callback(new GetResult<T>(response, _options.JsonDeserializer));
-            });
-        }
-
-        /// <inheritDoc/>
-        public void FetchStateForChannelsAsync<T>(object info, Action<IGetResult<T>> callback)
-        {
-            var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
-
-            _options.RestClient.ExecuteAsync(request, response =>
-            {
-                callback(new GetResult<T>(response));
             });
         }
 
