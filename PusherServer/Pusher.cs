@@ -446,9 +446,9 @@ namespace PusherServer
             string path = string.Format("/apps/{0}/{1}", this._appId, resource);
 
             string authToSign = String.Format(
-                Enum.GetName(requestType.GetType(), requestType) + 
-                "\n{0}\n{1}",    
-                path, 
+                Enum.GetName(requestType.GetType(), requestType) +
+                "\n{0}\n{1}",
+                path,
                 queryString);
 
             var authSignature = CryptoHelper.GetHmac256(_appSecret, authToSign);
