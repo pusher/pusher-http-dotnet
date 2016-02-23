@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0 rc4
+
+* [ADDED] Support for the `cluster` option.
+
 ## 3.0.0 rc3
 
 * [ADDED] Build support for the Pusher Travis instance

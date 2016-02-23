@@ -20,8 +20,10 @@ namespace PusherServer
         IRestClient _client;
         bool _encrypted = false;
         bool _portModified = false;
+        bool _hostSet = false;
         int _port = DEFAULT_HTTP_PORT;
         string _hostName = null;
+        string _cluster = null;
         ISerializeObjectsToJson _jsonSerializer;
         IDeserializeJsonStrings _jsonDeserializer;
 
@@ -56,6 +58,24 @@ namespace PusherServer
             }
         }
 
+        /// <summary>
+        /// Set the cluster only if there is no custom host defined.
+        /// </summary>
+        public string Cluster
+        {
+          get
+          {
+            return _cluster;
+          }
+          set
+          {
+            if (_hostSet == false) {
+              _cluster = value;
+              _hostName = "api-"+_cluster+".pusher.com";
+            }
+          }
+        }
+
         /// <inheritDoc/>
         public IRestClient RestClient
         {
@@ -88,6 +108,8 @@ namespace PusherServer
                     throw new FormatException(msg);
                 }
 
+                _hostSet = true;
+                _cluster = null;
                 _hostName = value;
             }
         }
@@ -105,7 +127,7 @@ namespace PusherServer
                 }
 
                 return _jsonSerializer;
-                
+
             }
             set { _jsonSerializer = value; }
         }
@@ -122,7 +144,7 @@ namespace PusherServer
                     _jsonDeserializer = new DefaultDeserializer();
                 }
 
-                return _jsonDeserializer; 
+                return _jsonDeserializer;
             }
             set
             {

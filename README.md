@@ -23,6 +23,18 @@ Install-Package PusherServer
 var Pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET);
 ```
 
+If you created your app in a different cluster to the default cluster, specify this as follows:
+
+```cs
+
+var options = new PusherOptions();
+options.Cluster = "eu";
+
+var Pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET, options);
+```
+
+*Please Note: the `Cluster` option is overridden by `HostName` option. So, if `HostName` is set then `Cluster` will be ignored.*
+
 ### Publishing/Triggering events
 
 To trigger an event on one or more channels use the trigger function.
@@ -94,7 +106,7 @@ You can get a list of channels that are present within your application:
 IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels");
 ```
 
-or 
+or
 
 ```
 IGetResult<ChannelsList> result = pusher.FetchStateForChannels<ChannelsList>();
@@ -137,7 +149,7 @@ IGetResult<object> result = pusher.FetchStateForChannel<object>("my_channel");
 There is also an asynchronous variation
 
 ```
-pusher.FetchStateForChannelAsync<object>("my_channel", (ITriggerResult result) => 
+pusher.FetchStateForChannelAsync<object>("my_channel", (ITriggerResult result) =>
 {
 });
 ```
@@ -151,7 +163,7 @@ IGetResult<object> result = pusher.FetchStateForChannels<object>();
 There is also an asynchronous variation
 
 ```
-pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) => 
+pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) =>
 {
 });
 ```
@@ -175,7 +187,7 @@ IGetResult<object> result = pusher.FetchUsersFromPresenceChannel<object>("my_cha
 There is also an asynchronous variation
 
 ```
-pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel", (ITriggerResult result) => 
+pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel", (ITriggerResult result) =>
 {
 });
 ```

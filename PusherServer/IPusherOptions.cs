@@ -49,6 +49,11 @@ namespace PusherServer
         string HostName { get; set; }
 
         /// <summary>
+        /// The cluster where the application was created, e.g. eu
+        /// </summary>
+        string Cluster { get; set; }
+
+        /// <summary>
         /// Gets the base Url based on the set Options
         /// </summary>
         /// <returns>The constructed URL</returns>
