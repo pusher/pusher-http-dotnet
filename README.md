@@ -260,7 +260,7 @@ During the build, there will be a warning about a section called TestCaseManagem
 
 ## Publish to NuGet
 
-You should be familiar with [creating an publishing NuGet packages](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package).
+You should be familiar with [creating and publishing NuGet packages](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package).
 
 From the `pusher-dotnet-server` directory:
 

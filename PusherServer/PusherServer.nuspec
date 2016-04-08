@@ -4,10 +4,11 @@
     <id>PusherServer</id>
     <version>$version$</version>
     <title>Pusher .NET Server Library</title>
-    <authors>Pusher, Phil Leggetter</authors>
+    <authors>Pusher, Phil Leggetter, John McLoughlin</authors>
     <owners>Pusher</owners>
-    <licenseUrl>https://github.com/pusher/pusher-dotnet-server/blob/master/LICENSE.txt</licenseUrl>
+    <licenseUrl>https://raw.githubusercontent.com/pusher/pusher-http-dotnet/master/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/pusher/pusher-dotnet-server</projectUrl>
+    <iconUrl>https://pusher.com/static_logos/64x64.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The .NET library for interacting with the Pusher HTTP API.
 Register at https://pusher.com and use the application credentials within your app as shown below.</description>
@@ -17,6 +18,7 @@ Register at https://pusher.com and use the application credentials within your a
     <dependencies>
         <dependency id="RestSharp" version="105.0.1" />
     </dependencies>
+    <summary>Interact with the Pusher HTTP API</summary>
   </metadata>
   <files>
     <file src="..\README.md" target="." />
