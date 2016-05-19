@@ -41,14 +41,25 @@ To trigger an event on one or more channels use the trigger function.
 
 #### A single channel
 
-```
+```cs
 var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
 ```
 
 #### Multiple channels
 
-```
+```cs
 var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
+```
+
+#### Batches
+
+```cs
+var events = new List[]{
+  new Event(){ EventName = "test_event", Channel = "channel-1", Data = "hello world" },
+  new Event(){ EventName = "test_event", Channel = "channel-1", Data = "my name is bob" },
+}
+
+var result = pusher.Trigger(events)
 ```
 
 ### Excluding event recipients
