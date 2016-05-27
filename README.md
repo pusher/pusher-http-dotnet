@@ -19,8 +19,8 @@ Install-Package PusherServer
 
 ### Constructor
 
-```
-var Pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET);
+```cs
+var pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET);
 ```
 
 If you created your app in a different cluster to the default cluster, specify this as follows:
@@ -30,7 +30,7 @@ If you created your app in a different cluster to the default cluster, specify t
 var options = new PusherOptions();
 options.Cluster = "eu";
 
-var Pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET, options);
+var pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET, options);
 ```
 
 *Please Note: the `Cluster` option is overridden by `HostName` option. So, if `HostName` is set then `Cluster` will be ignored.*
@@ -66,7 +66,7 @@ var result = pusher.Trigger(events)
 
 In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more informaiton see: <http://pusher.com/docs/publisher_api_guide/publisher_excluding_recipients>.
 
-```
+```cs
 var result = pusher.Trigger(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
 ```
 
@@ -74,7 +74,7 @@ var result = pusher.Trigger(channel, event, data, new TriggerOptions() { SocketI
 
 To authorise your users to access private channels on Pusher, you can use the `Authenticate` function:
 
-```
+```cs
 var auth = pusher.Authenticate( channelName, socketId );
 var json = auth.ToJson();
 ```
@@ -87,7 +87,7 @@ For more information see: <http://pusher.com/docs/authenticating_users>
 
 Using presence channels is similar to private channels, but you can specify extra data to identify that particular user:
 
-```
+```cs
 var channelData = new PresenceChannelData() {
 	user_id: "unique_user_id",
 	user_info: new {
@@ -113,31 +113,31 @@ For full details see: <http://pusher.com/docs/rest_api>
 
 You can get a list of channels that are present within your application:
 
-```
+```cs
 IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels");
 ```
 
 or
 
-```
+```cs
 IGetResult<ChannelsList> result = pusher.FetchStateForChannels<ChannelsList>();
 ```
 
 You can provide additional parameters to filter the list of channels that is returned.
 
-```
+```cs
 IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels", new { filter_by_prefix = "presence-" } );
 ```
 
 or
 
-```
+```cs
 IGetResult<ChannelsList> result = pusher.FetchStateForChannels<ChannelsList>(new { filter_by_prefix = "presence-" } );
 ```
 
 There is also an asynchronous variation
 
-```
+```cs
 pusher.FetchStateForChannelsAsync<ChannelsList>((IGetResult<ChannelsList> result) =>
 {
 });
@@ -147,19 +147,19 @@ pusher.FetchStateForChannelsAsync<ChannelsList>((IGetResult<ChannelsList> result
 
 Retrieve information about a single channel:
 
-```
+```cs
 IGetResult<object> result = pusher.Get<object>("/channels/my_channel" );
 ```
 
 or
 
-```
+```cs
 IGetResult<object> result = pusher.FetchStateForChannel<object>("my_channel");
 ```
 
 There is also an asynchronous variation
 
-```
+```cs
 pusher.FetchStateForChannelAsync<object>("my_channel", (ITriggerResult result) =>
 {
 });
@@ -167,13 +167,13 @@ pusher.FetchStateForChannelAsync<object>("my_channel", (ITriggerResult result) =
 
 Retrieve information about multiple channels:
 
-```
+```cs
 IGetResult<object> result = pusher.FetchStateForChannels<object>();
 ```
 
 There is also an asynchronous variation
 
-```
+```cs
 pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) =>
 {
 });
@@ -185,19 +185,19 @@ pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) =>
 
 Retrieve a list of users that are on a presence channel:
 
-```
+```cs
 IGetResult<object> result = pusher.FetchUsersFromPresence<object>("/channels/presence-channel/users" );
 ```
 
 or
 
-```
+```cs
 IGetResult<object> result = pusher.FetchUsersFromPresenceChannel<object>("my_channel");
 ```
 
 There is also an asynchronous variation
 
-```
+```cs
 pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel", (ITriggerResult result) =>
 {
 });
@@ -212,7 +212,7 @@ within your application as follows.
 
 For more information see <https://pusher.com/docs/webhooks>.
 
-```
+```cs
 // How you get these depends on the framework you're using
 
 // HTTP_X_PUSHER_SIGNATURE from HTTP Header
@@ -257,13 +257,13 @@ The solution can be opened and compiled in Xamarin Studio on OSX.
 
 Alternatively, the solution can be built from the command line if Mono is installed.  First of all, open up a terminal and navigate to the root directory of the solution. The second step is to restore the Nuget packages, which can be done with this command
 
-```
+```sh
 nuget restore pusher-dotnet-server.sln
 ```
 
 and finally build the solution, now that the packages have been restored
 
-```
+```sh
 xbuild pusher-dotnet-server.sln
 ```
 
