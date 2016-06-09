@@ -219,7 +219,7 @@ For more information see <https://pusher.com/docs/webhooks>.
 var receivedSignature = "value";
 
 // Body of HTTP request
-var receivedBody = "value;
+var receivedBody = "value";
 
 var pusher = new Pusher(...);
 var webHook = pusher.ProcessWebHook(receivedSignature, receivedBody);
