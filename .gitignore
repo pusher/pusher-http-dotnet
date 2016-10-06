@@ -15,3 +15,5 @@ build
 *.vsmdi
 msbuild.log
 *.nupkg
+/netCore/pusher-http-dotnet-core/.vs
+/netCore/pusher-http-dotnet-core/src/pusher-http-dotnet-core/*.user
