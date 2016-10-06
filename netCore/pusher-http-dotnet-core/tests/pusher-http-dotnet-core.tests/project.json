@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0-*",
+  "testRunner": "nunit",
+  "dependencies": {
+    "System.Runtime.Serialization.Primitives": "4.1.1",
+    "System.Runtime.Serialization.Xml": "4.1.1",
+    "RestSharp.NetCore": "105.2.4-rc4-24214-01",
+    "System.Runtime.Serialization.Formatters": "4.0.0-rc3-24212-01",
+    "System.Security.Cryptography.Algorithms": "4.2.0",
+    "NUnit": "3.4.1",
+    "dotnet-test-nunit": "3.4.0-beta-2",
+    "NSubstitute": "2.0.0-rc",
+    "pusher-http-dotnet-core": { "target": "project" }
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dnxcore50",
+        "portable-net45+win8"
+      ],
+  
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0",
+          "type": "platform"
+        }
+      }
+    }
+  }
+}
