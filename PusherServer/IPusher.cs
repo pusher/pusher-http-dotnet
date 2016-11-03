@@ -42,7 +42,7 @@ namespace PusherServer
         /// <param name="webhook_url"></param>
         /// <param name="webhook_level"></param>
         /// <returns></returns>
-        ITriggerResult Notify(string[] interests, string alertText, string webhook_url, string webhook_level)
+        ITriggerResult Notify(string[] interests, string alertText, string webhook_url, string webhook_level);
 
 
         /// <summary>
