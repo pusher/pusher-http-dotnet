@@ -67,6 +67,7 @@
     <Compile Include="ITriggerOptions.cs" />
     <Compile Include="ITriggerResult.cs" />
     <Compile Include="IWebHook.cs" />
+    <Compile Include="NotifyBody.cs" />
     <Compile Include="PresenceChannelData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pusher.cs" />

@@ -146,6 +146,21 @@ namespace PusherServer
             return result;
         }
 
+        /// <inheritDoc/>
+        public ITriggerResult Notify(string[] interests, string alertText, string webhook_url, string webhook_level)
+        {
+            NotifyBody nb = new NotifyBody();
+            nb.interests = interests;
+            nb.apns.aps.alert.body = alertText;
+            nb.webhook_level = webhook_url ?? "http://requestb.in/19ru8le1";
+            nb.webhook_level = webhook_level ?? "DEBUG";
+
+
+            IRestResponse response = ExecuteTrigger("/notifications", nb);
+            TriggerResult result = new TriggerResult(response);
+            return result;
+        }
+
         /// <inheritdoc/>
         public void TriggerAsync(string channelName, string eventName, object data, Action<ITriggerResult> callback)
         {

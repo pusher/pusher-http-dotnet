@@ -34,6 +34,16 @@ namespace PusherServer
         /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data);
 
+        /// <summary>
+        /// Attempting to notify
+        /// </summary>
+        /// <param name="interests"></param>
+        /// <param name="alertText"></param>
+        /// <param name="webhook_url"></param>
+        /// <param name="webhook_level"></param>
+        /// <returns></returns>
+        ITriggerResult Notify(string[] interests, string alertText, string webhook_url, string webhook_level)
+
 
         /// <summary>
         /// Triggers an event on the specified channel.
