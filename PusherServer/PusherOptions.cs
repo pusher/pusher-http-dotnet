@@ -13,6 +13,20 @@ namespace PusherServer
         /// The default Rest API Host for contacting the Pusher server, it does not contain a cluster name
         /// </summary>
         public const string DEFAULT_REST_API_HOST = "api.pusherapp.com";
+        /// <summary>
+        /// The default Notificaiton API Host for contacting the Noitificaiton server
+        /// </summary>
+        public const string DEFAULT_NOTIFICATION_REST_API_HOST = "nativepush-cluster1.pusher.com";
+
+        /// <summary>
+        /// The default version for the Notificaiton service
+        /// </summary>
+        public const string DEFAULT_NOTIFICATION_VERSION = "v1";
+
+        /// <summary>
+        /// The default prefix for the Notificaiton Service
+        /// </summary>
+        public const string DEFAULT_NOTIFICATION_PREFIX = "server_api";
 
         private static int DEFAULT_HTTPS_PORT = 443;
         private static int DEFAULT_HTTP_PORT = 80;
@@ -23,7 +37,10 @@ namespace PusherServer
         bool _hostSet = false;
         int _port = DEFAULT_HTTP_PORT;
         string _hostName = null;
+        string _notificationHostName = null;
         string _cluster = null;
+        string _notificationVersion = null;
+        string _notificationPrefix = null;
         ISerializeObjectsToJson _jsonSerializer;
         IDeserializeJsonStrings _jsonDeserializer;
 
@@ -115,6 +132,59 @@ namespace PusherServer
         }
 
         /// <summary>
+        /// Gets or sets the HostName to use in the notificaiton base URL
+        /// </summary>
+        public string HostName_Notificaiton
+        {
+            get
+            {
+                return _notificationHostName ?? DEFAULT_NOTIFICATION_REST_API_HOST;
+            }
+            set
+            {
+                if (Regex.IsMatch(value, "^.*://"))
+                {
+                    string msg = string.Format("The scheme should not be present in the host value: {0}", value);
+                    throw new FormatException(msg);
+                }
+
+                _hostSet = true;
+                _cluster = null;
+                _notificationHostName = value;
+            }
+        }
+        /// <summary>
+        /// The vrsion of the the push notificaiton service e.g. v1
+        /// </summary>
+        public string Notificaiton_Version
+        {
+            get
+            {
+                return _notificationVersion ?? DEFAULT_NOTIFICATION_VERSION;
+            }
+            set
+            {
+                _notificationVersion = value;
+            }
+        }
+
+        /// <summary>
+        /// The prefix to be used to form the notificaiton service url e.g. server_api
+        /// </summary>
+        public string Notification_Prefix
+        {
+            get
+            {
+                return _notificationPrefix ?? DEFAULT_NOTIFICATION_PREFIX;
+            }
+            set
+            {
+
+                _notificationPrefix = value;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the Json Serializer
         /// </summary>
         public ISerializeObjectsToJson JsonSerializer
@@ -155,7 +225,7 @@ namespace PusherServer
         /// <inheritDoc/>
         public Uri GetBaseUrl()
         {
-            string baseUrl = (Encrypted ? "https" : "http") + "://" + HostName + GetPort();
+            string baseUrl = (Encrypted ? "https" : "http") + "://" + HostName;// + GetPort();
 
             return new Uri(baseUrl);
         }

@@ -146,21 +146,6 @@ namespace PusherServer
             return result;
         }
 
-        /// <inheritDoc/>
-        public ITriggerResult Notify(string[] interests, string alertText, string webhook_url, string webhook_level)
-        {
-            NotifyBody nb = new NotifyBody();
-            nb.interests = interests;
-            nb.apns.aps.alert.body = alertText;
-            nb.webhook_level = webhook_url ?? "http://requestb.in/19ru8le1";
-            nb.webhook_level = webhook_level ?? "DEBUG";
-
-
-            IRestResponse response = ExecuteTrigger("/notifications", nb);
-            TriggerResult result = new TriggerResult(response);
-            return result;
-        }
-
         /// <inheritdoc/>
         public void TriggerAsync(string channelName, string eventName, object data, Action<ITriggerResult> callback)
         {
@@ -203,6 +188,45 @@ namespace PusherServer
                 if (callback != null)
                 {
                     callback(new TriggerResult(baseResponse));
+                }
+            });
+        }
+
+        /// <inheritDoc/>
+        public INotifyResult Notify(string[] interests, string alertText, string webhook_url, WebhookLevel webhook_level)
+        {
+            NotifyBody nb = new NotifyBody();
+            nb.interests = interests;
+            nb.apns.aps.alert.body = alertText;
+            nb.webhook_url = webhook_url;
+            nb.webhook_level = webhook_level.ToString();    
+
+            IRestResponse response = ExecuteNotify("/notifications", nb);
+            NotifyResult result = new NotifyResult(response);
+            return result;
+        }
+
+        /// <inheritDoc/>
+        public INotifyResult Notify(string interest, string alertText, string webhook_url, WebhookLevel webhook_level)
+        {
+            return Notify(new string[] { interest }, alertText, webhook_url, webhook_level);
+        }
+
+        /// <inheritDoc/>
+        public void NotifyAsync(string[] interests, string alertText, string webhook_url, WebhookLevel webhook_level, Action<INotifyResult> callback)
+        {
+            NotifyBody nb = new NotifyBody();
+            nb.interests = interests;
+            nb.apns.aps.alert.body = alertText;
+            nb.webhook_url = webhook_url;
+            nb.webhook_level = webhook_level.ToString();
+
+
+            ExecuteNotifyAsync("/notifications", nb, baseResponse =>
+            {
+                if (callback != null)
+                {
+                    callback(new NotifyResult(baseResponse));
                 }
             });
         }
@@ -433,7 +457,37 @@ namespace PusherServer
             _options.RestClient.ExecuteAsync(request, callback);
         }
 
-        private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody)
+        private void ExecuteNotifyAsync(string path, object requestBody, Action<IRestResponse> callback)
+        {
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
+
+            var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody,true);
+            _options.RestClient.ExecuteAsync(request, callback);
+        }
+
+        private IRestResponse ExecuteNotify(string path, object requestBody)
+        {
+            _options.RestClient.BaseUrl = _options.GetBaseUrl();
+            var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody, true);
+            Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
+                Environment.NewLine,
+                request.Method,
+                _options.RestClient.BaseUrl,
+                request.Resource,
+                string.Join(",", Array.ConvertAll(request.Parameters.ConvertAll(p => p.Name + "=" + p.Value).ToArray(), i => i.ToString()))
+            ));
+
+            IRestResponse response = _options.RestClient.Execute(request);
+
+            Debug.WriteLine(string.Format("Response{0}StatusCode: {1}{0}Body: {2}",
+                Environment.NewLine,
+                response.StatusCode,
+                response.Content));
+
+            return response;
+        }
+
+        private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody, bool nativeAPI = false)
         {
             SortedDictionary<string, string> queryParams = GetObjectProperties(requestParameters);
 
@@ -458,7 +512,14 @@ namespace PusherServer
             queryString = queryString.TrimEnd('&');
 
             resource = resource.TrimStart('/');
-            string path = string.Format("/apps/{0}/{1}", this._appId, resource);
+            string path;
+            if (!nativeAPI)
+            {
+                path = string.Format("/server_api/v1/apps/{0}/{1}", this._appId, resource);
+            }else
+            {
+                path = string.Format("/{0}/{1}/apps/{2}/{3}", _options.Notification_Prefix,_options.Notificaiton_Version, this._appId, resource);
+            }
 
             string authToSign = String.Format(
                 Enum.GetName(requestType.GetType(), requestType) +
