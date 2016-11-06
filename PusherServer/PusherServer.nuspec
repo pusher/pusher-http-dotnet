@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>PusherServer</id>
-    <version>$version$</version>
+    <id>PusherServerInnov8tive</id>
+    <version>4.0.0</version>
     <title>Pusher .NET Server Library with Push Notification</title>
     <authors>Pusher, Phil Leggetter, John McLoughlin, Gray Delacluyse</authors>
     <owners>Pusher</owners>
@@ -18,7 +18,7 @@ Register at https://pusher.com and use the application credentials within your a
     <dependencies>
         <dependency id="RestSharp" version="105.0.1" />
     </dependencies>
-    <summary>Interact with the Pusher HTTP API</summary>
+    <summary>Interact with the Pusher HTTP / Notify API</summary>
   </metadata>
   <files>
     <file src="..\README.md" target="." />
