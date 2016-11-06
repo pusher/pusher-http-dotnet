@@ -3,18 +3,18 @@
   <metadata>
     <id>PusherServer</id>
     <version>$version$</version>
-    <title>Pusher .NET Server Library</title>
-    <authors>Pusher, Phil Leggetter, John McLoughlin</authors>
+    <title>Pusher .NET Server Library with Push Notification</title>
+    <authors>Pusher, Phil Leggetter, John McLoughlin, Gray Delacluyse</authors>
     <owners>Pusher</owners>
     <licenseUrl>https://raw.githubusercontent.com/pusher/pusher-http-dotnet/master/LICENSE.txt</licenseUrl>
-    <projectUrl>https://github.com/pusher/pusher-dotnet-server</projectUrl>
+    <projectUrl>https://github.com/Innov8tiveSoftware/pusher-http-dotnet</projectUrl>
     <iconUrl>https://pusher.com/static_logos/64x64.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>The .NET library for interacting with the Pusher HTTP API.
+    <description>The .NET library for interacting with the Pusher HTTP API and Notify HTTP API
 Register at https://pusher.com and use the application credentials within your app as shown below.</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2016</copyright>
-    <tags>pusher realtime</tags>
+    <tags>pusher realtime notify</tags>
     <dependencies>
         <dependency id="RestSharp" version="105.0.1" />
     </dependencies>
