@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using RestSharp;
 using RestSharp.Serializers;
@@ -215,14 +216,14 @@ namespace PusherServer
         private BatchTriggerBody CreateBatchTriggerBody(Event[] events)
         {
             ValidationHelper.ValidateBatchEvents(events);
-
-            var batchEvents = Array.ConvertAll(events, e => new BatchEvent
+            
+            var batchEvents = events.Select(e => new BatchEvent
             {
                 name = e.EventName,
                 channel = e.Channel,
                 socket_id = e.SocketId,
                 data = _options.JsonSerializer.Serialize(e.Data)
-            });
+            }).ToArray();
 
             return new BatchTriggerBody()
             {
@@ -392,12 +393,13 @@ namespace PusherServer
         {
             _options.RestClient.BaseUrl = _options.GetBaseUrl();
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
+
             Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
                 Environment.NewLine,
                 request.Method,
                 _options.RestClient.BaseUrl,
                 request.Resource,
-                string.Join(",", Array.ConvertAll(request.Parameters.ConvertAll(p => p.Name + "=" + p.Value).ToArray(), i => i.ToString()))
+                string.Join(",", request.Parameters.Select(p => $"{p.Name}={p.Value}").ToArray())
             ));
 
             IRestResponse response = _options.RestClient.Execute(request);
