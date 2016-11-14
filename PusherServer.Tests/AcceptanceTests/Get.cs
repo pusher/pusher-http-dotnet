@@ -1,10 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net;
-using System.Threading;
 using NUnit.Framework;
-using System.IO;
-using System.Web.Script.Serialization;
 
 namespace PusherServer.Tests.AcceptanceTests
 {

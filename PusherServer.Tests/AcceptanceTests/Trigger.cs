@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace PusherServer.Tests.AcceptanceTests
@@ -130,12 +130,11 @@ namespace PusherServer.Tests.AcceptanceTests
         public void it_can_trigger_an_event_with_a_percent_in_the_message()
         {
             var eventJSON = File.ReadAllText("AcceptanceTests/percent-message.json");
-            var message = new JavaScriptSerializer().Deserialize(eventJSON, typeof (object));
+            var message = JsonConvert.DeserializeObject(eventJSON);
 
             ITriggerResult result = _pusher.Trigger("my-channel", "my_event", message);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
-
     }
 
     [TestFixture]

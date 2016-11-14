@@ -1,4 +1,4 @@
-﻿using System.Web.Script.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace PusherServer
 {
@@ -10,7 +10,7 @@ namespace PusherServer
         /// <inheritDoc/>
         public string Serialize(object objectToSerialize)
         {
-            return new JavaScriptSerializer().Serialize(objectToSerialize);
+            return JsonConvert.SerializeObject(objectToSerialize);
         }
     }
 }

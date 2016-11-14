@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Net;
 using System.Collections.Generic;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using PusherServer.Exceptions;
 using PusherServer.Util;
 using RestSharp;
@@ -19,10 +18,10 @@ namespace PusherServer
         public TriggerResult(IRestResponse response) : base(response)
         {
             EventIdData eventIdData = null;
+
             try
             {
-                JavaScriptSerializer serializer = new JavaScriptSerializer();
-                eventIdData = serializer.Deserialize<EventIdData>(response.Content);
+                eventIdData = JsonConvert.DeserializeObject<EventIdData>(response.Content);
             }
             catch (Exception)
             {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using NUnit.Framework;
@@ -242,7 +241,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var result = pusherServer.FetchStateForChannels<object>(info);
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-            Assert.AreEqual(1, ((((Dictionary<string, object>)result.Data)["channels"] as Dictionary<string, object>)["presence-multiple-state-channel3"] as Dictionary<string, object>)["user_count"]);
+            Assert.AreEqual(1, ((Newtonsoft.Json.Linq.JValue)((result.Data as Newtonsoft.Json.Linq.JObject)["channels"]["presence-multiple-state-channel3"]["user_count"])).Value);
         }
 
         [Test]
@@ -286,7 +285,8 @@ namespace PusherServer.Tests.AcceptanceTests
             reset.WaitOne(TimeSpan.FromSeconds(30));
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-            Assert.AreEqual(1, ((((Dictionary<string, object>)result.Data)["channels"] as Dictionary<string, object>)["presence-multiple-state-channel-async-3"] as Dictionary<string, object>)["user_count"]);
+            
+            Assert.AreEqual(1, ((Newtonsoft.Json.Linq.JValue)((result.Data as Newtonsoft.Json.Linq.JObject)["channels"]["presence-multiple-state-channel-async-3"]["user_count"])).Value);
         }
 
         [Test]
