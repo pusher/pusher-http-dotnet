@@ -8,11 +8,13 @@ namespace PusherServer
 {
 	internal class CryptoHelper
 	{
-
 		internal static string GetMd5Hash(string jsonData)
 		{
-			var hash = new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(jsonData));
-			return BytesToHex(hash);
+            using (var md5 = MD5.Create())
+            {
+                var result = md5.ComputeHash(Encoding.ASCII.GetBytes(jsonData));
+                return BytesToHex(result);
+            }
 		}
 
 		private static string BytesToHex(IEnumerable<byte> byteArray)
