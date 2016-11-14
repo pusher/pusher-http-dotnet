@@ -30,7 +30,7 @@ namespace PusherServer
         {
             get
             {
-                return Assembly.GetExecutingAssembly().GetName().Version;
+                return typeof(Pusher).GetTypeInfo().Assembly.GetName().Version;
             }
         }
 
@@ -41,9 +41,10 @@ namespace PusherServer
         {
             get
             {
-                var assembly = Assembly.GetExecutingAssembly();
-                AssemblyProductAttribute adAttr =
-                    (AssemblyProductAttribute)Attribute.GetCustomAttribute(assembly, typeof(AssemblyProductAttribute));
+                var attr = typeof(Pusher).GetTypeInfo().Assembly.GetCustomAttribute(typeof(AssemblyProductAttribute));
+
+                AssemblyProductAttribute adAttr = (AssemblyProductAttribute)attr;
+                
                 return adAttr.Product;
             }
         }
