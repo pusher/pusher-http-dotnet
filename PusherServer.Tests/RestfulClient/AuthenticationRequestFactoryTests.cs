@@ -33,8 +33,10 @@ namespace PusherServer.Tests.RestfulClient
             // Assert
             Assert.IsNotNull(request);
             Assert.AreEqual(PusherMethod.GET, request.Method);
-            StringAssert.StartsWith(@"/apps/test_app_id/testPath?auth_key=test_app_key&auth_timestamp=", request.ResourceUri);
-            StringAssert.Contains(@"&auth_version=1.0&auth_signature=", request.ResourceUri);
+            StringAssert.StartsWith(@"/apps/test_app_id/testPath?", request.ResourceUri);
+            StringAssert.Contains(@"auth_version=1.0", request.ResourceUri);
+            StringAssert.Contains(@"auth_key=test_app_key", request.ResourceUri);
+            StringAssert.Contains(@"auth_timestamp=", request.ResourceUri);
         }
 
         [Test]
@@ -46,8 +48,11 @@ namespace PusherServer.Tests.RestfulClient
             // Assert
             Assert.IsNotNull(request);
             Assert.AreEqual(PusherMethod.GET, request.Method);
-            StringAssert.StartsWith(@"/apps/test_app_id/testPath?Property1=Test Property 1&Property2=2&Property3=True&auth_key=test_app_key&auth_timestamp=", request.ResourceUri);
-            StringAssert.Contains(@"&auth_version=1.0&auth_signature=", request.ResourceUri);
+            StringAssert.StartsWith(@"/apps/test_app_id/testPath?", request.ResourceUri);
+            StringAssert.Contains(@"auth_version=1.0", request.ResourceUri);
+            StringAssert.Contains(@"auth_key=test_app_key", request.ResourceUri);
+            StringAssert.Contains(@"auth_timestamp=", request.ResourceUri);
+            StringAssert.Contains(@"Property1=Test Property 1&Property2=2&Property3=True", request.ResourceUri);
         }
 
         [Test]
@@ -59,9 +64,11 @@ namespace PusherServer.Tests.RestfulClient
             // Assert
             Assert.IsNotNull(request);
             Assert.AreEqual(PusherMethod.POST, request.Method);
-            StringAssert.StartsWith(@"/apps/test_app_id/testPath?auth_key=test_app_key&auth_timestamp=", request.ResourceUri);
-            StringAssert.Contains(@"&auth_version=1.0&body_md5=41db1761b31df9dc02b2811b38c010d4", request.ResourceUri);
-            StringAssert.Contains(@"&auth_signature=", request.ResourceUri);
+            StringAssert.StartsWith(@"/apps/test_app_id/testPath?", request.ResourceUri);
+            StringAssert.Contains(@"auth_version=1.0", request.ResourceUri);
+            StringAssert.Contains(@"auth_key=test_app_key", request.ResourceUri);
+            StringAssert.Contains(@"auth_timestamp=", request.ResourceUri);
+            StringAssert.Contains(@"auth_signature=", request.ResourceUri);
         }
 
         [Test]
@@ -73,9 +80,13 @@ namespace PusherServer.Tests.RestfulClient
             // Assert
             Assert.IsNotNull(request);
             Assert.AreEqual(PusherMethod.POST, request.Method);
-            StringAssert.StartsWith(@"/apps/test_app_id/testPath?Property1=Test Property 1&Property2=2&Property3=True&auth_key=test_app_key&auth_timestamp=", request.ResourceUri);
-            StringAssert.Contains(@"&auth_version=1.0&body_md5=41db1761b31df9dc02b2811b38c010d4", request.ResourceUri);
-            StringAssert.Contains(@"&auth_signature=", request.ResourceUri);
+            StringAssert.StartsWith(@"/apps/test_app_id/testPath?", request.ResourceUri);
+            StringAssert.Contains(@"auth_version=1.0", request.ResourceUri);
+            StringAssert.Contains(@"auth_key=test_app_key", request.ResourceUri);
+            StringAssert.Contains(@"auth_timestamp=", request.ResourceUri);
+            StringAssert.Contains(@"auth_signature=", request.ResourceUri);
+            StringAssert.Contains(@"Property1=Test Property 1&Property2=2&Property3=True", request.ResourceUri);
+            StringAssert.Contains(@"body_md5=41db1761b31df9dc02b2811b38c010d4", request.ResourceUri);
         }
 
         [Test]

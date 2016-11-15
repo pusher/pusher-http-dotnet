@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using PusherServer.RestfulClient;
 using RestSharp;
 using RestSharp.Serializers;
 
@@ -22,6 +24,8 @@ namespace PusherServer
         private readonly string _appKey;
         private readonly string _appSecret;
         private readonly IPusherOptions _options;
+
+        private IAuthenticatedRequestFactory _factory;
 
         /// <summary>
         /// Pusher library version information.
@@ -80,9 +84,10 @@ namespace PusherServer
             _appKey = appKey;
             _appSecret = appSecret;
             _options = options;
+
+            _factory = new AuthenticatedRequestFactory(appKey, appId, appSecret);
         }
 
-        #region Trigger
         /// <summary>
         /// Triggers an event on the specified channel.
         /// </summary>
@@ -232,9 +237,6 @@ namespace PusherServer
             };
         }
 
-        #endregion
-
-        #region Authentication
         /// <summary>
         /// Authenticates the subscription request for a private channel.
         /// </summary>
@@ -264,10 +266,7 @@ namespace PusherServer
             }
             return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId, presenceData);
         }
-        #endregion
-
-        #region Get
-
+        
         /// <summary>
         /// Using the provided response, interrogates the Pusher API
         /// </summary>
@@ -343,22 +342,15 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public void FetchStateForChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
-        {
-            FetchStateForChannelAsync<T>(channelName, null, callback);
-        }
-
-        /// <inheritDoc/>
-        public void FetchStateForChannelAsync<T>(string channelName, object info, Action<IGetResult<T>> callback)
+        public async Task<IGetResult<T>> FetchStateForChannelAsync<T>(string channelName, object info = null)
         {
             ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
 
-            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelResource, channelName), info, null);
+            var request = _factory.Build(PusherMethod.GET, string.Format(ChannelResource, channelName), info, null);
 
-            _options.RestClient.ExecuteAsync(request, response =>
-            {
-                callback(new GetResult<T>(response, _options.JsonDeserializer));
-            });
+            var response = await _options.PusherRestClient.ExecuteAsync<T>(request);
+
+            return response;
         }
 
         /// <inheritDoc/>
@@ -388,27 +380,18 @@ namespace PusherServer
             });
         }
 
-        #endregion
-
         private IRestResponse ExecuteTrigger(string path, object requestBody)
         {
             _options.RestClient.BaseUrl = _options.GetBaseUrl();
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
 
-            Debug.WriteLine(string.Format("Method: {1}{0}Host: {2}{0}Resource: {3}{0}Parameters:{4}",
-                Environment.NewLine,
-                request.Method,
-                _options.RestClient.BaseUrl,
-                request.Resource,
-                string.Join(",", request.Parameters.Select(p => $"{p.Name}={p.Value}").ToArray())
-            ));
+            var debugParameters = string.Join(",", request.Parameters.Select(p => $"{p.Name}={p.Value}").ToArray());
+
+            Debug.WriteLine($"Method: {request.Method}{Environment.NewLine}Host: {_options.RestClient.BaseUrl}{Environment.NewLine}Resource: {request.Resource}{Environment.NewLine}Parameters:{debugParameters}");
 
             IRestResponse response = _options.RestClient.Execute(request);
 
-            Debug.WriteLine(string.Format("Response{0}StatusCode: {1}{0}Body: {2}",
-                Environment.NewLine,
-                response.StatusCode,
-                response.Content));
+            Debug.WriteLine($"Response{Environment.NewLine}StatusCode: {response.StatusCode}{Environment.NewLine}Body: {response.Content}");
 
             return response;
         }
@@ -425,7 +408,8 @@ namespace PusherServer
         {
             SortedDictionary<string, string> queryParams = GetObjectProperties(requestParameters);
 
-            int timeNow = (int)((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds);
+            int timeNow = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
             queryParams.Add("auth_key", this._appKey);
             queryParams.Add("auth_timestamp", timeNow.ToString());
             queryParams.Add("auth_version", "1.0");
@@ -445,8 +429,7 @@ namespace PusherServer
             }
             queryString = queryString.TrimEnd('&');
 
-            resource = resource.TrimStart('/');
-            string path = string.Format("/apps/{0}/{1}", this._appId, resource);
+            string path = $"/apps/{_appId}/{resource.TrimStart('/')}";
 
             string authToSign = String.Format(
                 Enum.GetName(requestType.GetType(), requestType) +
@@ -468,7 +451,7 @@ namespace PusherServer
             return request;
         }
 
-        private SortedDictionary<string, string> GetObjectProperties(object obj)
+        private static SortedDictionary<string, string> GetObjectProperties(object obj)
         {
             SortedDictionary<string, string> properties = new SortedDictionary<string, string>();
 
@@ -486,11 +469,11 @@ namespace PusherServer
             return properties;
         }
 
-        private void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)
+        private static void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)
         {
             if (string.IsNullOrEmpty(value))
             {
-                throw new ArgumentException(string.Format("{0} cannot be null or empty", argumentName));
+                throw new ArgumentException($"{argumentName} cannot be null or empty");
             }
         }
     }

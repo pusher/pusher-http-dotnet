@@ -9,7 +9,7 @@ namespace PusherServer.RestfulClient
     /// <summary>
     /// A client for the Pusher REST requests
     /// </summary>
-    public class PusherRestClient
+    public class PusherRestClient : IPusherRestClient
     {
         private readonly string _libraryName;
         private readonly string _version;
@@ -44,15 +44,13 @@ namespace PusherServer.RestfulClient
         /// <returns>The response received from Pusher</returns>
         public async Task<GetResult2<T>> ExecuteAsync<T>(IPusherRestRequest pusherRestRequest)
         {
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Clear();
+            //_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Version", _version);
 
             if (pusherRestRequest.Method == PusherMethod.GET)
             {
-                _httpClient.DefaultRequestHeaders.Accept.Clear();
-
                 var response = await _httpClient.GetAsync(pusherRestRequest.ResourceUri);
                 var responseContent = await response.Content.ReadAsStringAsync();
 

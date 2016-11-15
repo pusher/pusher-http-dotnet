@@ -51,15 +51,26 @@ namespace PusherServer.RestfulClient
         /// <inheritdoc/>
         public IPusherRestRequest Build(PusherMethod requestType, string resource, object requestParameters = null, object requestBody = null)
         {
-            string queryString = GetQueryString(requestParameters, requestBody);
+            SortedDictionary<string, string> queryParams = GetQueryString(requestParameters, requestBody);
+
+            string queryString = string.Empty;
+            foreach (KeyValuePair<string, string> parameter in queryParams)
+            {
+                queryString += parameter.Key + "=" + parameter.Value + "&";
+            }
+            queryString = queryString.TrimEnd('&');
 
             string path = $"/apps/{_appId}/{resource.TrimStart('/')}";
 
-            string authToSign = $"{Enum.GetName(requestType.GetType(), requestType)}\n{path}\n{queryString}";
+            string authToSign = String.Format(
+                Enum.GetName(requestType.GetType(), requestType) +
+                "\n{0}\n{1}",
+                path,
+                queryString);
 
             string authSignature = CryptoHelper.GetHmac256(_appSecret, authToSign);
 
-            string requestUrl = $"{path}?{queryString}&auth_signature={authSignature}";
+            string requestUrl = $"{path}?auth_signature={authSignature}&{queryString}";
 
             IPusherRestRequest request = new PusherRestRequest(requestUrl);
             request.Method = requestType;
@@ -68,27 +79,29 @@ namespace PusherServer.RestfulClient
             return request;
         }
 
-        private string GetQueryString(object requestParameters, object requestBody)
+        private SortedDictionary<string, string> GetQueryString(object requestParameters, object requestBody)
         {
-            StringBuilder stringBuilder = GetStringBuilderfromSourceObject(requestParameters);
+            SortedDictionary<string, string> parameters = GetStringBuilderfromSourceObject(requestParameters);
 
             int timeNow = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
-            stringBuilder.Append($"auth_key={_appKey}&auth_timestamp={timeNow}&auth_version=1.0");
+            parameters.Add("auth_key", _appKey);
+            parameters.Add("auth_timestamp", timeNow.ToString());
+            parameters.Add("auth_version", "1.0");
 
             if (requestBody != null)
             {
                 var bodyDataJson = JsonConvert.SerializeObject(requestBody);
                 var bodyMd5 = CryptoHelper.GetMd5Hash(bodyDataJson);
-                stringBuilder.Append($"&body_md5={bodyMd5}");
+                parameters.Add("body_md5", bodyMd5);
             }
             
-            return stringBuilder.ToString();
+            return parameters;
         }
 
-        private static StringBuilder GetStringBuilderfromSourceObject(object sourceObject)
+        private static SortedDictionary<string, string> GetStringBuilderfromSourceObject(object sourceObject)
         {
-            StringBuilder stringBuider = new StringBuilder();
+            SortedDictionary<string, string> parameters = new SortedDictionary<string, string>();
 
             if (sourceObject != null)
             {
@@ -97,11 +110,11 @@ namespace PusherServer.RestfulClient
 
                 foreach (PropertyInfo propertyInfo in propertyInfos)
                 {
-                    stringBuider.Append($"{propertyInfo.Name}={propertyInfo.GetValue(sourceObject, null)}&");
+                    parameters.Add(propertyInfo.Name, propertyInfo.GetValue(sourceObject, null).ToString());
                 }
             }
 
-            return stringBuider;
+            return parameters;
         }
     }
 }

@@ -82,6 +82,7 @@
     <Compile Include="RequestResult.cs" />
     <Compile Include="RestfulClient\AuthenticatedRequestFactory.cs" />
     <Compile Include="RestfulClient\IAuthenticatedRequestFactory.cs" />
+    <Compile Include="RestfulClient\IPusherRestClient.cs" />
     <Compile Include="RestfulClient\IPusherRestRequest.cs" />
     <Compile Include="RestfulClient\PusherMethod.cs" />
     <Compile Include="RestfulClient\PusherRestClient.cs" />

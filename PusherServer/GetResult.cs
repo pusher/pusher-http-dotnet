@@ -59,7 +59,8 @@ namespace PusherServer
         /// <param name="content">the extracted content</param>
         public GetResult2(HttpResponseMessage response, string content) : base(response, content)
         {
-            Data = JsonConvert.DeserializeObject<T>(content);
+            if (response.IsSuccessStatusCode)
+                Data = JsonConvert.DeserializeObject<T>(content);
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using PusherServer.RestfulClient;
 using RestSharp;
 
 namespace PusherServer
@@ -41,6 +42,14 @@ namespace PusherServer
         /// The rest client.
         /// </value>
         IRestClient RestClient { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pusher rest client. Generally only expected to be used for testing.
+        /// </summary>
+        /// <value>
+        /// The pusher rest client.
+        /// </value>
+        IPusherRestClient PusherRestClient { get; set; }
 
         /// <summary>
         /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using PusherServer.RestfulClient;
 using RestSharp;
 
 namespace PusherServer
@@ -18,6 +20,7 @@ namespace PusherServer
         private static int DEFAULT_HTTP_PORT = 80;
 
         IRestClient _client;
+        IPusherRestClient _pusherClient;
         bool _encrypted = false;
         bool _portModified = false;
         bool _hostSet = false;
@@ -89,6 +92,20 @@ namespace PusherServer
                 return _client;
             }
             set { _client = value; }
+        }
+
+        public IPusherRestClient PusherRestClient
+        {
+            get
+            {
+                if (_pusherClient == null)
+                {
+                    _pusherClient = new PusherRestClient(GetBaseUrl(), Pusher.LIBRARY_NAME, Pusher.VERSION);
+                }
+
+                return _pusherClient;
+            }
+            set { _pusherClient = value; }
         }
 
         /// <summary>

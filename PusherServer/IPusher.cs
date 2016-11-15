@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace PusherServer
 {
@@ -183,21 +184,13 @@ namespace PusherServer
         IGetResult<T> FetchStateForChannel<T>(string channelName, object info);
 
         /// <summary>
-        /// Queries the Pusher API for the state of a Channel asynchronously
-        /// </summary>
-        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
-        /// <param name="channelName">The name of the channel to query</param>
-        /// <param name="callback">The callback to receive the result of the query</param>
-        void FetchStateForChannelAsync<T>(string channelName, Action<IGetResult<T>> callback);
-
-        /// <summary>
-        /// Queries the Pusher API for the state of a Channel asynchronously
+        /// Asynchronously queries the Pusher API for the state of a Channel
         /// </summary>
         /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
         /// <param name="channelName">The name of the channel to query</param>
         /// <param name="info">An object containing a list of attributes to include in the query</param>
-        /// <param name="callback">The callback to receive the result of the query</param>
-        void FetchStateForChannelAsync<T>(string channelName, object info, Action<IGetResult<T>> callback);
+        /// <returns>The result of the Channel State query</returns>
+        Task<IGetResult<T>> FetchStateForChannelAsync<T>(string channelName, object info = null);
 
         /// <summary>
         /// Queries the Pusher API for the state of all channels based upon the info object
