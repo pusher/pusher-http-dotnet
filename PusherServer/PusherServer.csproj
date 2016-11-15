@@ -79,6 +79,11 @@
     <Compile Include="PusherOptions.cs" />
     <Compile Include="RawBodySerializer.cs" />
     <Compile Include="RequestResult.cs" />
+    <Compile Include="RestfulClient\AuthenticatedRequestFactory.cs" />
+    <Compile Include="RestfulClient\IAuthenticatedRequestFactory.cs" />
+    <Compile Include="RestfulClient\IPusherRestRequest.cs" />
+    <Compile Include="RestfulClient\PusherMethod.cs" />
+    <Compile Include="RestfulClient\PusherRestRequest.cs" />
     <Compile Include="TriggerBody.cs" />
     <Compile Include="TriggerOptions.cs" />
     <Compile Include="TriggerResult.cs" />
