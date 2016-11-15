@@ -16,21 +16,14 @@
         string ResourceUri { get; }
 
         /// <summary>
-        /// Gets the content that will be sent with the request
+        /// Gets or sets the content that will be sent with the request
         /// </summary>
-        object Content { get; }
+        object Body { get; set; }
 
         /// <summary>
-        /// Adds a body to the request
+        /// Gets the current body as a Json String
         /// </summary>
-        /// <param name="requestBody">The object to add as the body of the request</param>
-        void AddBody(object requestBody);
-
-        /// <summary>
-        /// Adds a header to the request
-        /// </summary>
-        /// <param name="headerName">The name of the header</param>
-        /// <param name="value">The value to add to the header</param>
-        void AddHeader(string headerName, string value);
+        /// <returns></returns>
+        string GetContentAsJsonString();
     }
 }

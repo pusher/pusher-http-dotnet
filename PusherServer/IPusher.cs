@@ -8,8 +8,6 @@ namespace PusherServer
     /// </summary>
     public interface IPusher
     {
-        #region Trigger
-
         /// <summary>
         /// Triggers an event on the specified channel.
         /// </summary>
@@ -114,10 +112,6 @@ namespace PusherServer
         /// <returns>The result of the call to the REST API</returns>
         void TriggerAsync(Event[] events, Action<ITriggerResult> callback);
 
-        #endregion
-
-        #region Authentication
-
         /// <summary>
         /// Authenticates the subscription request for a private channel.
         /// </summary>
@@ -135,8 +129,6 @@ namespace PusherServer
         /// <exception cref="ArgumentNullException">If <paramref name="data"/> is null</exception>
         /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
         IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData data);
-
-        #endregion
 
         /// <summary>
         /// Makes a GET request to the specified resource. Authentication is handled as part of the call. The data returned from the request is deserizlized to the object type defined by <typeparamref name="T"/>.

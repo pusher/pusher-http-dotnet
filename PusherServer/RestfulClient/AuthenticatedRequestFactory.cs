@@ -63,10 +63,7 @@ namespace PusherServer.RestfulClient
 
             IPusherRestRequest request = new PusherRestRequest(requestUrl);
             request.Method = requestType;
-            request.AddBody(requestBody);
-
-            request.AddHeader("Pusher-Library-Name", LIBRARY_NAME);
-            request.AddHeader("Pusher-Library-Version", VERSION.ToString(3));
+            request.Body = requestBody;
 
             return request;
         }

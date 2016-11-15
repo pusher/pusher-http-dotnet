@@ -46,6 +46,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -83,6 +84,7 @@
     <Compile Include="RestfulClient\IAuthenticatedRequestFactory.cs" />
     <Compile Include="RestfulClient\IPusherRestRequest.cs" />
     <Compile Include="RestfulClient\PusherMethod.cs" />
+    <Compile Include="RestfulClient\PusherRestClient.cs" />
     <Compile Include="RestfulClient\PusherRestRequest.cs" />
     <Compile Include="TriggerBody.cs" />
     <Compile Include="TriggerOptions.cs" />
