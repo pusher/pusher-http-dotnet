@@ -94,7 +94,9 @@ namespace PusherServer.Tests.UnitTests
         {
             await _pusher.GetAsync<object>("/channels");
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecuteGetAsync<object>(
+#pragma warning restore 4014
                 Arg.Is<IPusherRestRequest>(
                     x => x.ResourceUri.StartsWith("/apps/" + Config.AppId + "/channels")
                 )
@@ -106,7 +108,9 @@ namespace PusherServer.Tests.UnitTests
         {
             await _pusher.GetAsync<object>("/channels");
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecuteGetAsync<object>(
+#pragma warning restore 4014
                 Arg.Is<IPusherRestRequest>(
                     x => x.Method == PusherMethod.GET
                 )
@@ -118,7 +122,9 @@ namespace PusherServer.Tests.UnitTests
         {
             await _pusher.GetAsync<object>("/channels", new { filter_by_prefix = "presence-", info = "user_count" });
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecuteGetAsync<object>(
+#pragma warning restore 4014
                 Arg.Is<IPusherRestRequest>(
                     x => x.ResourceUri.Contains("&filter_by_prefix=presence-") &&
                          x.ResourceUri.Contains("&info=user_count")

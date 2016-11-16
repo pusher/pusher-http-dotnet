@@ -61,9 +61,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Set the cluster only if there is no custom host defined.
-        /// </summary>
+        /// <inheritDoc/>
         public string Cluster
         {
           get
@@ -94,6 +92,7 @@ namespace PusherServer
             set { _client = value; }
         }
 
+        /// <inheritDoc/>
         public IPusherRestClient PusherRestClient
         {
             get
@@ -108,9 +107,7 @@ namespace PusherServer
             set { _pusherClient = value; }
         }
 
-        /// <summary>
-        /// Gets or sets the HostName to use in the base URL
-        /// </summary>
+        /// <inheritDoc/>
         public string HostName
         {
             get
@@ -131,9 +128,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Gets or sets the Json Serializer
-        /// </summary>
+        /// <inheritDoc/>
         public ISerializeObjectsToJson JsonSerializer
         {
             get
@@ -149,9 +144,7 @@ namespace PusherServer
             set { _jsonSerializer = value; }
         }
 
-        /// <summary>
-        /// Gets or sets the Json Deserializer
-        /// </summary>
+        /// <inheritDoc/>
         public IDeserializeJsonStrings JsonDeserializer
         {
             get

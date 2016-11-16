@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
 using PusherServer.RestfulClient;
-using RestSharp;
-using RestSharp.Serializers;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -13,37 +13,34 @@ namespace PusherServer.Tests.UnitTests
     public class When_Triggering_an_Event
     {
         IPusher _pusher;
-        IRestClient _subClient;
         IPusherRestClient _subPusherClient;
 
         readonly string _channelName = "my-channel";
         readonly string _eventName = "my_event";
         readonly object _eventData = new { hello = "world" };
 
-        private IRestResponse V7_PROTOCOL_SUCCESSFUL_RESPONSE;
-        private IRestResponse V8_PROTOCOL_SUCCESSFUL_RESPONSE;
-
+        private HttpResponseMessage _v7ProtocolSuccessfulResponse;
+        private HttpResponseMessage _v8ProtocolSuccessfulResponse;
+        
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            V7_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
-            V7_PROTOCOL_SUCCESSFUL_RESPONSE.Content = "{}";
-            V7_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
+            _v7ProtocolSuccessfulResponse = Substitute.For<HttpResponseMessage>();
+            _v7ProtocolSuccessfulResponse.Content = new StringContent("{}");
+            _v7ProtocolSuccessfulResponse.StatusCode = HttpStatusCode.OK;
 
-            V8_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
-            V8_PROTOCOL_SUCCESSFUL_RESPONSE.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
-            V8_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
+            _v8ProtocolSuccessfulResponse = Substitute.For<HttpResponseMessage>();
+            _v8ProtocolSuccessfulResponse.Content = new StringContent(TriggerResultHelper.TRIGGER_RESPONSE_JSON);
+            _v8ProtocolSuccessfulResponse.StatusCode = HttpStatusCode.OK;
         }
 
         [SetUp]
         public void Setup()
         {
-            _subClient = Substitute.For<IRestClient>();
             _subPusherClient = Substitute.For<IPusherRestClient>();
 
             IPusherOptions options = new PusherOptions()
             {
-                RestClient = _subClient,
                 PusherRestClient = _subPusherClient
             };
 
@@ -53,142 +50,35 @@ namespace PusherServer.Tests.UnitTests
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
 
-            _subClient.Execute(Arg.Any<IRestRequest>()).Returns(V8_PROTOCOL_SUCCESSFUL_RESPONSE);
+            _subPusherClient.ExecutePostAsync(Arg.Any<IPusherRestRequest>()).Returns(Task.FromResult(new TriggerResult2(_v8ProtocolSuccessfulResponse, TriggerResultHelper.TRIGGER_RESPONSE_JSON)));
         }
 
         [Test]
-        public void trigger_calls_are_made_over_HTTP_by_default()
+        public async void url_resource_is_in_expected_format()
         {
-            IPusherOptions options = new PusherOptions()
-            {
-                RestClient = _subClient
-            };
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
-
-            _pusher.Trigger(_channelName, _eventName, _eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestScheme("http", _subClient)
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
+                    x => x.ResourceUri.StartsWith("/apps/" + Config.AppId + "/events?")
                 )
             );
         }
 
         [Test]
-        public void trigger_calls_are_made_over_HTTPS_when_Encrypted_option_is_set()
+        public async void post_payload_contains_channelName_eventName_and_eventData()
         {
-            IPusherOptions options = new PusherOptions()
-            {
-                RestClient = _subClient,
-                Encrypted = true
-            };
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
-
-            _pusher.Trigger(_channelName, _eventName, _eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestScheme("https", _subClient)
-                )
-            );
-        }
-
-        private bool CheckRequestScheme(string urlPrefix, IRestClient client)
-        {
-            return client.BaseUrl.Scheme.StartsWith(urlPrefix);
-        }
-
-        [Test]
-        public void trigger_calls_are_made_over_port_443_when_Encrypted_option_is_set()
-        {
-            IPusherOptions options = new PusherOptions()
-            {
-                RestClient = _subClient,
-                Encrypted = true,
-                HostName = Config.HttpHost
-            };
-
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
-
-            _pusher.Trigger(_channelName, _eventName, _eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestPort(443, _subClient)
-                )
-            );
-        }
-
-        [Test]
-        public void trigger_calls_are_made_over_configured_Port_when_option_is_set()
-        {
-            int expectedPort = 900;
-            IPusherOptions options = new PusherOptions()
-            {
-                RestClient = _subClient,
-                Port = expectedPort
-            };
-
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
-
-            _pusher.Trigger(_channelName, _eventName, _eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestPort(expectedPort, _subClient)
-                )
-            );
-        }
-
-        private bool CheckRequestPort(int port, IRestClient subClient)
-        {
-            return subClient.BaseUrl.Port == port;
-        }
-
-        [Test]
-        public void url_resource_is_in_expected_format()
-        {
-            _pusher.Trigger(_channelName, _eventName, _eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestHasExpectedUrl(x)
-                )
-            );
-        }
-
-        private bool CheckRequestHasExpectedUrl(IRestRequest req)
-        { 
-            return req.Resource.StartsWith( "/apps/" + Config.AppId + "/events?");
-        }
-
-        [Test]
-        public void post_payload_contains_channelName_eventName_and_eventData()
-        {
-            _pusher.Trigger(_channelName, _eventName, _eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
                     x => CheckRequestContainsPayload(x, _channelName, _eventName, _eventData)
                 )
             );
-        }
-
-        private bool CheckRequestContainsPayload(IRestRequest request, string channelName, string eventName, object eventData)
-        {
-            var serializer = new JsonSerializer();
-            var expectedBody = new TriggerBody() {
-                name = eventName,
-                channels = new[]{channelName},
-                data = serializer.Serialize(eventData)
-            };
-
-            var expected = serializer.Serialize(expectedBody);
-
-            return request.Parameters[0].Type == ParameterType.RequestBody &&
-                request.Parameters[0].ToString().Contains( expected );
         }
 
         [Test]
@@ -196,7 +86,9 @@ namespace PusherServer.Tests.UnitTests
         {
             await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
+#pragma warning restore 4014
         }
 
         [Test]
@@ -204,7 +96,9 @@ namespace PusherServer.Tests.UnitTests
         {
             await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
+#pragma warning restore 4014
         }
 
         [Test]
@@ -212,7 +106,9 @@ namespace PusherServer.Tests.UnitTests
         {
             await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData);
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
+#pragma warning restore 4014
         }
 
         [Test]
@@ -220,21 +116,25 @@ namespace PusherServer.Tests.UnitTests
         {
             await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData);
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
+#pragma warning restore 4014
         }
 
         [Test]
-        public void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring()
+        public async void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
             var expectedSocketId = "123.098";
             
-            _pusher.Trigger(_channelName, _eventName, _eventData, new TriggerOptions()
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData, new TriggerOptions()
                     {
                         SocketId = expectedSocketId
                     });
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
             );
@@ -256,24 +156,28 @@ namespace PusherServer.Tests.UnitTests
                 }
             );
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Is<IPusherRestRequest>(
+#pragma warning restore 4014
                 x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
             );
         }
 
         [Test]
-        public void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring()
+        public async void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
             var expectedSocketId = "123.456";
 
-            _pusher.Trigger(new[]{ "my-channel", "my-channel-2" }, _eventName, _eventData, new TriggerOptions()
+            await _pusher.TriggerAsync(new[]{ "my-channel", "my-channel-2" }, _eventName, _eventData, new TriggerOptions()
                     {
                         SocketId = expectedSocketId
                     });
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
             );
@@ -294,21 +198,11 @@ namespace PusherServer.Tests.UnitTests
                     }
                 );
 
+#pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
                 Arg.Is<IPusherRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
-                )
-            );
-        }
-
-        [Test]
-        public void libary_name_header_is_set_with_trigger_request()
-        {
-            _pusher.Trigger(_channelName, _eventName, _eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestContainsHeaderParameter(x, "Pusher-Library-Name", "pusher-http-dotnet")
                 )
             );
         }
@@ -511,13 +405,13 @@ namespace PusherServer.Tests.UnitTests
         }
 		
 		[Test]
-		public void channel_names_in_array_must_be_validated()
+		public async void channel_names_in_array_must_be_validated()
 		{
 		    FormatException caughtException = null;
 
 		    try
 		    {
-		        _pusher.Trigger(new[] { "this_one_is_okay", "test_channel\n:" }, _eventName, _eventData);
+		        await _pusher.TriggerAsync(new[] { "this_one_is_okay", "test_channel\n:" }, _eventName, _eventData);
 		    }
 		    catch (FormatException ex)
 		    {
@@ -547,32 +441,37 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.AreEqualIgnoringCase("Specified argument was out of the range of valid values.\r\nParameter name: The length of the channel name was greater than the allowed 164 characters", caughtException.Message);
         }
 
+        private bool CheckRequestContainsPayload(IPusherRestRequest request, string channelName, string eventName, object eventData)
+        {
+            var expectedBody = new TriggerBody()
+            {
+                name = eventName,
+                channels = new[] { channelName },
+                data = JsonConvert.SerializeObject(eventData)
+            };
+
+            var expected = JsonConvert.SerializeObject(expectedBody);
+
+            return request.GetContentAsJsonString().Contains(expected);
+        }
+
         private async Task<TriggerResult2> TriggerWithSocketId(string socketId)
         {
-            _pusher.Trigger(_channelName, _eventName, _eventData, new TriggerOptions()
+            var response = await _pusher.TriggerAsync(_channelName, _eventName, _eventData, new TriggerOptions()
             {
                 SocketId = socketId
             });
-
-            var response = await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
             return response;
         }
 
         private async Task<TriggerResult2> TriggerWithChannelName(string channelName)
         {
-            _pusher.Trigger(channelName, _eventName, _eventData);
+            await _pusher.TriggerAsync(channelName, _eventName, _eventData);
 
             var response = await _pusher.TriggerAsync(channelName, _eventName, _eventData);
 
             return response;
-        }
-
-        private static bool CheckRequestContainsSocketIdParameter(IRestRequest request, string expectedSocketId) {
-            var parameter = request.Parameters[0];
-            return parameter.Type == ParameterType.RequestBody &&
-                parameter.ToString().Contains("socket_id") &&
-                parameter.ToString().Contains(expectedSocketId);
         }
 
         private static bool CheckRequestContainsSocketIdParameter(IPusherRestRequest request, string expectedSocketId)
@@ -580,22 +479,6 @@ namespace PusherServer.Tests.UnitTests
             var parameter = request.GetContentAsJsonString();
             return parameter.Contains("socket_id") &&
                    parameter.Contains(expectedSocketId);
-        }
-
-        private static bool CheckRequestContainsHeaderParameter(IRestRequest request, string headerName, string headerValue)
-        {
-            bool found = false;
-            foreach(Parameter p in request.Parameters)
-            {
-                if(p.Type == ParameterType.HttpHeader &&
-                   p.Name == headerName &&
-                   p.Value.ToString() == headerValue)
-                {
-                    found = true;
-                    break;
-                }
-            }
-            return found;
         }
     }
 }

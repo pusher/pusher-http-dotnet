@@ -59,17 +59,8 @@ namespace PusherServer
         /// <param name="appId">The app id.</param>
         /// <param name="appKey">The app key.</param>
         /// <param name="appSecret">The app secret.</param>
-        public Pusher(string appId, string appKey, string appSecret) : this(appId, appKey, appSecret, null)
-        {}
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Pusher" /> class.
-        /// </summary>
-        /// <param name="appId">The app id.</param>
-        /// <param name="appKey">The app key.</param>
-        /// <param name="appSecret">The app secret.</param>
-        /// <param name="options">Additional options to be used with the instance e.g. setting the call to the REST API to be made over HTTPS.</param>
-        public Pusher(string appId, string appKey, string appSecret, IPusherOptions options)
+        /// <param name="options">(Optional)Additional options to be used with the instance e.g. setting the call to the REST API to be made over HTTPS.</param>
+        public Pusher(string appId, string appKey, string appSecret, IPusherOptions options = null)
         {
             ThrowArgumentExceptionIfNullOrEmpty(appId, "appId");
             ThrowArgumentExceptionIfNullOrEmpty(appKey, "appKey");
@@ -88,71 +79,6 @@ namespace PusherServer
             _factory = new AuthenticatedRequestFactory(appKey, appId, appSecret);
         }
 
-        /// <summary>
-        /// Triggers an event on the specified channel.
-        /// </summary>
-        /// <param name="channelName">The name of the channel the event should be triggered on.</param>
-        /// <param name="eventName">The name of the event.</param>
-        /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <returns>The result of the call to the REST API</returns>
-        public ITriggerResult Trigger(string channelName, string eventName, object data)
-        {
-            var channelNames = new string[] { channelName };
-            return Trigger(channelNames, eventName, data);
-        }
-
-        /// <summary>
-        /// Triggers an event on the specified channels.
-        /// </summary>
-        /// <param name="channelNames">The names of the channels the event should be triggered on.</param>
-        /// <param name="eventName">The name of the event.</param>
-        /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <returns>The result of the call to the REST API</returns>
-        public ITriggerResult Trigger(string[] channelNames, string eventName, object data)
-        {
-            return Trigger(channelNames, eventName, data, new TriggerOptions());
-        }
-
-        /// <summary>
-        /// Triggers an event on the specified channel.
-        /// </summary>
-        /// <param name="channelName">The name of the channel the event should be triggered on.</param>
-        /// <param name="eventName">The name of the event.</param>
-        /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
-        /// <returns>The result of the call to the REST API</returns>
-        public ITriggerResult Trigger(string channelName, string eventName, object data, ITriggerOptions options)
-        {
-            var channelNames = new string[] { channelName };
-            return Trigger(channelNames, eventName, data, options);
-        }
-
-        /// <summary>
-        /// Triggers an event on the specified channels.
-        /// </summary>
-        /// <param name="channelNames"></param>
-        /// <param name="eventName">The name of the event.</param>
-        /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
-        /// <returns>The result of the call to the REST API</returns>
-        public ITriggerResult Trigger(string[] channelNames, string eventName, object data, ITriggerOptions options)
-        {
-
-            var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
-            IRestResponse response = ExecuteTrigger("/events", bodyData);
-            TriggerResult result = new TriggerResult(response);
-            return result;
-        }
-
-        /// <inheritDoc/>
-        public ITriggerResult Trigger(Event[] events)
-        {
-            var bodyData = CreateBatchTriggerBody(events);
-            IRestResponse response = ExecuteTrigger("/batch_events", bodyData);
-            TriggerResult result = new TriggerResult(response);
-            return result;
-        }
-
         /// <inheritdoc/>
         public async Task<TriggerResult2> TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options = null)
         {
@@ -168,7 +94,12 @@ namespace PusherServer
             var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
 
             var request = _factory.Build(PusherMethod.POST, "/events", requestBody: bodyData);
+
+            DebugTriggerRequest(request);
+
             var result = await _options.PusherRestClient.ExecutePostAsync(request);
+
+            DebugTriggerResponse(result);
 
             return result;
         }
@@ -179,7 +110,12 @@ namespace PusherServer
             var bodyData = CreateBatchTriggerBody(events);
 
             var request = _factory.Build(PusherMethod.POST, "/batch_events", requestBody: bodyData);
+
+            DebugTriggerRequest(request);
+
             var result = await _options.PusherRestClient.ExecutePostAsync(request);
+
+            DebugTriggerResponse(result);
 
             return result;
         }
@@ -232,7 +168,7 @@ namespace PusherServer
         /// </returns>
         public IAuthenticationData Authenticate(string channelName, string socketId)
         {
-            return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId);
+            return new AuthenticationData(_appKey, _appSecret, channelName, socketId);
         }
 
         /// <summary>
@@ -247,9 +183,10 @@ namespace PusherServer
         {
             if(presenceData == null)
             {
-                throw new ArgumentNullException("presenceData");
+                throw new ArgumentNullException(nameof(presenceData));
             }
-            return new AuthenticationData(this._appKey, this._appSecret, channelName, socketId, presenceData);
+
+            return new AuthenticationData(_appKey, _appSecret, channelName, socketId, presenceData);
         }
         
         /// <summary>
@@ -291,7 +228,7 @@ namespace PusherServer
         /// <returns>A populated Web Hook</returns>
         public IWebHook ProcessWebHook(string signature, string body)
         {
-            return new WebHook(this._appSecret, signature, body);
+            return new WebHook(_appSecret, signature, body);
         }
 
         /// <inheritDoc/>
@@ -335,7 +272,7 @@ namespace PusherServer
         {
             ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
 
-            var request = _factory.Build(PusherMethod.GET, string.Format(ChannelResource, channelName), info, null);
+            var request = _factory.Build(PusherMethod.GET, string.Format(ChannelResource, channelName), info);
 
             var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
 
@@ -362,31 +299,15 @@ namespace PusherServer
             return response;
         }
 
-        private IRestResponse ExecuteTrigger(string path, object requestBody)
+        private void DebugTriggerRequest(IPusherRestRequest request)
         {
-            _options.RestClient.BaseUrl = _options.GetBaseUrl();
-            var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
-
-            var debugParameters = string.Join(",", request.Parameters.Select(p => $"{p.Name}={p.Value}").ToArray());
-
-            Debug.WriteLine($"Method: {request.Method}{Environment.NewLine}Host: {_options.RestClient.BaseUrl}{Environment.NewLine}Resource: {request.Resource}{Environment.NewLine}Parameters:{debugParameters}");
-
-            IRestResponse response = _options.RestClient.Execute(request);
-
-            Debug.WriteLine($"Response{Environment.NewLine}StatusCode: {response.StatusCode}{Environment.NewLine}Body: {response.Content}");
-
-            return response;
+            Debug.WriteLine($"Method: {request.Method}{Environment.NewLine}Host: {_options.RestClient.BaseUrl}{Environment.NewLine}Resource: {request.ResourceUri}{Environment.NewLine}Body:{request.Body}");
         }
 
-        private void ExecuteTriggerAsync(string path, object requestBody, Action<IRestResponse> callback)
+        private void DebugTriggerResponse(TriggerResult2 response)
         {
-            _options.RestClient.BaseUrl = _options.GetBaseUrl();
-
-            var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
-            _options.RestClient.ExecuteAsync(request, callback);
+            Debug.WriteLine($"Response{Environment.NewLine}StatusCode: {response.StatusCode}{Environment.NewLine}Body: {response.OriginalContent}");
         }
-
-
 
         private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody)
         {
@@ -394,7 +315,7 @@ namespace PusherServer
 
             int timeNow = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
-            queryParams.Add("auth_key", this._appKey);
+            queryParams.Add("auth_key", _appKey);
             queryParams.Add("auth_timestamp", timeNow.ToString());
             queryParams.Add("auth_version", "1.0");
 
@@ -402,8 +323,8 @@ namespace PusherServer
             {
                 JsonSerializer serializer = new JsonSerializer();
                 var bodyDataJson = serializer.Serialize(requestBody);
-                var bodyMD5 = CryptoHelper.GetMd5Hash(bodyDataJson);
-                queryParams.Add("body_md5", bodyMD5);
+                var bodyMd5 = CryptoHelper.GetMd5Hash(bodyDataJson);
+                queryParams.Add("body_md5", bodyMd5);
             }
 
             string queryString = string.Empty;
@@ -455,7 +376,7 @@ namespace PusherServer
 
         private static void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 throw new ArgumentException($"{argumentName} cannot be null or empty");
             }

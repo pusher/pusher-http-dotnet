@@ -32,14 +32,15 @@ namespace PusherServer.RestfulClient
         /// <param name="version">The version of the Pusher library</param>
         public PusherRestClient(Uri baseAddress, string libraryName, Version version)
         {
-            BaseUrl = baseAddress;
             _httpClient = new HttpClient { BaseAddress = baseAddress };
             _libraryName = libraryName;
             _version = version.ToString(3);
         }
 
         ///<inheritDoc/>
-        public Uri BaseUrl { get; }
+        public Uri BaseUrl {
+            get { return _httpClient.BaseAddress; } 
+        }
 
         ///<inheritDoc/>
         public async Task<GetResult2<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest)
