@@ -33,7 +33,6 @@ namespace PusherServer
         /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data);
 
-
         /// <summary>
         /// Triggers an event on the specified channel.
         /// </summary>
@@ -73,18 +72,9 @@ namespace PusherServer
         /// <param name="channelName">The name of the channel to trigger the event on</param>
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <param name="callback">Method to call when the request has returned.</param>
-        void TriggerAsync(string channelName, string eventName, object data, Action<ITriggerResult> callback);
-
-        /// <summary>
-        /// Triggers an event on the specified channels in the background.
-        /// </summary>
-        /// <param name="channelName">The name of the channel to trigger the event on</param>
-        /// <param name="eventName">The name of the event.</param>
-        /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
-        /// <param name="callback">Method to call when the request has returned.</param>
-        void TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
+        /// <returns>The result of the call to the REST API</returns>
+        Task<TriggerResult2> TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options = null);
 
         /// <summary>
         /// Triggers an event on the specified channels in the background.
@@ -92,26 +82,16 @@ namespace PusherServer
         /// <param name="channelNames">The channels to trigger the event on</param>
         /// <param name="eventName">The name of the event.</param>
         /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <param name="callback">Method to call when the request has returned.</param>
-        void TriggerAsync(string[] channelNames, string eventName, object data, Action<ITriggerResult> callback);
-
-        /// <summary>
-        /// Triggers an event on the specified channels in the background.
-        /// </summary>
-        /// <param name="channelNames">The channels to trigger the event on</param>
-        /// <param name="eventName">The name of the event.</param>
-        /// <param name="data">The data to be sent with the event. The event payload.</param>
-        /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
-        /// <param name="callback">Method to call when the request has returned.</param>
-        void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback);
+        /// <param name="options">(Optional)Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
+        /// <returns>The result of the call to the REST API</returns>
+        Task<TriggerResult2> TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options = null);
 
         /// <summary>
         /// Triggers the events in the passed in array asynchronously
         /// </summary>
         /// <param name="events">The events to trigger</param>
-        /// <param name="callback">Method to call when the request has returned.</param>
         /// <returns>The result of the call to the REST API</returns>
-        void TriggerAsync(Event[] events, Action<ITriggerResult> callback);
+        Task<TriggerResult2> TriggerAsync(Event[] events);
 
         /// <summary>
         /// Authenticates the subscription request for a private channel.
@@ -171,8 +151,8 @@ namespace PusherServer
         /// </summary>
         /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
         /// <param name="channelName">The name of the channel to query</param>
-        /// <param name="callback">The callback to receive the result of the query</param>
-        void FetchUsersFromPresenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback);
+        /// <returns>The result of the Presence Channel Users query</returns>
+        Task<IGetResult<T>> FetchUsersFromPresenceChannelAsync<T>(string channelName);
 
         /// <summary>
         /// Queries the Pusher API for the state of a Channel

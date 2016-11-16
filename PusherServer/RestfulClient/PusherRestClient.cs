@@ -32,20 +32,19 @@ namespace PusherServer.RestfulClient
         /// <param name="version">The version of the Pusher library</param>
         public PusherRestClient(Uri baseAddress, string libraryName, Version version)
         {
+            BaseUrl = baseAddress;
             _httpClient = new HttpClient { BaseAddress = baseAddress };
             _libraryName = libraryName;
             _version = version.ToString(3);
         }
 
-        /// <summary>
-        /// Execute a REST request to the Pusher API asynchronously
-        /// </summary>
-        /// <param name="pusherRestRequest">The request to execute</param>
-        /// <returns>The response received from Pusher</returns>
-        public async Task<GetResult2<T>> ExecuteAsync<T>(IPusherRestRequest pusherRestRequest)
+        ///<inheritDoc/>
+        public Uri BaseUrl { get; }
+
+        ///<inheritDoc/>
+        public async Task<GetResult2<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest)
         {
             _httpClient.DefaultRequestHeaders.Clear();
-            //_httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Version", _version);
 
@@ -57,6 +56,17 @@ namespace PusherServer.RestfulClient
                 return new GetResult2<T>(response, responseContent);
             }
 
+            return null;
+        }
+
+        ///<inheritDoc/>
+        public async Task<TriggerResult2> ExecutePostAsync(IPusherRestRequest pusherRestRequest)
+        {
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
+            _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Version", _version);
+
             if (pusherRestRequest.Method == PusherMethod.POST)
             {
                 var content = new StringContent(pusherRestRequest.GetContentAsJsonString(), Encoding.UTF8, "application/json");
@@ -64,7 +74,7 @@ namespace PusherServer.RestfulClient
                 var response = await _httpClient.PostAsync(pusherRestRequest.ResourceUri, content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
-                return new GetResult2<T>(response, responseContent);
+                return new TriggerResult2(response, responseContent);
             }
 
             return null;

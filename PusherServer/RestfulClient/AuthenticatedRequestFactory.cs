@@ -28,26 +28,6 @@ namespace PusherServer.RestfulClient
             _appSecret = appSecret;
         }
 
-        /// <summary>
-        /// Pusher library version information.
-        /// </summary>
-        public static Version VERSION => typeof(AuthenticatedRequestFactory).GetTypeInfo().Assembly.GetName().Version;
-
-        /// <summary>
-        /// The Pusher library name.
-        /// </summary>
-        public static String LIBRARY_NAME
-        {
-            get
-            {
-                Attribute attr = typeof(Pusher).GetTypeInfo().Assembly.GetCustomAttribute(typeof(AssemblyProductAttribute));
-
-                AssemblyProductAttribute adAttr = (AssemblyProductAttribute)attr;
-
-                return adAttr.Product;
-            }
-        }
-
         /// <inheritdoc/>
         public IPusherRestRequest Build(PusherMethod requestType, string resource, object requestParameters = null, object requestBody = null)
         {

@@ -15,7 +15,7 @@ namespace PusherServer.Tests.RestfulClient
             var request = factory.Build(PusherMethod.GET, "/channels/newRestClient");
 
             var client = new PusherRestClient("http://api.pusherapp.com", "pusher-http-dotnet", Version.Parse("4.0.0"));
-            var response = await client.ExecuteAsync<TestOccupied>(request);
+            var response = await client.ExecuteGetAsync<TestOccupied>(request);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.Data.Occupied);

@@ -31,18 +31,13 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void It_should_return_a_200_response_async()
+        public async void It_should_return_a_200_response_async()
         {
             var waiting = new AutoResetEvent(false);
 
-            ITriggerResult asyncResult = null;
-            _pusher.TriggerAsync("my-channel", "my_event", new {hello = "world"}, (ITriggerResult result) =>
-            {
-                asyncResult = result;
-                waiting.Set();
-            });
+            ITriggerResult asyncResult = await _pusher.TriggerAsync("my-channel", "my_event", new {hello = "world"});
 
-            waiting.WaitOne(5000);
+            waiting.Set();
 
             Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
         }
@@ -57,20 +52,13 @@ namespace PusherServer.Tests.AcceptanceTests
 
         [Test]
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
-        public void it_should_expose_the_event_id_async()
+        public async void it_should_expose_the_event_id_async()
         {
             var waiting = new AutoResetEvent(false);
 
-            ITriggerResult asyncResult = null;
+            ITriggerResult asyncResult = await _pusher.TriggerAsync("my-channel", "my_event", new {hello = "world"});
 
-            _pusher.TriggerAsync("my-channel", "my_event", new {hello = "world"}, (ITriggerResult result) =>
-            {
-                asyncResult = result;
-
-                waiting.Set();
-            });
-
-            waiting.WaitOne(5000);
+            waiting.Set();
 
             Assert.IsTrue(string.IsNullOrEmpty(asyncResult.EventIds["my-channel"]) == false);
         }
@@ -153,25 +141,18 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void It_should_return_a_200_response_async()
+        public async void It_should_return_a_200_response_async()
         {
             var waiting = new AutoResetEvent(false);
-
-            ITriggerResult asyncResult = null;
 
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
                 HostName = Config.HttpHost
             });
-            pusher.TriggerAsync(new string[] {"my-channel-1", "my-channel-2"}, "my_event", new {hello = "world"},
-                (ITriggerResult result) =>
-                {
-                    asyncResult = result;
 
-                    waiting.Set();
-                });
+            ITriggerResult asyncResult = await pusher.TriggerAsync(new string[] {"my-channel-1", "my-channel-2"}, "my_event", new {hello = "world"});
 
-            waiting.WaitOne(5000);
+            waiting.Set();
 
             Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
         }
@@ -209,11 +190,9 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void It_should_return_a_200_response_async()
+        public async void It_should_return_a_200_response_async()
         {
             var waiting = new AutoResetEvent(false);
-
-            ITriggerResult asyncResult = null;
 
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
@@ -236,15 +215,11 @@ namespace PusherServer.Tests.AcceptanceTests
                 },
             };
 
-            pusher.TriggerAsync(events, (ITriggerResult result) =>
-            {
-                asyncResult = result;
-                waiting.Set();
-            });
+            var result = await pusher.TriggerAsync(events);
 
-            waiting.WaitOne(5000);
+            waiting.Set();
 
-            Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
     }
 

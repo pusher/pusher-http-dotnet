@@ -25,7 +25,7 @@ namespace PusherServer
         private readonly string _appSecret;
         private readonly IPusherOptions _options;
 
-        private IAuthenticatedRequestFactory _factory;
+        private readonly IAuthenticatedRequestFactory _factory;
 
         /// <summary>
         /// Pusher library version information.
@@ -154,49 +154,34 @@ namespace PusherServer
         }
 
         /// <inheritdoc/>
-        public void TriggerAsync(string channelName, string eventName, object data, Action<ITriggerResult> callback)
+        public async Task<TriggerResult2> TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options = null)
         {
-            TriggerAsync(channelName, eventName, data, new TriggerOptions(), callback);
+            return await TriggerAsync(new[] { channelName }, eventName, data, options);
         }
 
         /// <inheritdoc/>
-        public void TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback)
+        public async Task<TriggerResult2> TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options = null)
         {
-            TriggerAsync(new string[] { channelName }, eventName, data, options, callback);
-        }
+            if (options == null)
+                options = new TriggerOptions();
 
-        /// <inheritdoc/>
-        public void TriggerAsync(string[] channelNames, string eventName, object data, Action<ITriggerResult> callback)
-        {
-            TriggerAsync(channelNames, eventName, data, new TriggerOptions(), callback);
-        }
-
-        /// <inheritdoc/>
-        public void TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options, Action<ITriggerResult> callback)
-        {
             var bodyData = CreateTriggerBody(channelNames, eventName, data, options);
 
-            ExecuteTriggerAsync("/events", bodyData, baseResponse =>
-            {
-                if (callback != null)
-                {
-                    callback(new TriggerResult(baseResponse));
-                }
-            });
+            var request = _factory.Build(PusherMethod.POST, "/events", requestBody: bodyData);
+            var result = await _options.PusherRestClient.ExecutePostAsync(request);
+
+            return result;
         }
 
         ///<inheritDoc/>
-        public void TriggerAsync(Event[] events, Action<ITriggerResult> callback)
+        public async Task<TriggerResult2> TriggerAsync(Event[] events)
         {
             var bodyData = CreateBatchTriggerBody(events);
 
-            ExecuteTriggerAsync("/batch_events", bodyData, baseResponse =>
-            {
-                if (callback != null)
-                {
-                    callback(new TriggerResult(baseResponse));
-                }
-            });
+            var request = _factory.Build(PusherMethod.POST, "/batch_events", requestBody: bodyData);
+            var result = await _options.PusherRestClient.ExecutePostAsync(request);
+
+            return result;
         }
 
         private TriggerBody CreateTriggerBody(string[] channelNames, string eventName, object data, ITriggerOptions options)
@@ -317,16 +302,15 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public void FetchUsersFromPresenceChannelAsync<T>(string channelName, Action<IGetResult<T>> callback)
+        public async Task<IGetResult<T>> FetchUsersFromPresenceChannelAsync<T>(string channelName)
         {
             ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
 
-            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
+            var request = _factory.Build(PusherMethod.GET, string.Format(ChannelUsersResource, channelName));
 
-            _options.RestClient.ExecuteAsync(request, response =>
-            {
-                callback(new GetResult<T>(response, _options.JsonDeserializer));
-            });
+            var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
+
+            return response;
         }
 
         /// <inheritDoc/>
@@ -348,7 +332,7 @@ namespace PusherServer
 
             var request = _factory.Build(PusherMethod.GET, string.Format(ChannelResource, channelName), info, null);
 
-            var response = await _options.PusherRestClient.ExecuteAsync<T>(request);
+            var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
 
             return response;
         }
@@ -368,7 +352,7 @@ namespace PusherServer
         {
             var request = _factory.Build(PusherMethod.GET, MultipleChannelsResource, info);
 
-            var response = await _options.PusherRestClient.ExecuteAsync<T>(request);
+            var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
 
             return response;
         }
@@ -396,6 +380,8 @@ namespace PusherServer
             var request = CreateAuthenticatedRequest(Method.POST, path, null, requestBody);
             _options.RestClient.ExecuteAsync(request, callback);
         }
+
+
 
         private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody)
         {

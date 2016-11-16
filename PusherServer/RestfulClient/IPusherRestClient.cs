@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace PusherServer.RestfulClient
 {
@@ -8,10 +9,22 @@ namespace PusherServer.RestfulClient
     public interface IPusherRestClient
     {
         /// <summary>
-        /// Execute a REST request to the Pusher API asynchronously
+        /// Execute a REST GET request to the Pusher API asynchronously
         /// </summary>
         /// <param name="pusherRestRequest">The request to execute</param>
         /// <returns>The response received from Pusher</returns>
-        Task<GetResult2<T>> ExecuteAsync<T>(IPusherRestRequest pusherRestRequest);
+        Task<GetResult2<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest);
+
+        /// <summary>
+        /// Execute a REST POST request to the Pusher API asynchronously
+        /// </summary>
+        /// <param name="pusherRestRequest">The request to execute</param>
+        /// <returns>The response received from Pusher</returns>
+        Task<TriggerResult2> ExecutePostAsync(IPusherRestRequest pusherRestRequest);
+
+        /// <summary>
+        /// Gets the Base Url this client is using
+        /// </summary>
+        Uri BaseUrl { get; }
     }
 }
