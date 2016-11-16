@@ -257,10 +257,14 @@ namespace PusherServer
         /// </summary>
         /// <typeparam name="T">The type of object to get</typeparam>
         /// <param name="resource">The name of the resource to get</param>
+        /// <param name="parameters">(Optional)Any additional parameters required for the Get</param>
         /// <returns>The result of the Get</returns>
-        public IGetResult<T> Get<T>(string resource)
+        public IGetResult<T> Get<T>(string resource, object parameters = null)
         {
-            return Get<T>(resource, null);
+            var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
+
+            IRestResponse response = _options.RestClient.Execute(request);
+            return new GetResult<T>(response, _options.JsonDeserializer);
         }
 
         /// <summary>
@@ -268,14 +272,15 @@ namespace PusherServer
         /// </summary>
         /// <typeparam name="T">The type of object to get</typeparam>
         /// <param name="resource">The name of the resource to get</param>
-        /// <param name="parameters">Any additional parameters required for the Get</param>
+        /// <param name="parameters">(Optional)Any additional parameters required for the Get</param>
         /// <returns>The result of the Get</returns>
-        public IGetResult<T> Get<T>(string resource, object parameters)
+        public async Task<IGetResult<T>> GetAsync<T>(string resource, object parameters = null)
         {
-            var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
+            var request = _factory.Build(PusherMethod.GET, resource, parameters);
 
-            IRestResponse response = _options.RestClient.Execute(request);
-            return new GetResult<T>(response, _options.JsonDeserializer);
+            var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
+
+            return response;
         }
 
         /// <summary>
