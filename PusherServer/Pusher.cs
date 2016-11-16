@@ -45,7 +45,7 @@ namespace PusherServer
         {
             get
             {
-                var attr = typeof(Pusher).GetTypeInfo().Assembly.GetCustomAttribute(typeof(AssemblyProductAttribute));
+                Attribute attr = typeof(Pusher).GetTypeInfo().Assembly.GetCustomAttribute(typeof(AssemblyProductAttribute));
 
                 AssemblyProductAttribute adAttr = (AssemblyProductAttribute)attr;
                 
@@ -189,21 +189,6 @@ namespace PusherServer
             return new AuthenticationData(_appKey, _appSecret, channelName, socketId, presenceData);
         }
         
-        /// <summary>
-        /// Using the provided response, interrogates the Pusher API
-        /// </summary>
-        /// <typeparam name="T">The type of object to get</typeparam>
-        /// <param name="resource">The name of the resource to get</param>
-        /// <param name="parameters">(Optional)Any additional parameters required for the Get</param>
-        /// <returns>The result of the Get</returns>
-        public IGetResult<T> Get<T>(string resource, object parameters = null)
-        {
-            var request = CreateAuthenticatedRequest(Method.GET, resource, parameters, null);
-
-            IRestResponse response = _options.RestClient.Execute(request);
-            return new GetResult<T>(response, _options.JsonDeserializer);
-        }
-
         /// <summary>
         /// Using the provided response, interrogates the Pusher API
         /// </summary>

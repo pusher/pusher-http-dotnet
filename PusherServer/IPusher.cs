@@ -55,17 +55,6 @@ namespace PusherServer
         IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData data);
 
         /// <summary>
-        /// Makes a GET request to the specified resource. Authentication is handled as part of the call. The data returned from the request is deserizlized to the object type defined by <typeparamref name="T" />.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="resource">The resource.</param>
-        /// <param name="parameters">Additional parameters to be sent as part of the request query string.</param>
-        /// <returns>
-        /// The result of the GET request
-        /// </returns>
-        IGetResult<T> Get<T>(string resource, object parameters = null);
-
-        /// <summary>
         /// Makes an asynchronous GET request to the specified resource. Authentication is handled as part of the call. The data returned from the request is deserizlized to the object type defined by <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
