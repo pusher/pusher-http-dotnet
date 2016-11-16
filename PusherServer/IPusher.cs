@@ -204,15 +204,7 @@ namespace PusherServer
         /// Queries the Pusher API for the state of all channels based upon the info object
         /// </summary>
         /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
-        /// <param name="callback">The callback to receive the result of the query</param>
-        void FetchStateForChannelsAsync<T>(Action<IGetResult<T>> callback);
-
-        /// <summary>
-        /// Queries the Pusher API for the state of all channels based upon the info object
-        /// </summary>
-        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
         /// <param name="info">An object containing a list of attributes to include in the query</param>
-        /// <param name="callback">The callback to receive the result of the query</param>
-        void FetchStateForChannelsAsync<T>(object info, Action<IGetResult<T>> callback);
+        Task<IGetResult<T>> FetchStateForChannelsAsync<T>(object info);
     }
 }

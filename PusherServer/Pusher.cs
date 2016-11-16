@@ -364,20 +364,13 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public void FetchStateForChannelsAsync<T>(Action<IGetResult<T>> callback)
+        public async Task<IGetResult<T>> FetchStateForChannelsAsync<T>(object info = null)
         {
-            FetchStateForChannelsAsync<T>(null, callback);
-        }
+            var request = _factory.Build(PusherMethod.GET, MultipleChannelsResource, info);
 
-        /// <inheritDoc/>
-        public void FetchStateForChannelsAsync<T>(object info, Action<IGetResult<T>> callback)
-        {
-            var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
+            var response = await _options.PusherRestClient.ExecuteAsync<T>(request);
 
-            _options.RestClient.ExecuteAsync(request, response =>
-            {
-                callback(new GetResult<T>(response, _options.JsonDeserializer));
-            });
+            return response;
         }
 
         private IRestResponse ExecuteTrigger(string path, object requestBody)

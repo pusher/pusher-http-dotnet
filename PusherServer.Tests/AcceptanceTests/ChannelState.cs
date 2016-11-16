@@ -228,7 +228,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
+        public async void It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
         {
             var reset = new AutoResetEvent(false);
 
@@ -239,15 +239,9 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var info = new { info = "user_count", filter_by_prefix = "presence-" };
 
-            IGetResult<object> result = null;
+            var result = await pusherServer.FetchStateForChannelsAsync<object>(info);
 
-            pusherServer.FetchStateForChannelsAsync<object>(info, getResult =>
-            {
-                result = getResult;
-                reset.Set();
-            });
-
-            reset.WaitOne(TimeSpan.FromSeconds(30));
+            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             
@@ -255,7 +249,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
+        public async void It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
         {
             var reset = new AutoResetEvent(false);
 
@@ -264,21 +258,15 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            IGetResult<object> result = null;
+            var result = await pusherServer.FetchStateForChannelsAsync<object>();
 
-            pusherServer.FetchStateForChannelsAsync<object>(getResult =>
-            {
-                result = getResult;
-                reset.Set();
-            });
-
-            reset.WaitOne(TimeSpan.FromSeconds(30));
+            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
         [Test]
-        public void It_should_not_return_the_state_asynchronously_based_When_given_a_channel_name_that_exists_an_bad_attributes()
+        public async void It_should_not_return_the_state_asynchronously_based_When_given_a_channel_name_that_exists_an_bad_attributes()
         {
             AutoResetEvent reset = new AutoResetEvent(false);
 
@@ -289,18 +277,12 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var info = new { info = "does-not-exist" };
 
-            IGetResult<object> result = null;
+            var result = await pusherServer.FetchStateForChannelsAsync<object>(info);
 
-            pusherServer.FetchStateForChannelsAsync<object>(info, getResult =>
-            {
-                result = getResult;
-                reset.Set();
-            });
-
-            reset.WaitOne(TimeSpan.FromSeconds(30));
+            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
-            StringAssert.IsMatch("info should be a comma separated list of attributes", (result as GetResult<object>).OriginalContent);
+            StringAssert.IsMatch("info should be a comma separated list of attributes", result.Body);
         }
     }
 }

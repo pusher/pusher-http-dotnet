@@ -13,6 +13,6 @@
         /// <param name="requestParameters">(Optional) Any parameters that need to be included in the call</param>
         /// <param name="requestBody">(Optional) The body to be sent with the request</param>
         /// <returns>A constructed REST request</returns>
-        IPusherRestRequest Build(PusherMethod requestType, string resource, object requestParameters, object requestBody);
+        IPusherRestRequest Build(PusherMethod requestType, string resource, object requestParameters = null, object requestBody = null);
     }
 }
