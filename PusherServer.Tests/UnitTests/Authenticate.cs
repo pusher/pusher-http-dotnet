@@ -1,13 +1,19 @@
-﻿using NUnit.Framework;
-using RestSharp.Serializers;
-using System;
+﻿using System;
+using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace PusherServer.Tests.UnitTests
 {
     [TestFixture]
     public class When_authenticating_a_private_channel
     {
-        IPusher _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+        IPusher _pusher;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+        }
 
         [Test]
         public void the_auth_response_is_valid()
@@ -121,7 +127,13 @@ namespace PusherServer.Tests.UnitTests
     [TestFixture]
     public class When_authenticating_a_presence_channel
     {
-        IPusher _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+        private IPusher _pusher;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+        }
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
@@ -130,8 +142,7 @@ namespace PusherServer.Tests.UnitTests
             string channelName = "my-channel";
             string socketId = "some_socket_id";
 
-            PresenceChannelData data = null;
-            _pusher.Authenticate(channelName, socketId, data);
+            _pusher.Authenticate(channelName, socketId, null);
         }
 
         [Test]
@@ -140,16 +151,14 @@ namespace PusherServer.Tests.UnitTests
             string channelName = "my-channel";
             string socketId = "123.456";
 
-            var serializer = new JsonSerializer();
-
             PresenceChannelData data = new PresenceChannelData()
             {
                 user_id = "unique_user_id",
                 user_info = new { twitter_id = "@leggetter" }
             };
-            string presenceJSON = serializer.Serialize(data);
+            string presenceJson = JsonConvert.SerializeObject(data);
 
-            string expectedAuthString = Config.AppKey + ":" + CreateSignedString(channelName, socketId, presenceJSON);
+            string expectedAuthString = Config.AppKey + ":" + CreateSignedString(channelName, socketId, presenceJson);
 
             IAuthenticationData result = _pusher.Authenticate(channelName, socketId, data);
             Assert.AreEqual(expectedAuthString, result.auth);
@@ -161,23 +170,21 @@ namespace PusherServer.Tests.UnitTests
             string channelName = "my-channel";
             string socketId = "123.456";
 
-            var serializer = new JsonSerializer();
-
             PresenceChannelData data = new PresenceChannelData()
             {
                 user_id = "unique_user_id",
                 user_info = new { twitter_id = "@leggetter" }
             };
 
-            string expectedChannelData = serializer.Serialize(data); ;
+            string expectedChannelData = JsonConvert.SerializeObject(data);
 
             IAuthenticationData result = _pusher.Authenticate(channelName, socketId, data);
             Assert.AreEqual(expectedChannelData, result.channel_data);
         }
 
-        private string CreateSignedString(string channelName, string socketId, string presenceJSON)
+        private string CreateSignedString(string channelName, string socketId, string presenceJson)
         {
-            var stringToSign = socketId + ":" + channelName + ":" + presenceJSON;
+            var stringToSign = socketId + ":" + channelName + ":" + presenceJson;
             return CryptoHelper.GetHmac256(Config.AppSecret, stringToSign);
         }
     }

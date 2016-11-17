@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using NSubstitute;
 using NUnit.Framework;
 using PusherServer.Exceptions;
-using RestSharp;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -22,13 +22,13 @@ namespace PusherServer.Tests.UnitTests
     [TestFixture]
     public class When_initialisation_a_TriggerEvent
     {
-        private IRestResponse V7_PROTOCOL_SUCCESSFUL_RESPONSE;
+        private HttpResponseMessage V7_PROTOCOL_SUCCESSFUL_RESPONSE;
 
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            V7_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
-            V7_PROTOCOL_SUCCESSFUL_RESPONSE.Content = "{}";
+            V7_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<HttpResponseMessage>();
+            V7_PROTOCOL_SUCCESSFUL_RESPONSE.Content = new StringContent("{}");
             V7_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
         }
 
@@ -36,20 +36,20 @@ namespace PusherServer.Tests.UnitTests
         [ExpectedException(typeof (ArgumentNullException))]
         public void it_should_not_accept_a_null_response()
         {
-            new TriggerResult(null);
+            new TriggerResult2(null, null);
         }
 
         [Test]
         public void it_should_treat_a_v7_protocol_200_response_as_a_successful_request()
         {
-            var triggerResult = new TriggerResult(V7_PROTOCOL_SUCCESSFUL_RESPONSE);
+            var triggerResult = new TriggerResult2(V7_PROTOCOL_SUCCESSFUL_RESPONSE, "{}");
             Assert.AreEqual(HttpStatusCode.OK, triggerResult.StatusCode);
         }
 
         [Test]
         public void it_should_have_no_event_id_value_when_a_v7_protocol_200_response_is_returned()
         {
-            var triggerResult = new TriggerResult(V7_PROTOCOL_SUCCESSFUL_RESPONSE);
+            var triggerResult = new TriggerResult2(V7_PROTOCOL_SUCCESSFUL_RESPONSE, "{}");
             Assert.AreEqual(0, triggerResult.EventIds.Count);
         }
 
@@ -57,21 +57,21 @@ namespace PusherServer.Tests.UnitTests
         [ExpectedException(typeof (TriggerResponseException))]
         public void it_should_treat_non_JSON_content_in_the_request_body_as_a_failed_request()
         {
-            IRestResponse response = Substitute.For<IRestResponse>();
-            response.Content = "FISH";
+            HttpResponseMessage response = Substitute.For<HttpResponseMessage>();
+            response.Content = new StringContent("FISH");
             response.StatusCode = HttpStatusCode.OK;
 
-            new TriggerResult(response);
+            new TriggerResult2(response, "FISH");
         }
 
         [Test]
         [ExpectedException(typeof (NotSupportedException))]
         public void it_should_not_be_possible_to_change_EventIds()
         {
-            IRestResponse response = Substitute.For<IRestResponse>();
+            HttpResponseMessage response = Substitute.For<HttpResponseMessage>();
             response.StatusCode = HttpStatusCode.OK;
-            response.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
-            var triggerResult = new TriggerResult(response);
+            response.Content = new StringContent(TriggerResultHelper.TRIGGER_RESPONSE_JSON);
+            var triggerResult = new TriggerResult2(response, TriggerResultHelper.TRIGGER_RESPONSE_JSON);
 
             triggerResult.EventIds.Add("fish", "pie");
         }

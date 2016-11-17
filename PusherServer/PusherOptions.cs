@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using PusherServer.RestfulClient;
-using RestSharp;
 
 namespace PusherServer
 {
@@ -19,14 +17,13 @@ namespace PusherServer
         private static int DEFAULT_HTTPS_PORT = 443;
         private static int DEFAULT_HTTP_PORT = 80;
 
-        IRestClient _client;
         IPusherRestClient _pusherClient;
-        bool _encrypted = false;
-        bool _portModified = false;
-        bool _hostSet = false;
+        bool _encrypted;
+        bool _portModified;
+        bool _hostSet;
         int _port = DEFAULT_HTTP_PORT;
-        string _hostName = null;
-        string _cluster = null;
+        string _hostName;
+        string _cluster;
         ISerializeObjectsToJson _jsonSerializer;
         IDeserializeJsonStrings _jsonDeserializer;
 
@@ -75,21 +72,6 @@ namespace PusherServer
               _hostName = "api-"+_cluster+".pusher.com";
             }
           }
-        }
-
-        /// <inheritDoc/>
-        public IRestClient RestClient
-        {
-            get
-            {
-                if (_client == null)
-                {
-                    _client = new RestClient(GetBaseUrl());
-                }
-
-                return _client;
-            }
-            set { _client = value; }
         }
 
         /// <inheritDoc/>

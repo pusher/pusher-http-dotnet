@@ -224,7 +224,7 @@ namespace PusherServer
 
         private void DebugTriggerRequest(IPusherRestRequest request)
         {
-            Debug.WriteLine($"Method: {request.Method}{Environment.NewLine}Host: {_options.RestClient.BaseUrl}{Environment.NewLine}Resource: {request.ResourceUri}{Environment.NewLine}Body:{request.Body}");
+            Debug.WriteLine($"Method: {request.Method}{Environment.NewLine}Host: {_options.PusherRestClient.BaseUrl}{Environment.NewLine}Resource: {request.ResourceUri}{Environment.NewLine}Body:{request.Body}");
         }
 
         private void DebugTriggerResponse(TriggerResult2 response)

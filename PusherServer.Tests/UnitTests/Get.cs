@@ -1,7 +1,6 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using PusherServer.RestfulClient;
-using RestSharp;
 
 namespace PusherServer.Tests.UnitTests
 {

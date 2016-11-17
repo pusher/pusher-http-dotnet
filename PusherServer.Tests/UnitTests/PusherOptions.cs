@@ -11,7 +11,7 @@ namespace PusherServer.Tests.UnitTests
         public void a_default_RestClient_should_be_used_if_one_is_not_set_on_PusherOptions_parameter()
         {
             var options = new PusherOptions();
-            Assert.IsNotNull(options.RestClient);
+            Assert.IsNotNull(options.PusherRestClient);
         }
 
         [Test]

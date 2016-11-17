@@ -1,16 +1,16 @@
-﻿using RestSharp.Serializers;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
+using Newtonsoft.Json;
 
 namespace PusherServer
 {
     [DataContract]
     class AuthenticationData: IAuthenticationData
     {
-        private string _appKey;
-        private string _appSecret;
-        private string _channelName;
-        private string _socketId;
-        private PresenceChannelData _presenceData;
+        private readonly string _appKey;
+        private readonly string _appSecret;
+        private readonly string _channelName;
+        private readonly string _socketId;
+        private readonly PresenceChannelData _presenceData;
 
         public AuthenticationData(string appKey, string appSecret, string channelName, string socketId)
         {
@@ -34,11 +34,10 @@ namespace PusherServer
         {
             get
             {
-                var serializer = new JsonSerializer();
                 var stringToSign = _socketId + ":" + _channelName;
                 if (_presenceData != null)
                 {
-                    var presenceJson = serializer.Serialize(_presenceData);
+                    var presenceJson = JsonConvert.SerializeObject(_presenceData);
                     stringToSign += ":" + presenceJson;
                 }
                 
@@ -57,8 +56,7 @@ namespace PusherServer
                 string json = null;
                 if (_presenceData != null)
                 {
-                    var serializer = new JsonSerializer();
-                    json = serializer.Serialize(_presenceData);
+                    json = JsonConvert.SerializeObject(_presenceData);
                 }
                 return json;
             }
@@ -66,8 +64,7 @@ namespace PusherServer
 
         public string ToJson()
         {
-            var serializer = new JsonSerializer();
-            return serializer.Serialize(this);
+            return JsonConvert.SerializeObject(this);
         }
 
         public override string ToString()
