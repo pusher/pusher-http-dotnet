@@ -10,43 +10,6 @@ namespace PusherServer.Tests.AcceptanceTests
     public class When_querying_a_Channel
     {
         [Test]
-        public void It_should_return_the_state_When_given_a_channel_name_that_exists()
-        {
-            var reset = new AutoResetEvent(false);
-
-            var channelName = "presence-state-channel1";
-
-            var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
-
-            var info = new {info = "user_count"};
-
-            var result = pusherServer.FetchStateForChannel<ChannelStateMessage>(channelName, info);
-
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-            Assert.AreEqual(1, result.Data.User_Count);
-        }
-
-        [Test]
-        public void It_should_not_return_the_state_based_When_given_a_channel_name_that_exists_an_bad_attributes()
-        {
-            var reset = new AutoResetEvent(false);
-
-            var channelName = "presence-state-channel2";
-
-            var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
-
-            var info = new {info = "does-not-exist"};
-
-            var result = pusherServer.FetchStateForChannel<ChannelStateMessage>(channelName, info);
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
-            StringAssert.IsMatch("info should be a comma separated list of attributes",
-                (result as GetResult<ChannelStateMessage>).OriginalContent);
-        }
-
-        [Test]
         public async void It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
         {
             var channelName = "presence-state-channel-async-1";
@@ -98,48 +61,6 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void It_should_throw_an_exception_when_given_an_empty_string_as_a_channel_name()
-        {
-            var pusherServer = ClientServerFactory.CreateServer();
-
-            var info = new { info = "user_count" };
-
-            ArgumentException caughtException = null;
-
-            try
-            {
-                pusherServer.FetchStateForChannel<ChannelStateMessage>(string.Empty, info);
-            }
-            catch (ArgumentException ex)
-            {
-                caughtException = ex;
-            }
-
-            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
-        }
-
-        [Test]
-        public void It_should_throw_an_exception_when_given_a_null_as_a_channel_name()
-        {
-            var pusherServer = ClientServerFactory.CreateServer();
-
-            var info = new { info = "user_count" };
-
-            ArgumentException caughtException = null;
-
-            try
-            {
-                pusherServer.FetchStateForChannel<ChannelStateMessage>(null, info);
-            }
-            catch (ArgumentException ex)
-            {
-                caughtException = ex;
-            }
-
-            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
-        }
-
-        [Test]
         public async void It_should_throw_an_exception_when_given_an_empty_string_as_a_channel_name_async()
         {
             var pusherServer = ClientServerFactory.CreateServer();
@@ -171,7 +92,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             try
             {
-                var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(string.Empty, info);
+                var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(null, info);
             }
             catch (ArgumentException ex)
             {
