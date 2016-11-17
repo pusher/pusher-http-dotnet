@@ -74,7 +74,7 @@ namespace PusherServer.Tests.RestfulClient
 
             // Assert
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("The resource URI must be a populated string\r\nParameter name: resourceUri", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase($"The resource URI must be a populated string{Environment.NewLine}Parameter name: resourceUri", caughtException.Message);
         }
     }
 }
