@@ -7,14 +7,14 @@ namespace PusherServer
     /// <summary>
     /// Abstract base class for results coming back from request to the Pusher servers
     /// </summary>
-    public abstract class RequestResult2 : IRequestResult
+    public abstract class RequestResult : IRequestResult
     {
         /// <summary>
         /// Constructor to constract the abstract base class for classes derived from RequestResults
         /// </summary>
         /// <param name="response"></param>
         /// <param name="originalContent"></param>
-        protected RequestResult2(HttpResponseMessage response, string originalContent)
+        protected RequestResult(HttpResponseMessage response, string originalContent)
         {
             if (response == null)
             {

@@ -17,7 +17,6 @@ namespace PusherServer
         private const string ChannelResource = "/channels/{0}";
         private const string MultipleChannelsResource = "/channels";
 
-        private readonly string _appId;
         private readonly string _appKey;
         private readonly string _appSecret;
         private readonly IPusherOptions _options;
@@ -68,7 +67,6 @@ namespace PusherServer
                 options = new PusherOptions();
             }
 
-            _appId = appId;
             _appKey = appKey;
             _appSecret = appSecret;
             _options = options;
@@ -77,13 +75,13 @@ namespace PusherServer
         }
 
         /// <inheritdoc/>
-        public async Task<TriggerResult2> TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options = null)
+        public async Task<ITriggerResult> TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options = null)
         {
             return await TriggerAsync(new[] { channelName }, eventName, data, options);
         }
 
         /// <inheritdoc/>
-        public async Task<TriggerResult2> TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options = null)
+        public async Task<ITriggerResult> TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options = null)
         {
             if (options == null)
                 options = new TriggerOptions();
@@ -94,7 +92,7 @@ namespace PusherServer
 
             DebugTriggerRequest(request);
 
-            var result = await _options.PusherRestClient.ExecutePostAsync(request);
+            var result = await _options.RestClient.ExecutePostAsync(request);
 
             DebugTriggerResponse(result);
 
@@ -102,7 +100,7 @@ namespace PusherServer
         }
 
         ///<inheritDoc/>
-        public async Task<TriggerResult2> TriggerAsync(Event[] events)
+        public async Task<ITriggerResult> TriggerAsync(Event[] events)
         {
             var bodyData = CreateBatchTriggerBody(events);
 
@@ -110,7 +108,7 @@ namespace PusherServer
 
             DebugTriggerRequest(request);
 
-            var result = await _options.PusherRestClient.ExecutePostAsync(request);
+            var result = await _options.RestClient.ExecutePostAsync(request);
 
             DebugTriggerResponse(result);
 
@@ -177,7 +175,7 @@ namespace PusherServer
         {
             var request = _factory.Build(PusherMethod.GET, resource, parameters);
 
-            var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
+            var response = await _options.RestClient.ExecuteGetAsync<T>(request);
 
             return response;
         }
@@ -195,7 +193,7 @@ namespace PusherServer
 
             var request = _factory.Build(PusherMethod.GET, string.Format(ChannelUsersResource, channelName));
 
-            var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
+            var response = await _options.RestClient.ExecuteGetAsync<T>(request);
 
             return response;
         }
@@ -207,7 +205,7 @@ namespace PusherServer
 
             var request = _factory.Build(PusherMethod.GET, string.Format(ChannelResource, channelName), info);
 
-            var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
+            var response = await _options.RestClient.ExecuteGetAsync<T>(request);
 
             return response;
         }
@@ -217,17 +215,17 @@ namespace PusherServer
         {
             var request = _factory.Build(PusherMethod.GET, MultipleChannelsResource, info);
 
-            var response = await _options.PusherRestClient.ExecuteGetAsync<T>(request);
+            var response = await _options.RestClient.ExecuteGetAsync<T>(request);
 
             return response;
         }
 
         private void DebugTriggerRequest(IPusherRestRequest request)
         {
-            Debug.WriteLine($"Method: {request.Method}{Environment.NewLine}Host: {_options.PusherRestClient.BaseUrl}{Environment.NewLine}Resource: {request.ResourceUri}{Environment.NewLine}Body:{request.Body}");
+            Debug.WriteLine($"Method: {request.Method}{Environment.NewLine}Host: {_options.RestClient.BaseUrl}{Environment.NewLine}Resource: {request.ResourceUri}{Environment.NewLine}Body:{request.Body}");
         }
 
-        private void DebugTriggerResponse(TriggerResult2 response)
+        private void DebugTriggerResponse(TriggerResult response)
         {
             Debug.WriteLine($"Response{Environment.NewLine}StatusCode: {response.StatusCode}{Environment.NewLine}Body: {response.OriginalContent}");
         }

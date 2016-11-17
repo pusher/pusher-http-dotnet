@@ -40,7 +40,7 @@ namespace PusherServer
         /// <value>
         /// The pusher rest client.
         /// </value>
-        IPusherRestClient PusherRestClient { get; set; }
+        IPusherRestClient RestClient { get; set; }
 
         /// <summary>
         /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com

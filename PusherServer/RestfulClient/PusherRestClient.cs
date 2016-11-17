@@ -43,7 +43,7 @@ namespace PusherServer.RestfulClient
         }
 
         ///<inheritDoc/>
-        public async Task<GetResult2<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest)
+        public async Task<GetResult<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest)
         {
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
@@ -54,14 +54,14 @@ namespace PusherServer.RestfulClient
                 var response = await _httpClient.GetAsync(pusherRestRequest.ResourceUri);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
-                return new GetResult2<T>(response, responseContent);
+                return new GetResult<T>(response, responseContent);
             }
 
             return null;
         }
 
         ///<inheritDoc/>
-        public async Task<TriggerResult2> ExecutePostAsync(IPusherRestRequest pusherRestRequest)
+        public async Task<TriggerResult> ExecutePostAsync(IPusherRestRequest pusherRestRequest)
         {
             _httpClient.DefaultRequestHeaders.Clear();
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -75,7 +75,7 @@ namespace PusherServer.RestfulClient
                 var response = await _httpClient.PostAsync(pusherRestRequest.ResourceUri, content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
-                return new TriggerResult2(response, responseContent);
+                return new TriggerResult(response, responseContent);
             }
 
             return null;

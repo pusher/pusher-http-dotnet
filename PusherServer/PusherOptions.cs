@@ -75,7 +75,7 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IPusherRestClient PusherRestClient
+        public IPusherRestClient RestClient
         {
             get
             {

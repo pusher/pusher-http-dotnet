@@ -13,14 +13,14 @@ namespace PusherServer.RestfulClient
         /// </summary>
         /// <param name="pusherRestRequest">The request to execute</param>
         /// <returns>The response received from Pusher</returns>
-        Task<GetResult2<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest);
+        Task<GetResult<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest);
 
         /// <summary>
         /// Execute a REST POST request to the Pusher API asynchronously
         /// </summary>
         /// <param name="pusherRestRequest">The request to execute</param>
         /// <returns>The response received from Pusher</returns>
-        Task<TriggerResult2> ExecutePostAsync(IPusherRestRequest pusherRestRequest);
+        Task<TriggerResult> ExecutePostAsync(IPusherRestRequest pusherRestRequest);
 
         /// <summary>
         /// Gets the Base Url this client is using

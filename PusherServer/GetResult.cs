@@ -7,14 +7,14 @@ namespace PusherServer
     /// Deserialised the result from a Rest Response
     /// </summary>
     /// <typeparam name="T">The Type the Rest Response contains</typeparam>
-    public class GetResult2<T> : RequestResult2, IGetResult<T>
+    public class GetResult<T> : RequestResult, IGetResult<T>
     {
         /// <summary>
         /// Attempts to deserialise the data contained with a Rest Response
         /// </summary>
         /// <param name="response">The original response from the rest call</param>
         /// <param name="content">the extracted content</param>
-        public GetResult2(HttpResponseMessage response, string content) : base(response, content)
+        public GetResult(HttpResponseMessage response, string content) : base(response, content)
         {
             if (response.IsSuccessStatusCode)
                 Data = JsonConvert.DeserializeObject<T>(content);

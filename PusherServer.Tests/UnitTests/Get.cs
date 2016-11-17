@@ -17,7 +17,7 @@ namespace PusherServer.Tests.UnitTests
 
             IPusherOptions options = new PusherOptions()
             {
-                PusherRestClient = _subPusherClient
+                RestClient = _subPusherClient
             };
 
             Config.AppId = "test-app-id";

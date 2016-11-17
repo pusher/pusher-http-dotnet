@@ -17,7 +17,7 @@ namespace PusherServer
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
         /// <returns>The result of the call to the REST API</returns>
-        Task<TriggerResult2> TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options = null);
+        Task<ITriggerResult> TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options = null);
 
         /// <summary>
         /// Triggers an event on the specified channels in the background.
@@ -27,14 +27,14 @@ namespace PusherServer
         /// <param name="data">The data to be sent with the event. The event payload.</param>
         /// <param name="options">(Optional)Additional options to be used when triggering the event. See <see cref="ITriggerOptions" />.</param>
         /// <returns>The result of the call to the REST API</returns>
-        Task<TriggerResult2> TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options = null);
+        Task<ITriggerResult> TriggerAsync(string[] channelNames, string eventName, object data, ITriggerOptions options = null);
 
         /// <summary>
         /// Triggers the events in the passed in array asynchronously
         /// </summary>
         /// <param name="events">The events to trigger</param>
         /// <returns>The result of the call to the REST API</returns>
-        Task<TriggerResult2> TriggerAsync(Event[] events);
+        Task<ITriggerResult> TriggerAsync(Event[] events);
 
         /// <summary>
         /// Authenticates the subscription request for a private channel.

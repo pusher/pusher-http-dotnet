@@ -41,7 +41,7 @@ namespace PusherServer.Tests.UnitTests
 
             IPusherOptions options = new PusherOptions()
             {
-                PusherRestClient = _subPusherClient
+                RestClient = _subPusherClient
             };
 
             Config.AppId = "test-app-id";
@@ -50,7 +50,7 @@ namespace PusherServer.Tests.UnitTests
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
 
-            _subPusherClient.ExecutePostAsync(Arg.Any<IPusherRestRequest>()).Returns(Task.FromResult(new TriggerResult2(_v8ProtocolSuccessfulResponse, TriggerResultHelper.TRIGGER_RESPONSE_JSON)));
+            _subPusherClient.ExecutePostAsync(Arg.Any<IPusherRestRequest>()).Returns(Task.FromResult(new TriggerResult(_v8ProtocolSuccessfulResponse, TriggerResultHelper.TRIGGER_RESPONSE_JSON)));
         }
 
         [Test]
@@ -455,7 +455,7 @@ namespace PusherServer.Tests.UnitTests
             return request.GetContentAsJsonString().Contains(expected);
         }
 
-        private async Task<TriggerResult2> TriggerWithSocketId(string socketId)
+        private async Task<ITriggerResult> TriggerWithSocketId(string socketId)
         {
             var response = await _pusher.TriggerAsync(_channelName, _eventName, _eventData, new TriggerOptions()
             {
@@ -465,7 +465,7 @@ namespace PusherServer.Tests.UnitTests
             return response;
         }
 
-        private async Task<TriggerResult2> TriggerWithChannelName(string channelName)
+        private async Task<ITriggerResult> TriggerWithChannelName(string channelName)
         {
             await _pusher.TriggerAsync(channelName, _eventName, _eventData);
 

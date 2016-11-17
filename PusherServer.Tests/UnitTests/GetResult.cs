@@ -16,7 +16,7 @@ namespace PusherServer.Tests.UnitTests
             stubRestResponse.Content = new StringContent("not json");
             stubRestResponse.StatusCode = HttpStatusCode.BadRequest;
 
-            var getResult = new GetResult2<object>(stubRestResponse, "not json");
+            var getResult = new GetResult<object>(stubRestResponse, "not json");
 
             Assert.AreEqual(HttpStatusCode.BadRequest, getResult.StatusCode);
             StringAssert.IsMatch("not json", getResult.Body);
@@ -30,7 +30,7 @@ namespace PusherServer.Tests.UnitTests
             var stubRestResponse = Substitute.For<HttpResponseMessage>();
             stubRestResponse.Content = new StringContent("[\"string1\", \"string2\", \"string3\"]");
 
-            var getResult = new GetResult2<List<string>>(stubRestResponse, "[\"string1\", \"string2\", \"string3\"]");
+            var getResult = new GetResult<List<string>>(stubRestResponse, "[\"string1\", \"string2\", \"string3\"]");
 
             Assert.AreNotEqual(HttpStatusCode.BadRequest, getResult.StatusCode);
             Assert.AreEqual(3, getResult.Data.Count);
