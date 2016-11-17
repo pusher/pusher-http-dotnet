@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using PusherServer.RestfulClient;
-using RestSharp;
-using RestSharp.Serializers;
 
 namespace PusherServer
 {
@@ -158,27 +155,13 @@ namespace PusherServer
             };
         }
 
-        /// <summary>
-        /// Authenticates the subscription request for a private channel.
-        /// </summary>
-        /// <param name="channelName">Name of the channel to be authenticated.</param>
-        /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
-        /// <returns>
-        /// Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth" />
-        /// </returns>
+        ///<inheritDoc/>
         public IAuthenticationData Authenticate(string channelName, string socketId)
         {
             return new AuthenticationData(_appKey, _appSecret, channelName, socketId);
         }
 
-        /// <summary>
-        /// Authenticates the subscription request for a presence channel.
-        /// </summary>
-        /// <param name="channelName">Name of the channel to be authenticated.</param>
-        /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
-        /// <param name="presenceData">Information about the user subscribing to the presence channel.</param>
-        /// <exception cref="ArgumentNullException">If <paramref name="presenceData"/> is null</exception>
-        /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
+        ///<inheritDoc/>
         public IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
         {
             if(presenceData == null)
@@ -188,14 +171,8 @@ namespace PusherServer
 
             return new AuthenticationData(_appKey, _appSecret, channelName, socketId, presenceData);
         }
-        
-        /// <summary>
-        /// Using the provided response, interrogates the Pusher API
-        /// </summary>
-        /// <typeparam name="T">The type of object to get</typeparam>
-        /// <param name="resource">The name of the resource to get</param>
-        /// <param name="parameters">(Optional)Any additional parameters required for the Get</param>
-        /// <returns>The result of the Get</returns>
+
+        ///<inheritDoc/>
         public async Task<IGetResult<T>> GetAsync<T>(string resource, object parameters = null)
         {
             var request = _factory.Build(PusherMethod.GET, resource, parameters);
@@ -205,12 +182,7 @@ namespace PusherServer
             return response;
         }
 
-        /// <summary>
-        /// Creates a new <see cref="WebHook"/> using the application secret
-        /// </summary>
-        /// <param name="signature">The signature to use during creation</param>
-        /// <param name="body">A JSON string representing the data to use in the Web Hook</param>
-        /// <returns>A populated Web Hook</returns>
+        ///<inheritDoc/>
         public IWebHook ProcessWebHook(string signature, string body)
         {
             return new WebHook(_appSecret, signature, body);
@@ -241,16 +213,6 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IGetResult<T> FetchStateForChannels<T>(object info = null)
-        {
-            var request = CreateAuthenticatedRequest(Method.GET, MultipleChannelsResource, info, null);
-
-            var response = _options.RestClient.Execute(request);
-
-            return new GetResult<T>(response, _options.JsonDeserializer);
-        }
-
-        /// <inheritDoc/>
         public async Task<IGetResult<T>> FetchStateForChannelsAsync<T>(object info = null)
         {
             var request = _factory.Build(PusherMethod.GET, MultipleChannelsResource, info);
@@ -268,71 +230,6 @@ namespace PusherServer
         private void DebugTriggerResponse(TriggerResult2 response)
         {
             Debug.WriteLine($"Response{Environment.NewLine}StatusCode: {response.StatusCode}{Environment.NewLine}Body: {response.OriginalContent}");
-        }
-
-        private IRestRequest CreateAuthenticatedRequest(Method requestType, string resource, object requestParameters, object requestBody)
-        {
-            SortedDictionary<string, string> queryParams = GetObjectProperties(requestParameters);
-
-            int timeNow = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-            queryParams.Add("auth_key", _appKey);
-            queryParams.Add("auth_timestamp", timeNow.ToString());
-            queryParams.Add("auth_version", "1.0");
-
-            if (requestBody != null)
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                var bodyDataJson = serializer.Serialize(requestBody);
-                var bodyMd5 = CryptoHelper.GetMd5Hash(bodyDataJson);
-                queryParams.Add("body_md5", bodyMd5);
-            }
-
-            string queryString = string.Empty;
-            foreach(KeyValuePair<string, string> parameter in queryParams)
-            {
-                queryString += parameter.Key + "=" + parameter.Value + "&";
-            }
-            queryString = queryString.TrimEnd('&');
-
-            string path = $"/apps/{_appId}/{resource.TrimStart('/')}";
-
-            string authToSign = String.Format(
-                Enum.GetName(requestType.GetType(), requestType) +
-                "\n{0}\n{1}",
-                path,
-                queryString);
-
-            var authSignature = CryptoHelper.GetHmac256(_appSecret, authToSign);
-
-            var requestUrl = path + "?" + queryString + "&auth_signature=" + authSignature;
-            var request = new RestRequest(requestUrl);
-            request.RequestFormat = DataFormat.Json;
-            request.Method = requestType;
-            request.AddBody(requestBody);
-
-            request.AddHeader("Pusher-Library-Name", LIBRARY_NAME);
-            request.AddHeader("Pusher-Library-Version", VERSION.ToString(3));
-
-            return request;
-        }
-
-        private static SortedDictionary<string, string> GetObjectProperties(object obj)
-        {
-            SortedDictionary<string, string> properties = new SortedDictionary<string, string>();
-
-            if (obj != null)
-            {
-                Type objType = obj.GetType();
-                IList<PropertyInfo> propertyInfos = new List<PropertyInfo>(objType.GetProperties());
-
-                foreach (PropertyInfo propertyInfo in propertyInfos)
-                {
-                    properties.Add(propertyInfo.Name, propertyInfo.GetValue(obj, null).ToString());
-                }
-            }
-
-            return properties;
         }
 
         private static void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)
