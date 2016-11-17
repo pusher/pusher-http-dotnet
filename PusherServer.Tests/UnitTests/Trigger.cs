@@ -439,7 +439,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("The length of the channel name was greater than the allowed 164 characters\r\nParameter name: channelName", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase($"The length of the channel name was greater than the allowed 164 characters{Environment.NewLine}Parameter name: channelName", caughtException.Message);
         }
 
         [Test]
@@ -459,7 +459,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("Only 100 events permitted per batch, 101 submitted\r\nParameter name: events", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase($"Only 100 events permitted per batch, 101 submitted{Environment.NewLine}Parameter name: events", caughtException.Message);
         }
 
         [Test]
@@ -480,7 +480,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("The length of the channel name was greater than the allowed 164 characters\r\nParameter name: channelName", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase($"The length of the channel name was greater than the allowed 164 characters{Environment.NewLine}Parameter name: channelName", caughtException.Message);
         }
 
         private bool CheckRequestContainsPayload(IPusherRestRequest request, string channelName, string eventName, object eventData)
