@@ -72,14 +72,6 @@ namespace PusherServer
         IWebHook ProcessWebHook(string signature, string body);
 
         /// <summary>
-        /// Queries the Pusher API for the Users of a Presence Channel
-        /// </summary>
-        /// <typeparam name="T">The type of object that will be returned by the API</typeparam>
-        /// <param name="channelName">The name of the channel to query</param>
-        /// <returns>The result of the Presence Channel Users query</returns>
-        IGetResult<T> FetchUsersFromPresenceChannel<T>(string channelName);
-
-        /// <summary>
         /// Queries the Pusher API for the Users of a Presence Channel asynchronously
         /// </summary>
         /// <typeparam name="T">The type of object that will be returned by the API</typeparam>

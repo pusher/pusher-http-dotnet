@@ -217,18 +217,6 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IGetResult<T> FetchUsersFromPresenceChannel<T>(string channelName)
-        {
-            ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
-
-            var request = CreateAuthenticatedRequest(Method.GET, string.Format(ChannelUsersResource, channelName), null, null);
-
-            var response = _options.RestClient.Execute(request);
-
-            return new GetResult<T>(response, _options.JsonDeserializer);
-        }
-
-        /// <inheritDoc/>
         public async Task<IGetResult<T>> FetchUsersFromPresenceChannelAsync<T>(string channelName)
         {
             ThrowArgumentExceptionIfNullOrEmpty(channelName, "channelName");
