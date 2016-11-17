@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -438,7 +439,48 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("Specified argument was out of the range of valid values.\r\nParameter name: The length of the channel name was greater than the allowed 164 characters", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The length of the channel name was greater than the allowed 164 characters\r\nParameter name: channelName", caughtException.Message);
+        }
+
+        [Test]
+        public async void event_arrays_must_not_exceed_allowed_length()
+        {
+            ArgumentOutOfRangeException caughtException = null;
+
+            try
+            {
+                var events = CreateEvents(101);
+
+                await TriggerWithBatch(events.ToArray());
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("Only 100 events permitted per batch, 101 submitted\r\nParameter name: events", caughtException.Message);
+        }
+
+        [Test]
+        public async void event_arrays_will_be_rejected_if_a_channel_name_is_to_long()
+        {
+            ArgumentOutOfRangeException caughtException = null;
+
+            try
+            {
+                var events = CreateEvents(10);
+                events.Add(new Event {Channel = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1)});
+
+                await TriggerWithBatch(events.ToArray());
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("The length of the channel name was greater than the allowed 164 characters\r\nParameter name: channelName", caughtException.Message);
         }
 
         private bool CheckRequestContainsPayload(IPusherRestRequest request, string channelName, string eventName, object eventData)
@@ -467,9 +509,14 @@ namespace PusherServer.Tests.UnitTests
 
         private async Task<ITriggerResult> TriggerWithChannelName(string channelName)
         {
-            await _pusher.TriggerAsync(channelName, _eventName, _eventData);
-
             var response = await _pusher.TriggerAsync(channelName, _eventName, _eventData);
+
+            return response;
+        }
+
+        private async Task<ITriggerResult> TriggerWithBatch(Event[] events)
+        {
+            var response = await _pusher.TriggerAsync(events);
 
             return response;
         }
@@ -479,6 +526,18 @@ namespace PusherServer.Tests.UnitTests
             var parameter = request.GetContentAsJsonString();
             return parameter.Contains("socket_id") &&
                    parameter.Contains(expectedSocketId);
+        }
+
+        private List<Event> CreateEvents(int numberOfEvents)
+        {
+            var events = new List<Event>();
+
+            for (int i = 0; i < numberOfEvents; i++)
+            {
+                events.Add(new Event { Channel = "testChannel", EventName = "testEvent"});
+            }
+
+            return events;
         }
     }
 }
