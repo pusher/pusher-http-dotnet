@@ -86,7 +86,7 @@ namespace PusherServer.RestfulClient
             if (sourceObject != null)
             {
                 Type objType = sourceObject.GetType();
-                IList<PropertyInfo> propertyInfos = new List<PropertyInfo>(objType.GetProperties());
+                IList<PropertyInfo> propertyInfos = new List<PropertyInfo>(objType.GetTypeInfo().GetProperties());
 
                 foreach (PropertyInfo propertyInfo in propertyInfos)
                 {
