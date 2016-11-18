@@ -12,7 +12,7 @@ namespace PusherServer
 		{
             using (var md5 = MD5.Create())
             {
-                var result = md5.ComputeHash(Encoding.ASCII.GetBytes(jsonData));
+                var result = md5.ComputeHash(Encoding.UTF8.GetBytes(jsonData));
                 return BytesToHex(result);
             }
 		}
