@@ -35,7 +35,6 @@
     /// base class instead of creating their own. 
     /// </para>
     /// </remarks>
-    [Serializable]
     [DebuggerDisplay("Count = {Count}")]
     [ComVisible(false)]
     [DebuggerTypeProxy(typeof(ReadOnlyDictionaryDebugView<,>))]
