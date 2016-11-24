@@ -49,48 +49,130 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AuthenticationData.cs" />
-    <Compile Include="BatchEvent.cs" />
-    <Compile Include="BatchTriggerBody.cs" />
-    <Compile Include="ChannelsList.cs" />
-    <Compile Include="CryptoHelper.cs" />
-    <Compile Include="DefaultDeserializer.cs" />
-    <Compile Include="DefaultSerializer.cs" />
-    <Compile Include="Event.cs" />
-    <Compile Include="EventIdData.cs" />
-    <Compile Include="Exceptions\TriggerResponseException.cs" />
-    <Compile Include="GetResult.cs" />
-    <Compile Include="IAuthenticationData.cs" />
-    <Compile Include="IDeserializeJsonStrings.cs" />
-    <Compile Include="IGetResult.cs" />
-    <Compile Include="IPusher.cs" />
-    <Compile Include="IPusherOptions.cs" />
-    <Compile Include="IRequestResult.cs" />
-    <Compile Include="ISerializeObjectsToJson.cs" />
-    <Compile Include="ITriggerOptions.cs" />
-    <Compile Include="ITriggerResult.cs" />
-    <Compile Include="IWebHook.cs" />
-    <Compile Include="PresenceChannelData.cs" />
+    <Compile Include="..\PusherServer.Core\AuthenticationData.cs">
+      <Link>AuthenticationData.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\BatchEvent.cs">
+      <Link>BatchEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\BatchTriggerBody.cs">
+      <Link>BatchTriggerBody.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\ChannelsList.cs">
+      <Link>ChannelsList.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\CryptoHelper.cs">
+      <Link>CryptoHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\DefaultDeserializer.cs">
+      <Link>DefaultDeserializer.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\DefaultSerializer.cs">
+      <Link>DefaultSerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\Event.cs">
+      <Link>Event.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\EventIdData.cs">
+      <Link>EventIdData.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\Exceptions\TriggerResponseException.cs">
+      <Link>Exceptions\TriggerResponseException.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\GetResult.cs">
+      <Link>GetResult.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\IAuthenticationData.cs">
+      <Link>IAuthenticationData.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\IDeserializeJsonStrings.cs">
+      <Link>IDeserializeJsonStrings.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\IGetResult.cs">
+      <Link>IGetResult.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\IPusher.cs">
+      <Link>IPusher.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\IPusherOptions.cs">
+      <Link>IPusherOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\IRequestResult.cs">
+      <Link>IRequestResult.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\ISerializeObjectsToJson.cs">
+      <Link>ISerializeObjectsToJson.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\ITriggerOptions.cs">
+      <Link>ITriggerOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\ITriggerResult.cs">
+      <Link>ITriggerResult.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\IWebHook.cs">
+      <Link>IWebHook.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\PresenceChannelData.cs">
+      <Link>PresenceChannelData.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\Pusher.cs">
+      <Link>Pusher.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\PusherOptions.cs">
+      <Link>PusherOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RawBodySerializer.cs">
+      <Link>RawBodySerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RequestResult.cs">
+      <Link>RequestResult.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RestfulClient\AuthenticatedRequestFactory.cs">
+      <Link>RestfulClient\AuthenticatedRequestFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RestfulClient\IAuthenticatedRequestFactory.cs">
+      <Link>RestfulClient\IAuthenticatedRequestFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RestfulClient\IPusherRestClient.cs">
+      <Link>RestfulClient\IPusherRestClient.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RestfulClient\IPusherRestRequest.cs">
+      <Link>RestfulClient\IPusherRestRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RestfulClient\PusherMethod.cs">
+      <Link>RestfulClient\PusherMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RestfulClient\PusherRestClient.cs">
+      <Link>RestfulClient\PusherRestClient.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\RestfulClient\PusherRestRequest.cs">
+      <Link>RestfulClient\PusherRestRequest.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\TriggerBody.cs">
+      <Link>TriggerBody.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\TriggerOptions.cs">
+      <Link>TriggerOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\TriggerResult.cs">
+      <Link>TriggerResult.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\Util\ReadOnlyDictionary.cs">
+      <Link>Util\ReadOnlyDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\ValidationHelper.cs">
+      <Link>ValidationHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\WebHook.cs">
+      <Link>WebHook.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\WebHookData.cs">
+      <Link>WebHookData.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\WebHookEvent.cs">
+      <Link>WebHookEvent.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Pusher.cs" />
-    <Compile Include="PusherOptions.cs" />
-    <Compile Include="RawBodySerializer.cs" />
-    <Compile Include="RequestResult.cs" />
-    <Compile Include="RestfulClient\AuthenticatedRequestFactory.cs" />
-    <Compile Include="RestfulClient\IAuthenticatedRequestFactory.cs" />
-    <Compile Include="RestfulClient\IPusherRestClient.cs" />
-    <Compile Include="RestfulClient\IPusherRestRequest.cs" />
-    <Compile Include="RestfulClient\PusherMethod.cs" />
-    <Compile Include="RestfulClient\PusherRestClient.cs" />
-    <Compile Include="RestfulClient\PusherRestRequest.cs" />
-    <Compile Include="TriggerBody.cs" />
-    <Compile Include="TriggerOptions.cs" />
-    <Compile Include="TriggerResult.cs" />
-    <Compile Include="Util\ReadOnlyDictionary.cs" />
-    <Compile Include="ValidationHelper.cs" />
-    <Compile Include="WebHook.cs" />
-    <Compile Include="WebHookData.cs" />
-    <Compile Include="WebHookEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
