@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53-1898-4AE9-B229-F917B8F52DB2}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
-		build.sh = build.sh
 		CHANGELOG.md = CHANGELOG.md
 		package.cmd = package.cmd
 		PusherServer\PusherServer.nuspec = PusherServer\PusherServer.nuspec
