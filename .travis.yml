@@ -1,7 +1,12 @@
 ---
 language: csharp
+solution: pusher-dotnet-server.sln
 mono:
   - 4.4.2
-dotnet: 1.0.0-preview2-003131
 script:
-   ./build.sh
+  - xbuild /p:Configuration=Release pusher-dotnet-server.sln
+  - nunit-console PusherServer.Tests/bin/Release/PusherServer.Tests.dll
+before_install:
+  - sudo apt-get install nunit-console
+before_script:
+  - nuget restore pusher-dotnet-server.sln
