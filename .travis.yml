@@ -4,4 +4,4 @@ mono:
   - 4.4.2
 dotnet: 1.0.0-preview2-003131
 script:
-   ./build.sh --quiet verify
+   ./build.sh
