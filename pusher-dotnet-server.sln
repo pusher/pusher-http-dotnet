@@ -8,7 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53
 		.travis.yml = .travis.yml
 		CHANGELOG.md = CHANGELOG.md
 		package.cmd = package.cmd
-		PusherServer\PusherServer.nuspec = PusherServer\PusherServer.nuspec
+		PusherServer.nuspec = PusherServer.nuspec
 		README.md = README.md
 	EndProjectSection
 EndProject
