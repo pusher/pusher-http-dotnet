@@ -515,7 +515,7 @@ namespace PusherServer
             string path;
             if (!nativeAPI)
             {
-                path = string.Format("/server_api/v1/apps/{0}/{1}", this._appId, resource);
+                path = string.Format("/apps/{0}/{1}", this._appId, resource);
             }else
             {
                 path = string.Format("/{0}/{1}/apps/{2}/{3}", _options.Notification_Prefix,_options.Notificaiton_Version, this._appId, resource);
