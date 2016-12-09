@@ -141,7 +141,7 @@ namespace PusherServer
         /// <param name="webhook_url"> These are used to specify an external URL to which Pusher will send information about the sent push notifications. This is particularly useful for debugging failed push notifications.</param>
         /// <param name="webhook_level">must be either "INFO" (errors-only) or "DEBUG" (everything). If omitted, it defaults to "INFO"</param>
         /// <param name="callback">Method to call when the request has returned</param>
-        void NotifyAsync(string[] interests, string alertText, string webhook_url, WebhookLevel webhook_level, Action<INotifyResult> callback)
+        void NotifyAsync(string[] interests, string alertText, string webhook_url, WebhookLevel webhook_level, Action<INotifyResult> callback);
 
         #endregion
 
