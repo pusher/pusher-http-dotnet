@@ -193,11 +193,13 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public INotifyResult Notify(string[] interests, string alertText, string webhook_url, WebhookLevel webhook_level)
+        public INotifyResult Notify(string[] interests, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level)
         {
             NotifyBody nb = new NotifyBody();
             nb.interests = interests;
             nb.apns.aps.alert.body = alertText;
+            nb.apns.aps.alert.title = alertTitle;
+            nb.apns.aps.alert.subtitle = alertSubtitle;
             nb.webhook_url = webhook_url;
             nb.webhook_level = webhook_level.ToString();    
 
@@ -207,20 +209,21 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public INotifyResult Notify(string interest, string alertText, string webhook_url, WebhookLevel webhook_level)
+        public INotifyResult Notify(string interest, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level)
         {
-            return Notify(new string[] { interest }, alertText, webhook_url, webhook_level);
+            return Notify(new string[] { interest }, alertText, alertTitle, alertSubtitle, webhook_url, webhook_level);
         }
 
         /// <inheritDoc/>
-        public void NotifyAsync(string[] interests, string alertText, string webhook_url, WebhookLevel webhook_level, Action<INotifyResult> callback)
+        public void NotifyAsync(string[] interests, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level, Action<INotifyResult> callback)
         {
             NotifyBody nb = new NotifyBody();
             nb.interests = interests;
             nb.apns.aps.alert.body = alertText;
             nb.webhook_url = webhook_url;
             nb.webhook_level = webhook_level.ToString();
-
+            nb.apns.aps.alert.title = alertTitle;
+            nb.apns.aps.alert.subtitle = alertSubtitle;
 
             ExecuteNotifyAsync("/notifications", nb, baseResponse =>
             {

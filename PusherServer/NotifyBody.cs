@@ -41,6 +41,8 @@ namespace PusherServer
     public class Alert
     {
         public string body { get; set; }
+        public string title { get; set; }
+        public string subtitle { get; set; }
     }
 
 }
