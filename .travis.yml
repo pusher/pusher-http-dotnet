@@ -21,6 +21,6 @@ before_script:
   - if [ -z "${DOTNETCORE}" ]; then nuget restore pusher-dotnet-server.sln; fi
 
 script:
-  - if [ -n "${DOTNETCORE}" ]; then ./build.sh; fi
+  - if [ -n "${DOTNETCORE}" ]; then sudo ./build.sh; fi
   - if [ -z "${DOTNETCORE}" ]; then xbuild /p:Configuration=Release pusher-dotnet-server.sln; fi
   - if [ -z "${DOTNETCORE}" ]; then nunit-console PusherServer.Tests/bin/Release/PusherServer.Tests.dll; fi
