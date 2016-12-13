@@ -1,7 +1,5 @@
 language: csharp
 solution: pusher-dotnet-server.sln
-os: linux
-dist: trusty
 
 matrix:
   include:
@@ -9,11 +7,17 @@ matrix:
       sudo: required
       mono: none
       dotnet: 1.0.0-preview2-003121
+      os: linux
+      dist: trusty
     - env: DOTNETCORE=1
       sudo: required
       mono: none
       dotnet: 1.0.0-preview2-003131
+      os: linux
+      dist: trusty
     - mono: 4.4.2
+      os: linux
+      dist: trusty
 
 before_install:
   - if [ -z "${DOTNETCORE}" ]; then sudo apt-get install nunit-console; fi
