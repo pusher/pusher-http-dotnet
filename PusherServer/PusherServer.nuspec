@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>PusherServerInnov8tive</id>
-    <version>4.0.1</version>
+    <version>4.0.2</version>
     <title>Pusher .NET Server Library with Push Notification</title>
     <authors>Pusher, Phil Leggetter, John McLoughlin, Gray Delacluyse</authors>
     <owners>Pusher</owners>
