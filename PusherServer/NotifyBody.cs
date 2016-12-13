@@ -21,18 +21,17 @@ namespace PusherServer
     public class Apns
     {
         public Aps aps { get; set; }
-        public string channel { get; set; }
 
         public Apns()
         {
             aps = new Aps();
-            channel = new Notification().channel;
         }
     }
 
     public class Aps
     {
         public Alert alert { get; set; }
+        public string channel { get; set; }
 
         public Aps()
         {

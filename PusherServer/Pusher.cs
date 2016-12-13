@@ -213,7 +213,7 @@ namespace PusherServer
         {
             NotifyBody notifyBody = new NotifyBody();
             notifyBody.interests = interests;
-            notifyBody.apns.channel = notification.channel;
+            notifyBody.apns.aps.channel = notification.channel;
             notifyBody.apns.aps.alert.body = notification.body;
             notifyBody.apns.aps.alert.title = notification.title;
             notifyBody.apns.aps.alert.subtitle = notification.subtitle;
