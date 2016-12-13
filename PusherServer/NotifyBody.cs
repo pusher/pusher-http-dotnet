@@ -31,11 +31,12 @@ namespace PusherServer
     public class Aps
     {
         public Alert alert { get; set; }
-        public string channel { get; set; }
+        public Notification notification { get; set; }
 
         public Aps()
         {
             alert = new Alert();
+            notification = new Notification();
         }
     }
 

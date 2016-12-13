@@ -213,8 +213,8 @@ namespace PusherServer
         {
             NotifyBody notifyBody = new NotifyBody();
             notifyBody.interests = interests;
-            notifyBody.apns.aps.channel = notification.channel;
-            notifyBody.apns.aps.alert.body = notification.body;
+            notifyBody.apns.aps.notification = notification;
+            notifyBody.apns.aps.alert.body = "New Message";
             notifyBody.apns.aps.alert.title = notification.title;
             notifyBody.apns.aps.alert.subtitle = notification.subtitle;
             notifyBody.webhook_url = webhook_url;
