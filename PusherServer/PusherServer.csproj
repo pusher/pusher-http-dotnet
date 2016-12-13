@@ -69,6 +69,7 @@
     <Compile Include="ITriggerOptions.cs" />
     <Compile Include="ITriggerResult.cs" />
     <Compile Include="IWebHook.cs" />
+    <Compile Include="Notification.cs" />
     <Compile Include="NotifyBody.cs" />
     <Compile Include="NotifyResult.cs" />
     <Compile Include="NotifySubscriberData.cs" />
