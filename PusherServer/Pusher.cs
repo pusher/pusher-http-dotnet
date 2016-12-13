@@ -54,7 +54,7 @@ namespace PusherServer
         /// <param name="appKey">The app key.</param>
         /// <param name="appSecret">The app secret.</param>
         public Pusher(string appId, string appKey, string appSecret) : this(appId, appKey, appSecret, null)
-        {}
+        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pusher" /> class.
@@ -193,13 +193,15 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public INotifyResult Notify(string[] interests, string alertText, string webhook_url, WebhookLevel webhook_level)
+        public INotifyResult Notify(string[] interests, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level)
         {
             NotifyBody nb = new NotifyBody();
             nb.interests = interests;
             nb.apns.aps.alert.body = alertText;
+            nb.apns.aps.alert.title = alertTitle;
+            nb.apns.aps.alert.subtitle = alertSubtitle;
             nb.webhook_url = webhook_url;
-            nb.webhook_level = webhook_level.ToString();    
+            nb.webhook_level = webhook_level.ToString();
 
             IRestResponse response = ExecuteNotify("/notifications", nb);
             NotifyResult result = new NotifyResult(response);
@@ -207,20 +209,38 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public INotifyResult Notify(string interest, string alertText, string webhook_url, WebhookLevel webhook_level)
+        public INotifyResult Notify(string[] interests, Notification notification, string webhook_url, WebhookLevel webhook_level)
         {
-            return Notify(new string[] { interest }, alertText, webhook_url, webhook_level);
+            NotifyBody notifyBody = new NotifyBody();
+            notifyBody.interests = interests;
+            notifyBody.apns.channel = notification.channel;
+            notifyBody.apns.aps.alert.body = notification.body;
+            notifyBody.apns.aps.alert.title = notification.title;
+            notifyBody.apns.aps.alert.subtitle = notification.subtitle;
+            notifyBody.webhook_url = webhook_url;
+            notifyBody.webhook_level = webhook_level.ToString();
+
+            IRestResponse response = ExecuteNotify("/notifications", notifyBody);
+            NotifyResult result = new NotifyResult(response);
+            return result;
         }
 
         /// <inheritDoc/>
-        public void NotifyAsync(string[] interests, string alertText, string webhook_url, WebhookLevel webhook_level, Action<INotifyResult> callback)
+        public INotifyResult Notify(string interest, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level)
+        {
+            return Notify(new string[] { interest }, alertText, alertTitle, alertSubtitle, webhook_url, webhook_level);
+        }
+
+        /// <inheritDoc/>
+        public void NotifyAsync(string[] interests, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level, Action<INotifyResult> callback)
         {
             NotifyBody nb = new NotifyBody();
             nb.interests = interests;
             nb.apns.aps.alert.body = alertText;
             nb.webhook_url = webhook_url;
             nb.webhook_level = webhook_level.ToString();
-
+            nb.apns.aps.alert.title = alertTitle;
+            nb.apns.aps.alert.subtitle = alertSubtitle;
 
             ExecuteNotifyAsync("/notifications", nb, baseResponse =>
             {
