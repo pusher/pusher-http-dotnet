@@ -55,11 +55,13 @@
     <Compile Include="DefaultSerializer.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="EventIdData.cs" />
+    <Compile Include="Exceptions\NotifyResponseException.cs" />
     <Compile Include="Exceptions\TriggerResponseException.cs" />
     <Compile Include="GetResult.cs" />
     <Compile Include="IAuthenticationData.cs" />
     <Compile Include="IDeserializeJsonStrings.cs" />
     <Compile Include="IGetResult.cs" />
+    <Compile Include="INotifyResult.cs" />
     <Compile Include="IPusher.cs" />
     <Compile Include="IPusherOptions.cs" />
     <Compile Include="IRequestResult.cs" />
@@ -67,6 +69,10 @@
     <Compile Include="ITriggerOptions.cs" />
     <Compile Include="ITriggerResult.cs" />
     <Compile Include="IWebHook.cs" />
+    <Compile Include="Notification.cs" />
+    <Compile Include="NotifyBody.cs" />
+    <Compile Include="NotifyResult.cs" />
+    <Compile Include="NotifySubscriberData.cs" />
     <Compile Include="PresenceChannelData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Pusher.cs" />
@@ -81,6 +87,7 @@
     <Compile Include="WebHook.cs" />
     <Compile Include="WebHookData.cs" />
     <Compile Include="WebHookEvent.cs" />
+    <Compile Include="WebhookLevel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

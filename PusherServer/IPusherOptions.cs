@@ -49,6 +49,21 @@ namespace PusherServer
         string HostName { get; set; }
 
         /// <summary>
+        /// The host of the HTTP Api endoind for push notifications e.g. nativepush-cluster1.pusher.com
+        /// </summary>
+        string HostName_Notificaiton { get; set; }
+
+        /// <summary>
+        /// The vrsion of the the push notificaiton service e.g. v1
+        /// </summary>
+        string Notificaiton_Version { get; set; }
+
+        /// <summary>
+        /// The prefix to be used to form the notificaiton service url e.g. server_api
+        /// </summary>
+        string Notification_Prefix { get; set; }
+
+        /// <summary>
         /// The cluster where the application was created, e.g. eu
         /// </summary>
         string Cluster { get; set; }

@@ -34,7 +34,6 @@ namespace PusherServer
         /// </exception>
         ITriggerResult Trigger(string[] channelNames, string eventName, object data);
 
-
         /// <summary>
         /// Triggers an event on the specified channel.
         /// </summary>
@@ -113,6 +112,42 @@ namespace PusherServer
         /// <param name="callback">Method to call when the request has returned.</param>
         /// <returns>The result of the call to the REST API</returns>
         void TriggerAsync(Event[] events, Action<ITriggerResult> callback);
+
+        /// <summary>
+        /// Notification to native devices.
+        /// </summary>
+        /// <param name="interests">array of interests that people should be subscribed to</param>
+        /// <param name="alertText">The actual message to send in the APN</param>
+        /// <param name="alertTitle">The title to send in the APN</param>
+        /// <param name="alertSubtitle">The subtitle to send in the APN</param>
+        /// <param name="webhook_url"> These are used to specify an external URL to which Pusher will send information about the sent push notifications. This is particularly useful for debugging failed push notifications.</param>
+        /// <param name="webhook_level">must be either "INFO" (errors-only) or "DEBUG" (everything). If omitted, it defaults to "INFO"</param>
+        /// <returns>For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON</returns>
+        INotifyResult Notify(string[] interests, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level);
+
+        /// <summary>
+        /// Notification to native devices, sincle interest
+        /// </summary>
+        /// <param name="interest">Single interest we want to push to</param>
+        /// <param name="alertText">The actual message to send in the APN</param>
+        /// <param name="alertTitle">The title to send in the APN</param>
+        /// <param name="alertSubtitle">The subtitle to send in the APN</param>
+        /// <param name="webhook_url"> These are used to specify an external URL to which Pusher will send information about the sent push notifications. This is particularly useful for debugging failed push notifications.</param>
+        /// <param name="webhook_level">must be either "INFO" (errors-only) or "DEBUG" (everything). If omitted, it defaults to "INFO"</param>
+        /// <returns>For any non-200 response from the HTTP API or if the response body cannot be parsed as JSON</returns>
+        INotifyResult Notify(string interest, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level);
+
+        /// <summary>
+        /// Calls the notify api in an asynchronously fashion
+        /// </summary>
+        /// <param name="interests">Single interest we want to push to</param>
+        /// <param name="alertText">The actual message to send in the APN</param>
+        /// <param name="alertTitle">The title to send in the APN</param>
+        /// <param name="alertSubtitle">The subtitle to send in the APN</param>
+        /// <param name="webhook_url"> These are used to specify an external URL to which Pusher will send information about the sent push notifications. This is particularly useful for debugging failed push notifications.</param>
+        /// <param name="webhook_level">must be either "INFO" (errors-only) or "DEBUG" (everything). If omitted, it defaults to "INFO"</param>
+        /// <param name="callback">Method to call when the request has returned</param>
+        void NotifyAsync(string[] interests, string alertText, string alertTitle, string alertSubtitle, string webhook_url, WebhookLevel webhook_level, Action<INotifyResult> callback);
 
         #endregion
 
