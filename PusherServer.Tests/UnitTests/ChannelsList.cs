@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using System.Web.Script.Serialization;
+﻿using NUnit.Framework;
+using Newtonsoft.Json;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -20,8 +16,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public void It_should_make_the_channels_accessible_by_name_via_the_indexer()
         {
-            var serializer = new JavaScriptSerializer();
-            ChannelsList list = serializer.Deserialize<ChannelsList>(json);
+            ChannelsList list = JsonConvert.DeserializeObject<ChannelsList>(json);
 
             Assert.IsNotNull(list["test_channel"]);
         }
@@ -29,8 +24,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public void It_should_be_possible_to_access_channel_information()
         {
-            var serializer = new JavaScriptSerializer();
-            ChannelsList list = serializer.Deserialize<ChannelsList>(json);
+            ChannelsList list = JsonConvert.DeserializeObject<ChannelsList>(json);
 
             Assert.AreEqual( list["presence-channel"]["user_count"], "300" );
         }

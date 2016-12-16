@@ -1,23 +1,23 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
-using RestSharp;
-using RestSharp.Serializers;
+using PusherServer.RestfulClient;
 
 namespace PusherServer.Tests.UnitTests
 {
     [TestFixture]
-    public class When_using_Get_to_retrieve_a_list_of_application_channels
+    public class When_using_async_Get_to_retrieve_a_list_of_application_channels
     {
         IPusher _pusher;
-        IRestClient _subClient;
+        IPusherRestClient _subPusherClient;
 
         [SetUp]
         public void Setup()
         {
-            _subClient = Substitute.For<IRestClient>();
+            _subPusherClient = Substitute.For<IPusherRestClient>();
+
             IPusherOptions options = new PusherOptions()
             {
-                RestClient = _subClient
+                RestClient = _subPusherClient
             };
 
             Config.AppId = "test-app-id";
@@ -28,38 +28,44 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public void url_is_in_expected_format()
+        public async void url_is_in_expected_format()
         {
-            _pusher.Get<object>("/channels");
+            await _pusher.GetAsync<object>("/channels");
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => x.Resource.StartsWith("/apps/" + Config.AppId + "/channels")
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecuteGetAsync<object>(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
+                    x => x.ResourceUri.StartsWith("/apps/" + Config.AppId + "/channels")
                 )
             );
         }
 
         [Test]
-        public void GET_request_is_made()
+        public async void GET_request_is_made()
         {
-            _pusher.Get<object>("/channels");
+            await _pusher.GetAsync<object>("/channels");
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => x.Method == Method.GET
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecuteGetAsync<object>(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
+                    x => x.Method == PusherMethod.GET
                 )
             );
         }
 
         [Test]
-        public void additional_parameters_should_be_added_to_query_string()
+        public async void additional_parameters_should_be_added_to_query_string()
         {
-            _pusher.Get<object>("/channels", new { filter_by_prefix = "presence-", info = "user_count" });
+            await _pusher.GetAsync<object>("/channels", new { filter_by_prefix = "presence-", info = "user_count" });
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => x.Resource.Contains("&filter_by_prefix=presence-") &&
-                         x.Resource.Contains("&info=user_count")
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecuteGetAsync<object>(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
+                    x => x.ResourceUri.Contains("&filter_by_prefix=presence-") &&
+                         x.ResourceUri.Contains("&info=user_count")
                 )
             );
         }

@@ -1,10 +1,30 @@
----
 language: csharp
 solution: pusher-dotnet-server.sln
-script:
-  - xbuild /p:Configuration=Release pusher-dotnet-server.sln
-  - nunit-console PusherServer.Tests/bin/Release/PusherServer.Tests.dll
+
+matrix:
+  include:
+    - env: DOTNETCORE=1
+      sudo: required
+      mono: none
+      dotnet: 1.0.0-preview2-003121
+      os: linux
+      dist: trusty
+    - env: DOTNETCORE=1
+      sudo: required
+      mono: none
+      dotnet: 1.0.0-preview2-003131
+      os: linux
+      dist: trusty
+    - mono: 4.4.2
+      os: linux
+      dist: trusty
+
 before_install:
-  - sudo apt-get install nunit-console
+  - if [ -z "${DOTNETCORE}" ]; then sudo apt-get install nunit-console; fi
 before_script:
-  - nuget restore pusher-dotnet-server.sln
+  - if [ -z "${DOTNETCORE}" ]; then nuget restore pusher-dotnet-server.sln; fi
+
+script:
+  - if [ -n "${DOTNETCORE}" ]; then sudo bash -x ./build.sh; fi
+  - if [ -z "${DOTNETCORE}" ]; then xbuild /p:Configuration=Release pusher-dotnet-server.sln; fi
+  - if [ -z "${DOTNETCORE}" ]; then nunit-console PusherServer.Tests/bin/Release/PusherServer.Tests.dll; fi

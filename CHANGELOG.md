@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.0 beta
+* [ADDED] support for the .NET Core
+* [CHANGED] The library now is built against .NET 4.5
+* [CHANGED] Removed the dependency on RestSharp, and replaced with the .NETs HttpClient class.
+* [REMOVED] Retired the callback syntax
+* [ADDED] Async/Await based syntax
+* [FIXED] The Out of range exceptions thrown by Trigger methods to correctly specify the message, instead of the message be supplied as the parameter name
+
 ## 3.0.0 rc4
 
 * [ADDED] Support for the `cluster` option.

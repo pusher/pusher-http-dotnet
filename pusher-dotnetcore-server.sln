@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53-1898-4AE9-B229-F917B8F52DB2}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+		CHANGELOG.md = CHANGELOG.md
+		package.cmd = package.cmd
+		PusherServer.nuspec = PusherServer.nuspec
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "PusherServer.Core", "PusherServer.Core\PusherServer.Core.xproj", "{93F47CCA-22B8-4B61-9349-187D27CDD5B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Debug|x86.Build.0 = Debug|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Release|x86.ActiveCfg = Release|Any CPU
+		{93F47CCA-22B8-4B61-9349-187D27CDD5B1}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = PusherRESTDotNet.vsmdi
+	EndGlobalSection
+EndGlobal

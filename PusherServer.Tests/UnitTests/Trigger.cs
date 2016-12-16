@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
-using RestSharp;
-using RestSharp.Serializers;
+using PusherServer.RestfulClient;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -11,35 +14,35 @@ namespace PusherServer.Tests.UnitTests
     public class When_Triggering_an_Event
     {
         IPusher _pusher;
-        IRestClient _subClient;
+        IPusherRestClient _subPusherClient;
 
-        string channelName = "my-channel";
-        string eventName = "my_event";
-        object eventData = new { hello = "world" };
-        Action<ITriggerResult> callback = (Action<ITriggerResult>)((ITriggerResult result) => { });
+        readonly string _channelName = "my-channel";
+        readonly string _eventName = "my_event";
+        readonly object _eventData = new { hello = "world" };
 
-        private IRestResponse V7_PROTOCOL_SUCCESSFUL_RESPONSE;
-        private IRestResponse V8_PROTOCOL_SUCCESSFUL_RESPONSE;
-
+        private HttpResponseMessage _v7ProtocolSuccessfulResponse;
+        private HttpResponseMessage _v8ProtocolSuccessfulResponse;
+        
         [TestFixtureSetUp]
         public void FixtureSetUp()
         {
-            V7_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
-            V7_PROTOCOL_SUCCESSFUL_RESPONSE.Content = "{}";
-            V7_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
+            _v7ProtocolSuccessfulResponse = Substitute.For<HttpResponseMessage>();
+            _v7ProtocolSuccessfulResponse.Content = new StringContent("{}");
+            _v7ProtocolSuccessfulResponse.StatusCode = HttpStatusCode.OK;
 
-            V8_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<IRestResponse>();
-            V8_PROTOCOL_SUCCESSFUL_RESPONSE.Content = TriggerResultHelper.TRIGGER_RESPONSE_JSON;
-            V8_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
+            _v8ProtocolSuccessfulResponse = Substitute.For<HttpResponseMessage>();
+            _v8ProtocolSuccessfulResponse.Content = new StringContent(TriggerResultHelper.TRIGGER_RESPONSE_JSON);
+            _v8ProtocolSuccessfulResponse.StatusCode = HttpStatusCode.OK;
         }
 
         [SetUp]
         public void Setup()
         {
-            _subClient = Substitute.For<IRestClient>();
+            _subPusherClient = Substitute.For<IPusherRestClient>();
+
             IPusherOptions options = new PusherOptions()
             {
-                RestClient = _subClient
+                RestClient = _subPusherClient
             };
 
             Config.AppId = "test-app-id";
@@ -48,411 +51,493 @@ namespace PusherServer.Tests.UnitTests
 
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
 
-            _subClient.Execute(Arg.Any<IRestRequest>()).Returns(V8_PROTOCOL_SUCCESSFUL_RESPONSE);
+            _subPusherClient.ExecutePostAsync(Arg.Any<IPusherRestRequest>()).Returns(Task.FromResult(new TriggerResult(_v8ProtocolSuccessfulResponse, TriggerResultHelper.TRIGGER_RESPONSE_JSON)));
         }
 
         [Test]
-        public void trigger_calls_are_made_over_HTTP_by_default()
+        public async void url_resource_is_in_expected_format()
         {
-            IPusherOptions options = new PusherOptions()
-            {
-                RestClient = _subClient
-            };
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
-
-            _pusher.Trigger(channelName, eventName, eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestScheme("http", _subClient, x)
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
+                    x => x.ResourceUri.StartsWith("/apps/" + Config.AppId + "/events?")
                 )
             );
         }
 
         [Test]
-        public void trigger_calls_are_made_over_HTTPS_when_Encrypted_option_is_set()
+        public async void post_payload_contains_channelName_eventName_and_eventData()
         {
-            IPusherOptions options = new PusherOptions()
-            {
-                RestClient = _subClient,
-                Encrypted = true
-            };
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
-
-            _pusher.Trigger(channelName, eventName, eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestScheme("https", _subClient, x)
-                )
-            );
-        }
-
-        private bool CheckRequestScheme(string urlPrefix, IRestClient client, IRestRequest req)
-        {
-            return client.BaseUrl.Scheme.StartsWith(urlPrefix);
-        }
-
-        [Test]
-        public void trigger_calls_are_made_over_port_443_when_Encrypted_option_is_set()
-        {
-            IPusherOptions options = new PusherOptions()
-            {
-                RestClient = _subClient,
-                Encrypted = true,
-                HostName = Config.HttpHost
-            };
-
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
-
-            _pusher.Trigger(channelName, eventName, eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => _CheckRequestPort(443, _subClient, x)
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
+                    x => CheckRequestContainsPayload(x, _channelName, _eventName, _eventData)
                 )
             );
         }
 
         [Test]
-        public void trigger_calls_are_made_over_configured_Port_when_option_is_set()
+        public async void with_async_and_a_single_channel_the_request_is_made()
         {
-            int expectedPort = 900;
-            IPusherOptions options = new PusherOptions()
-            {
-                RestClient = _subClient,
-                Port = expectedPort
-            };
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
-
-            _pusher.Trigger(channelName, eventName, eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => _CheckRequestPort(expectedPort, _subClient, x)
-                )
-            );
-        }
-
-        private bool _CheckRequestPort(int port, IRestClient _subClient, IRestRequest x)
-        {
-            return _subClient.BaseUrl.Port == port;
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
+#pragma warning restore 4014
         }
 
         [Test]
-        public void url_resource_is_in_expected_format()
+        public async void with_async_and_a_single_channel_and_trigger_options_the_request_is_made()
         {
-            _pusher.Trigger(channelName, eventName, eventData);
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestHasExpectedUrl(x)
-                )
-            );
-        }
-
-        private bool CheckRequestHasExpectedUrl(IRestRequest req)
-        { 
-            return req.Resource.StartsWith( "/apps/" + Config.AppId + "/events?");
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
+#pragma warning restore 4014
         }
 
         [Test]
-        public void post_payload_contains_channelName_eventName_and_eventData()
+        public async void with_async_and_multiple_channels_the_request_is_made()
         {
-            _pusher.Trigger(channelName, eventName, eventData);
+            await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData);
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestContainsPayload(x, channelName, eventName, eventData)
-                )
-            );
-        }
-
-        private bool CheckRequestContainsPayload(IRestRequest request, string channelName, string eventName, object eventData)
-        {
-            var serializer = new JsonSerializer();
-            var expectedBody = new TriggerBody() {
-                name = eventName,
-                channels = new string[]{channelName},
-                data = serializer.Serialize(eventData)
-            };
-
-            var expected = serializer.Serialize(expectedBody);
-
-            return request.Parameters[0].Type == ParameterType.RequestBody &&
-                request.Parameters[0].ToString().Contains( expected );
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
+#pragma warning restore 4014
         }
 
         [Test]
-        public void with_async_and_a_single_channel_the_request_is_made()
+        public async void with_async_and_multiple_channels_and_trigger_options_the_request_is_made()
         {
-            _pusher.TriggerAsync(channelName, eventName, eventData, callback);
+            await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData);
 
-            _subClient.Received().ExecuteAsync(
-                Arg.Any<IRestRequest>(),
-                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>());
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
+#pragma warning restore 4014
         }
 
         [Test]
-        public void with_async_and_a_single_channel_and_trigger_options_the_request_is_made()
-        {
-            _pusher.TriggerAsync(channelName, eventName, eventData, new TriggerOptions(), callback);
-
-            _subClient.Received().ExecuteAsync(
-                Arg.Any<IRestRequest>(),
-                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>());
-        }
-
-        [Test]
-        public void with_async_and_multiple_channels_the_request_is_made()
-        {
-            _pusher.TriggerAsync(new string[] { "fish", "pie" }, eventName, eventData, callback);
-
-            _subClient.Received().ExecuteAsync(
-                Arg.Any<IRestRequest>(),
-                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>());
-        }
-
-        [Test]
-        public void with_async_and_multiple_channels_and_trigger_options_the_request_is_made()
-        {
-            _pusher.TriggerAsync(new string[] { "fish", "pie" }, eventName, eventData, new TriggerOptions(), callback);
-
-            _subClient.Received().ExecuteAsync(
-                Arg.Any<IRestRequest>(),
-                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>());
-        }
-
-        [Test]
-        public void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring()
+        public async void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
             var expectedSocketId = "123.098";
             
-            _pusher.Trigger(channelName, eventName, eventData, new TriggerOptions()
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData, new TriggerOptions()
                     {
                         SocketId = expectedSocketId
                     });
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
-            ).Returns(V7_PROTOCOL_SUCCESSFUL_RESPONSE);
+            );
         }
 
 
         [Test]
-        public void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring_async()
+        public async void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring_async()
         {
             var expectedSocketId = "123.098";
 
-            _pusher.TriggerAsync(
-                channelName,
-                eventName,
-                eventData,
+            await _pusher.TriggerAsync(
+                _channelName,
+                _eventName,
+                _eventData,
                 new TriggerOptions()
                 {
                     SocketId = expectedSocketId
-                },
-                callback
+                }
             );
 
-            _subClient.Received().ExecuteAsync(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
-                ),
-                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>()
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(Arg.Is<IPusherRestRequest>(
+#pragma warning restore 4014
+                x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
+                )
             );
         }
 
         [Test]
-        public void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring()
+        public async void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
             var expectedSocketId = "123.456";
 
-            _pusher.Trigger(new string[]{ "my-channel", "my-channel-2" }, eventName, eventData, new TriggerOptions()
+            await _pusher.TriggerAsync(new[]{ "my-channel", "my-channel-2" }, _eventName, _eventData, new TriggerOptions()
                     {
                         SocketId = expectedSocketId
                     });
 
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
                 )
             );
         }
 
         [Test]
-        public void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring_async()
+        public async void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring_async()
         {
             var expectedSocketId = "123.456";
 
-            _pusher.TriggerAsync(
-                    new string[] { "my-channel", "my-channel-2" },
-                    eventName,
-                    eventData,
+            await _pusher.TriggerAsync(
+                    new[] { "my-channel", "my-channel-2" },
+                    _eventName,
+                    _eventData,
                     new TriggerOptions()
                     {
                         SocketId = expectedSocketId
-                    },
-                    callback
+                    }
                 );
 
-            _subClient.Received().ExecuteAsync(
-                Arg.Is<IRestRequest>(
+#pragma warning disable 4014
+            _subPusherClient.Received().ExecutePostAsync(
+#pragma warning restore 4014
+                Arg.Is<IPusherRestRequest>(
                     x => CheckRequestContainsSocketIdParameter(x, expectedSocketId)
-                ),
-                Arg.Any<Action<IRestResponse, RestRequestAsyncHandle>>()
-            );
-        }
-
-        [Test]
-        public void libary_name_header_is_set_with_trigger_request()
-        {
-            _pusher.Trigger(channelName, eventName, eventData);
-
-            _subClient.Received().Execute(
-                Arg.Is<IRestRequest>(
-                    x => CheckRequestContainsHeaderParameter(x, "Pusher-Library-Name", "pusher-http-dotnet")
                 )
             );
         }
 
         [Test]
-        [ExpectedException]
-        public void socket_id_cannot_contain_colon_prefix()
+        public async void socket_id_cannot_contain_colon_prefix()
         {
-            TriggerWithSocketId(":444.444");
+            FormatException caughtException = null;
+
+            try
+            {
+                await TriggerWithSocketId(":444.444");
+            }
+            catch (FormatException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("socket_id \":444.444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException]
-        public void socket_id_cannot_contain_colon_suffix()
+        public async void socket_id_cannot_contain_colon_suffix()
         {
-            TriggerWithSocketId("444.444:");
+            FormatException caughtException = null;
+
+            try
+            {
+                await TriggerWithSocketId("444.444:");
+            }
+            catch (FormatException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("socket_id \"444.444:\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException]
-        public void socket_id_cannot_contain_letters_suffix()
+        public async void socket_id_cannot_contain_letters_suffix()
         {
-            TriggerWithSocketId("444.444a");
+            FormatException caughtException = null;
+
+            try
+            {
+                await TriggerWithSocketId("444.444a");
+            }
+            catch (FormatException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("socket_id \"444.444a\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException]
-        public void socket_id_must_contain_a_period_point()
+        public async void socket_id_must_contain_a_period_point()
         {
-            TriggerWithSocketId("444");
+            FormatException caughtException = null;
+
+            try
+            {
+                await TriggerWithSocketId("444");
+            }
+            catch (FormatException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("socket_id \"444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException]
-        public void socket_id_must_not_contain_newline_prefix()
+        public async void socket_id_must_not_contain_newline_prefix()
         {
-            TriggerWithSocketId("\n444.444");
+            FormatException caughtException = null;
+
+            try
+            {
+                await TriggerWithSocketId("\n444.444");
+            }
+            catch (FormatException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("socket_id \"\n444.444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException]
-        public void socket_id_must_not_contain_newline_suffix()
+        public async void socket_id_must_not_contain_newline_suffix()
         {
-            TriggerWithSocketId("444.444\n");
+            FormatException caughtException = null;
+
+            try
+            {
+                await TriggerWithSocketId("444.444\n");
+            }
+            catch (FormatException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("socket_id \"444.444\n\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException]
-        public void socket_id_must_not_be_empty_string()
+        public async void socket_id_must_not_be_empty_string()
         {
-            TriggerWithSocketId(string.Empty);
+            FormatException caughtException = null;
+
+            try
+            {
+                await TriggerWithSocketId(string.Empty);
+            }
+            catch (FormatException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("socket_id \"\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException]
-        public void channel_must_not_have_trailing_colon()
+        public async void channel_must_not_have_trailing_colon()
 		{
-			TriggerWithChannelName("test_channel:");
-		}
+            FormatException caughtException = null;
+
+            try
+		    {
+		        await TriggerWithChannelName("test_channel:");
+		    }
+		    catch (FormatException ex)
+		    {
+		        caughtException = ex;
+		    }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("channel name \"test_channel:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+        }
 		[Test]
-        [ExpectedException]
-		public void channel_name_must_not_have_leading_colon()
+		public async void channel_name_must_not_have_leading_colon()
 		{
-			TriggerWithChannelName(":test_channel");
-		}
+            FormatException caughtException = null;
+
+            try
+		    {
+		        await TriggerWithChannelName(":test_channel");
+		    }
+		    catch (FormatException ex)
+		    {
+                caughtException = ex;
+		    }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("channel name \":test_channel\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+        }
 		
         [Test]
-        [ExpectedException]
-		public void channel_name_must_not_have_leading_colon_newline()
+		public async void channel_name_must_not_have_leading_colon_newline()
         {
-			TriggerWithChannelName(":\ntest_channel");
-		}
+            FormatException caughtException = null;
+
+            try
+            {
+                await TriggerWithChannelName(":\ntest_channel");
+            }
+            catch (FormatException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("channel name \":\ntest_channel\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+        }
 		
         [Test]
-        [ExpectedException]
-		public void channel_name_must_not_have_trailing_colon_newline()
-		{
-			TriggerWithChannelName("test_channel\n:");
-		}
+        public async void channel_name_must_not_have_trailing_colon_newline()
+        {
+            FormatException caughtException = null;
+
+		    try
+		    {
+		        await TriggerWithChannelName("test_channel\n:");
+		    }
+		    catch (FormatException ex)
+		    {
+		        caughtException = ex;
+		    }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("channel name \"test_channel\n:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+        }
 		
 		[Test]
-        [ExpectedException]
-		public void channel_names_in_array_must_be_validated()
+		public async void channel_names_in_array_must_be_validated()
 		{
-			_pusher.Trigger(new string[] { "this_one_is_okay", "test_channel\n:" }, eventName, eventData);
+		    FormatException caughtException = null;
+
+		    try
+		    {
+		        await _pusher.TriggerAsync(new[] { "this_one_is_okay", "test_channel\n:" }, _eventName, _eventData);
+		    }
+		    catch (FormatException ex)
+		    {
+		        caughtException = ex;
+		    }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase("channel name \"test_channel\n:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
         }
 
         [Test]
-        [ExpectedException]
-        public void channel_names_must_not_exceed_allowed_length()
+        public async void channel_names_must_not_exceed_allowed_length()
         {
-            var channelName = new String('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
-            TriggerWithChannelName(channelName);
+            ArgumentOutOfRangeException caughtException = null;
+
+            try
+            {
+                var channelName = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
+                await TriggerWithChannelName(channelName);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase($"The length of the channel name was greater than the allowed 164 characters{Environment.NewLine}Parameter name: channelName", caughtException.Message);
         }
 
-        private void TriggerWithSocketId(string socketId)
+        [Test]
+        public async void event_arrays_must_not_exceed_allowed_length()
         {
-            _pusher.Trigger(channelName, eventName, eventData, new TriggerOptions()
+            ArgumentOutOfRangeException caughtException = null;
+
+            try
+            {
+                var events = CreateEvents(101);
+
+                await TriggerWithBatch(events.ToArray());
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase($"Only 100 events permitted per batch, 101 submitted{Environment.NewLine}Parameter name: events", caughtException.Message);
+        }
+
+        [Test]
+        public async void event_arrays_will_be_rejected_if_a_channel_name_is_to_long()
+        {
+            ArgumentOutOfRangeException caughtException = null;
+
+            try
+            {
+                var events = CreateEvents(10);
+                events.Add(new Event {Channel = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1)});
+
+                await TriggerWithBatch(events.ToArray());
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
+            StringAssert.AreEqualIgnoringCase($"The length of the channel name was greater than the allowed 164 characters{Environment.NewLine}Parameter name: channelName", caughtException.Message);
+        }
+
+        private bool CheckRequestContainsPayload(IPusherRestRequest request, string channelName, string eventName, object eventData)
+        {
+            var expectedBody = new TriggerBody()
+            {
+                name = eventName,
+                channels = new[] { channelName },
+                data = JsonConvert.SerializeObject(eventData)
+            };
+
+            var expected = JsonConvert.SerializeObject(expectedBody);
+
+            return request.GetContentAsJsonString().Contains(expected);
+        }
+
+        private async Task<ITriggerResult> TriggerWithSocketId(string socketId)
+        {
+            var response = await _pusher.TriggerAsync(_channelName, _eventName, _eventData, new TriggerOptions()
             {
                 SocketId = socketId
             });
 
-            _pusher.TriggerAsync(channelName, eventName, eventData, (ITriggerResult result) =>
-            {
-            });
+            return response;
         }
 
-        private void TriggerWithChannelName(string channelName)
+        private async Task<ITriggerResult> TriggerWithChannelName(string channelName)
         {
-            _pusher.Trigger(channelName, eventName, eventData);
+            var response = await _pusher.TriggerAsync(channelName, _eventName, _eventData);
 
-            _pusher.TriggerAsync(channelName, eventName, eventData, new TriggerOptions(), (ITriggerResult result) =>
-            {
-            });
+            return response;
         }
 
-        private static bool CheckRequestContainsSocketIdParameter(IRestRequest request, string expectedSocketId) {
-            var parameter = request.Parameters[0];
-            return parameter.Type == ParameterType.RequestBody &&
-                parameter.ToString().Contains("socket_id");
-        }
-
-        private static bool CheckRequestContainsHeaderParameter(IRestRequest request, string headerName, string headerValue)
+        private async Task<ITriggerResult> TriggerWithBatch(Event[] events)
         {
-            bool found = false;
-            foreach(Parameter p in request.Parameters)
+            var response = await _pusher.TriggerAsync(events);
+
+            return response;
+        }
+
+        private static bool CheckRequestContainsSocketIdParameter(IPusherRestRequest request, string expectedSocketId)
+        {
+            var parameter = request.GetContentAsJsonString();
+            return parameter.Contains("socket_id") &&
+                   parameter.Contains(expectedSocketId);
+        }
+
+        private List<Event> CreateEvents(int numberOfEvents)
+        {
+            var events = new List<Event>();
+
+            for (int i = 0; i < numberOfEvents; i++)
             {
-                if(p.Type == ParameterType.HttpHeader &&
-                   p.Name == headerName &&
-                   p.Value.ToString() == headerValue)
-                {
-                    found = true;
-                    break;
-                }
+                events.Add(new Event { Channel = "testChannel", EventName = "testEvent"});
             }
-            return found;
+
+            return events;
         }
     }
 }

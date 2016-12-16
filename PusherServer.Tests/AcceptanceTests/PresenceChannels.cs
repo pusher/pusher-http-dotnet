@@ -10,54 +10,7 @@ namespace PusherServer.Tests.AcceptanceTests
     public class When_querying_the_Presence_Channel
     {
         [Test]
-        public void Should_get_a_list_of_subscribed_users_when_using_the_correct_channel_name_and_users_are_subscribed()
-        {
-            var reset = new AutoResetEvent(false);
-
-            string channelName = "presence-test-channel-1";
-
-            var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
-
-            var result = pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>(channelName);
-
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-            Assert.AreEqual(1, result.Data.Users.Length);
-            Assert.AreEqual("Mr Pusher", result.Data.Users[0].Id);
-        }
-
-        [Test]
-        public void Should_get_an_empty_list_of_subscribed_users_when_using_the_correct_channel_name_and_no_users_are_subscribed()
-        {
-            var reset = new AutoResetEvent(false);
-
-            string channelName = "presence-test-channel2";
-
-            var pusherServer = ClientServerFactory.CreateServer();
-
-            var result = pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>(channelName);
-
-            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-            Assert.AreEqual(0, result.Data.Users.Length);
-        }
-
-        [Test]
-        public void should_return_bad_request_using_an_incorrect_channel_name_and_users_are_subscribed()
-        {
-            var reset = new AutoResetEvent(false);
-
-            string channelName = "presence-test-channel3";
-
-            var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
-
-            var result = pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>("test-channel");
-
-            Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
-        }
-
-        [Test]
-        public void Should_get_a_list_of_subscribed_users_asynchronously_when_using_the_correct_channel_name_and_users_are_subscribed()
+        public async void Should_get_a_list_of_subscribed_users_asynchronously_when_using_the_correct_channel_name_and_users_are_subscribed()
         {
             var reset = new AutoResetEvent(false);
 
@@ -66,14 +19,9 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            IGetResult<PresenceChannelMessage> result = null;
-            pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName, getResult =>
-            {
-                result = getResult;
-                reset.Set();
-            });
+            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName);
 
-            reset.WaitOne(TimeSpan.FromSeconds(30));
+            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             Assert.AreEqual(1, result.Data.Users.Length);
@@ -81,7 +29,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public void Should_get_an_empty_list_of_subscribed_users_asynchronously_when_using_the_correct_channel_name_and_no_users_are_subscribed()
+        public async void Should_get_an_empty_list_of_subscribed_users_asynchronously_when_using_the_correct_channel_name_and_no_users_are_subscribed()
         {
             var reset = new AutoResetEvent(false);
 
@@ -89,21 +37,16 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var pusherServer = ClientServerFactory.CreateServer();
 
-            IGetResult<PresenceChannelMessage> result = null;
-            pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName, getResult =>
-            {
-                result = getResult;
-                reset.Set();
-            });
+            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName);
 
-            reset.WaitOne(TimeSpan.FromSeconds(30));
+            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
             Assert.AreEqual(0, result.Data.Users.Length);
         }
 
         [Test]
-        public void should_return_bad_request_asynchronously_using_an_incorrect_channel_name_and_users_are_subscribed()
+        public async void should_return_bad_request_asynchronously_using_an_incorrect_channel_name_and_users_are_subscribed()
         {
             var reset = new AutoResetEvent(false);
 
@@ -112,85 +55,15 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            IGetResult<PresenceChannelMessage> result = null;
-            pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>("test-channel-async", getResult =>
-            {
-                result = getResult;
-                reset.Set();
-            });
+            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>("test-channel-async");
 
-            reset.WaitOne(TimeSpan.FromSeconds(30));
+            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
         }
 
         [Test]
-        public void should_throw_an_exception_when_given_a_null_for_a_channel_name()
-        {
-            var pusherServer = ClientServerFactory.CreateServer();
-
-            ArgumentException caughtException = null;
-
-            try
-            {
-                pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>(null);
-            }
-            catch (ArgumentException ex)
-            {
-                caughtException = ex;
-            }
-            
-            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
-        }
-
-        [Test]
-        public void should_throw_an_exception_when_given_an_empty_string_for_a_channel_name()
-        {
-            var pusherServer = ClientServerFactory.CreateServer();
-
-            ArgumentException caughtException = null;
-
-            try
-            {
-                pusherServer.FetchUsersFromPresenceChannel<PresenceChannelMessage>(string.Empty);
-            }
-            catch (ArgumentException ex)
-            {
-                caughtException = ex;
-            }
-
-            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
-        }
-
-        [Test]
-        public void should_throw_an_exception_when_given_a_null_for_a_channel_name_async()
-        {
-            var reset = new AutoResetEvent(false);
-
-            var pusherServer = ClientServerFactory.CreateServer();
-
-            IGetResult<PresenceChannelMessage> result = null;
-
-            ArgumentException caughtException = null;
-
-            try
-            {
-                pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(null, getResult =>
-                {
-                    result = getResult;
-                    reset.Set();
-                });
-            }
-            catch (ArgumentException ex)
-            {
-                caughtException = ex;
-            }
-
-            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
-        }
-
-        [Test]
-        public void should_throw_an_exception_when_given_an_empty_string_for_a_channel_name_async()
+        public async void should_throw_an_exception_when_given_a_null_for_a_channel_name_async()
         {
             var reset = new AutoResetEvent(false);
 
@@ -198,20 +71,40 @@ namespace PusherServer.Tests.AcceptanceTests
 
             ArgumentException caughtException = null;
 
-            IGetResult<PresenceChannelMessage> result = null;
             try
             {
-                pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(string.Empty, getResult =>
-                {
-                    result = getResult;
-                    reset.Set();
-                });
+                var response = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(null);
+                reset.Set();
             }
             catch (ArgumentException ex)
             {
                 caughtException = ex;
             }
 
+            Assert.IsNotNull(caughtException);
+            StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
+        }
+
+        [Test]
+        public async void should_throw_an_exception_when_given_an_empty_string_for_a_channel_name_async()
+        {
+            var reset = new AutoResetEvent(false);
+
+            var pusherServer = ClientServerFactory.CreateServer();
+
+            ArgumentException caughtException = null;
+
+            try
+            {
+                var response = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(string.Empty);
+                reset.Set();
+            }
+            catch (ArgumentException ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.IsNotNull(caughtException);
             StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
         }
 

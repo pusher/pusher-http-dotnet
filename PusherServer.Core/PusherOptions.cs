@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using RestSharp;
+using PusherServer.RestfulClient;
 
 namespace PusherServer
 {
@@ -17,13 +17,13 @@ namespace PusherServer
         private static int DEFAULT_HTTPS_PORT = 443;
         private static int DEFAULT_HTTP_PORT = 80;
 
-        IRestClient _client;
-        bool _encrypted = false;
-        bool _portModified = false;
-        bool _hostSet = false;
+        IPusherRestClient _pusherClient;
+        bool _encrypted;
+        bool _portModified;
+        bool _hostSet;
         int _port = DEFAULT_HTTP_PORT;
-        string _hostName = null;
-        string _cluster = null;
+        string _hostName;
+        string _cluster;
         ISerializeObjectsToJson _jsonSerializer;
         IDeserializeJsonStrings _jsonDeserializer;
 
@@ -58,9 +58,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Set the cluster only if there is no custom host defined.
-        /// </summary>
+        /// <inheritDoc/>
         public string Cluster
         {
           get
@@ -77,23 +75,21 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public IRestClient RestClient
+        public IPusherRestClient RestClient
         {
             get
             {
-                if (_client == null)
+                if (_pusherClient == null)
                 {
-                    _client = new RestClient(GetBaseUrl());
+                    _pusherClient = new PusherRestClient(GetBaseUrl(), Pusher.LIBRARY_NAME, Pusher.VERSION);
                 }
 
-                return _client;
+                return _pusherClient;
             }
-            set { _client = value; }
+            set { _pusherClient = value; }
         }
 
-        /// <summary>
-        /// Gets or sets the HostName to use in the base URL
-        /// </summary>
+        /// <inheritDoc/>
         public string HostName
         {
             get
@@ -114,9 +110,7 @@ namespace PusherServer
             }
         }
 
-        /// <summary>
-        /// Gets or sets the Json Serializer
-        /// </summary>
+        /// <inheritDoc/>
         public ISerializeObjectsToJson JsonSerializer
         {
             get
@@ -132,9 +126,7 @@ namespace PusherServer
             set { _jsonSerializer = value; }
         }
 
-        /// <summary>
-        /// Gets or sets the Json Deserializer
-        /// </summary>
+        /// <inheritDoc/>
         public IDeserializeJsonStrings JsonDeserializer
         {
             get

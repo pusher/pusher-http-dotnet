@@ -96,7 +96,7 @@ namespace PusherServer.Tests.AcceptanceTests
             pusherClient.Connect();
 
             Debug.WriteLine("waiting to connect");
-            reset.WaitOne(TimeSpan.FromSeconds(5));
+            reset.WaitOne(TimeSpan.FromSeconds(10));
 
             Debug.WriteLine("subscribing");
             var channel = pusherClient.Subscribe(channelName);

@@ -1,5 +1,5 @@
 ﻿using System;
-using RestSharp;
+using PusherServer.RestfulClient;
 
 namespace PusherServer
 {
@@ -35,12 +35,12 @@ namespace PusherServer
         IDeserializeJsonStrings JsonDeserializer { get; set; }
 
         /// <summary>
-        /// Gets or sets the rest client. Generally only expected to be used for testing.
+        /// Gets or sets the pusher rest client. Generally only expected to be used for testing.
         /// </summary>
         /// <value>
-        /// The rest client.
+        /// The pusher rest client.
         /// </value>
-        IRestClient RestClient { get; set; }
+        IPusherRestClient RestClient { get; set; }
 
         /// <summary>
         /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>PusherServer</id>
-    <version>$version$</version>
+    <version>4.0.0</version>
     <title>Pusher .NET Server Library</title>
     <authors>Pusher, Phil Leggetter, John McLoughlin</authors>
     <owners>Pusher</owners>
@@ -15,13 +15,15 @@ Register at https://pusher.com and use the application credentials within your a
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>pusher realtime</tags>
-    <dependencies>
-        <dependency id="RestSharp" version="105.0.1" />
-    </dependencies>
     <summary>Interact with the Pusher HTTP API</summary>
+      <dependencies>
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="..\README.md" target="." />
-    <file src="..\CHANGELOG.md" target="." />
+    <file src="README.md" target="" />
+    <file src="CHANGELOG.md" target="" />
+    <file src="PusherServer\bin\Release\PusherServer.dll" target="lib\net45\PusherServer.dll" />
+    <file src="PusherServer.Core\bin\Release\netStandard1.6\PusherServer.Core.dll" target="lib\netStandard1.6\PusherServer.Core.dll" />
   </files>
 </package>

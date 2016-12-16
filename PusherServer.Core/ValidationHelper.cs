@@ -37,8 +37,7 @@ namespace PusherServer
         {
             if (socketId != null && SOCKET_ID_REGEX.IsMatch(socketId) == false)
             {
-                string msg =
-                    string.Format("socket_id \"{0}\" was not in the form: {1}", socketId, SOCKET_ID_REGEX.ToString());
+                string msg = $"socket_id \"{socketId}\" was not in the form: {SOCKET_ID_REGEX}";
                 throw new FormatException(msg);
             }
         }
@@ -52,15 +51,13 @@ namespace PusherServer
         {
             if(channelName.Length > CHANNEL_NAME_MAX_LENGTH)
             {
-                string msg = 
-                    string.Format("The length of the channel name was greater than the allowed {0} characters", CHANNEL_NAME_MAX_LENGTH);
-                throw new ArgumentOutOfRangeException(msg);
+                string msg = $"The length of the channel name was greater than the allowed {CHANNEL_NAME_MAX_LENGTH} characters";
+                throw new ArgumentOutOfRangeException(nameof(channelName), msg);
             }
 
             if (CHANNEL_NAME_REGEX.IsMatch(channelName) == false)
             {
-                string msg =
-                    string.Format("channel name \"{0}\" was not in the form: {1}", channelName, CHANNEL_NAME_REGEX.ToString());
+                string msg = $"channel name \"{channelName}\" was not in the form: {CHANNEL_NAME_REGEX}";
                 throw new FormatException(msg);
             }
         }
@@ -82,7 +79,7 @@ namespace PusherServer
         {
             if (events.Length > 100)
             {
-                throw new ArgumentOutOfRangeException(string.Format("Only {0} events permitted per batch, {1} submitted", MAX_BATCH_SIZE, events.Length));
+                throw new ArgumentOutOfRangeException(nameof(events), $"Only {MAX_BATCH_SIZE} events permitted per batch, {events.Length} submitted");
             }
 
             foreach (Event e in events)
