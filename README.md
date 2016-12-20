@@ -138,9 +138,7 @@ IGetResult<ChannelsList> result = pusher.FetchStateForChannels<ChannelsList>(new
 There is also an asynchronous variation
 
 ```cs
-pusher.FetchStateForChannelsAsync<ChannelsList>((IGetResult<ChannelsList> result) =>
-{
-});
+IGetResult<ChannelsList> state = await pusher.FetchStateForChannelsAsync<ChannelsList>();
 ```
 
 #### Fetch channel information
@@ -160,9 +158,7 @@ IGetResult<object> result = pusher.FetchStateForChannel<object>("my_channel");
 There is also an asynchronous variation
 
 ```cs
-pusher.FetchStateForChannelAsync<object>("my_channel", (ITriggerResult result) =>
-{
-});
+ITriggerResult state = await pusher.FetchStateForChannelAsync<object>("my_channel");
 ```
 
 Retrieve information about multiple channels:
@@ -174,9 +170,7 @@ IGetResult<object> result = pusher.FetchStateForChannels<object>();
 There is also an asynchronous variation
 
 ```cs
-pusher.FetchStateForChannelsAsync<object>((ITriggerResult result) =>
-{
-});
+ITriggerresult state = await pusher.FetchStateForChannelsAsync<object>();
 ```
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
@@ -198,9 +192,7 @@ IGetResult<object> result = pusher.FetchUsersFromPresenceChannel<object>("my_cha
 There is also an asynchronous variation
 
 ```cs
-pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel", (ITriggerResult result) =>
-{
-});
+ITriggerResult state = await pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel");
 ```
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
@@ -247,9 +239,10 @@ else {
 
 ## Development Notes
 
-* Developed using Visual Studio Community 2013
+* Developed using Visual Studio Community 2015
 * The NUnit test framework is used for testing, your copy of Visual Studio needs the "NUnit test adapter" installed from Tools -> Extensions and Updates if you wish to run the test from the IDE.
 * PusherServer acceptance tests depends on [PusherClient](https://github.com/pusher-community/pusher-websocket-dotnet).
+* PusherServer has two variations, the original version for .NET, and a .NET Core version.  The source files all leave within the .NET Core folder, with links from the .NET project to these files to create the .NET version.
 
 ### Alternative environments
 
@@ -269,13 +262,19 @@ xbuild pusher-dotnet-server.sln
 
 During the build, there will be a warning about a section called TestCaseManagementSettings in the GlobalSection.  Please ignore this, as it is a Visual Studio specific setting.
 
+#### Different solutions in this repository
+
+There are 3 solution files in this repository.  One for just .NET, one for just .NET Core and a third one with both the platforms in.
+
+The source files for this project can be found under the .NET Core project.  These files are then linked to in the .NET project to allow creation for both platforms.
+
 ## Publish to NuGet
 
 You should be familiar with [creating and publishing NuGet packages](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package).
 
 From the `pusher-dotnet-server` directory:
 
-1. Update `PusherServer/Properties/AssemblyInfo.cs` with new version number.
+1. Update `./PusherServer/Properties/AssemblyInfo.cs` and `./PusherServer.Core/Properties/AssemblyInfo.cs` with new version number.
 2. Check and change any info required in `PusherServer/PusherServer.nuspec`.
 3. Run `package.cmd` to pack a package to deploy to NuGet.
 3. Run `tools/nuget.exe push PusherServer.{VERSION}.nupkg'.
