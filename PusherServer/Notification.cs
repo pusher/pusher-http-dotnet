@@ -8,5 +8,6 @@
 
         public string channel { get; set; }
         public string senderId { get; set; }
+        public string toId { get; set; }
     }
 }
