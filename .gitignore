@@ -16,3 +16,4 @@ build
 msbuild.log
 *.nupkg
 .vs/
+PusherServer.Core/project.lock.json
