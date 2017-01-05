@@ -6,7 +6,7 @@ This is a .NET library for interacting with the Pusher HTTP API.
 
 Registering at <http://pusher.com> and use the application credentials within your app as shown below.
 
-Comprehensive documenation can be found at <http://pusher.com/docs/>.
+Comprehensive documentation can be found at <http://pusher.com/docs/>.
 
 ## Installation
 
@@ -42,13 +42,13 @@ To trigger an event on one or more channels use the trigger function.
 #### A single channel
 
 ```cs
-var result = pusher.Trigger( "channel-1", "test_event", new { message = "hello world" } );
+ITriggerResult result = await pusher.TriggerAsync( "channel-1", "test_event", new { message = "hello world" } );
 ```
 
 #### Multiple channels
 
 ```cs
-var result = pusher.Trigger( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
+ITriggerResult result = await pusher.TriggerAsync( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
 ```
 
 #### Batches
@@ -59,15 +59,15 @@ var events = new List[]{
   new Event(){ EventName = "test_event", Channel = "channel-1", Data = "my name is bob" },
 }
 
-var result = pusher.Trigger(events)
+ITriggerResult result = await pusher.TriggerAsync(events)
 ```
 
 ### Excluding event recipients
 
-In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more informaiton see: <http://pusher.com/docs/publisher_api_guide/publisher_excluding_recipients>.
+In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more information see: <http://pusher.com/docs/publisher_api_guide/publisher_excluding_recipients>.
 
 ```cs
-var result = pusher.Trigger(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
+ITriggerResult result = await pusher.TriggerAsync(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
 ```
 
 ### Authenticating Private channels
@@ -105,7 +105,7 @@ For more information see: <http://pusher.com/docs/authenticating_users>
 
 ### Application State
 
-It is possible to query the state of your Pusher application using the generic `Pusher.Get( resource )` method and overloads.
+It is possible to query the state of your Pusher application using the generic `Pusher.GetAsync( resource )` method and overloads.
 
 For full details see: <http://pusher.com/docs/rest_api>
 
@@ -114,31 +114,25 @@ For full details see: <http://pusher.com/docs/rest_api>
 You can get a list of channels that are present within your application:
 
 ```cs
-IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels");
+IGetResult<ChannelsList> result = await pusher.GetAsync<ChannelsList>("/channels");
 ```
 
 or
 
 ```cs
-IGetResult<ChannelsList> result = pusher.FetchStateForChannels<ChannelsList>();
+IGetResult<ChannelsList> result = await pusher.FetchStateForChannelsAsync<ChannelsList>();
 ```
 
 You can provide additional parameters to filter the list of channels that is returned.
 
 ```cs
-IGetResult<ChannelsList> result = pusher.Get<ChannelsList>("/channels", new { filter_by_prefix = "presence-" } );
+IGetResult<ChannelsList> result = await pusher.GetAsync<ChannelsList>("/channels", new { filter_by_prefix = "presence-" } );
 ```
 
 or
 
 ```cs
-IGetResult<ChannelsList> result = pusher.FetchStateForChannels<ChannelsList>(new { filter_by_prefix = "presence-" } );
-```
-
-There is also an asynchronous variation
-
-```cs
-IGetResult<ChannelsList> state = await pusher.FetchStateForChannelsAsync<ChannelsList>();
+IGetResult<ChannelsList> result = await pusher.FetchStateForChannelsAsync<ChannelsList>(new { filter_by_prefix = "presence-" } );
 ```
 
 #### Fetch channel information
@@ -146,31 +140,19 @@ IGetResult<ChannelsList> state = await pusher.FetchStateForChannelsAsync<Channel
 Retrieve information about a single channel:
 
 ```cs
-IGetResult<object> result = pusher.Get<object>("/channels/my_channel" );
+IGetResult<object> result = await pusher.GetAsync<object>("/channels/my_channel" );
 ```
 
 or
 
 ```cs
-IGetResult<object> result = pusher.FetchStateForChannel<object>("my_channel");
-```
-
-There is also an asynchronous variation
-
-```cs
-ITriggerResult state = await pusher.FetchStateForChannelAsync<object>("my_channel");
+IGetResult<object> result = await pusher.FetchStateForChannelAsync<object>("my_channel");
 ```
 
 Retrieve information about multiple channels:
 
 ```cs
-IGetResult<object> result = pusher.FetchStateForChannels<object>();
-```
-
-There is also an asynchronous variation
-
-```cs
-ITriggerresult state = await pusher.FetchStateForChannelsAsync<object>();
+IGetResult<object> result = await pusher.FetchStateForChannelsAsync<object>();
 ```
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
@@ -180,19 +162,13 @@ ITriggerresult state = await pusher.FetchStateForChannelsAsync<object>();
 Retrieve a list of users that are on a presence channel:
 
 ```cs
-IGetResult<object> result = pusher.FetchUsersFromPresence<object>("/channels/presence-channel/users" );
+IGetResult<object> result = await pusher.FetchUsersFromPresenceAsync<object>("/channels/presence-channel/users" );
 ```
 
 or
 
 ```cs
-IGetResult<object> result = pusher.FetchUsersFromPresenceChannel<object>("my_channel");
-```
-
-There is also an asynchronous variation
-
-```cs
-ITriggerResult state = await pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel");
+IGetResult<object> result = await pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel");
 ```
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
