@@ -215,7 +215,7 @@ else {
 
 ### Asynchronous programming
 
-From v4.0.0 onwards, this library uses the `async` / `await` [syntax](https://msdn.microsoft.com/en-gb/library/mt674882.aspx) from .NET 4.5+. 
+From v4.0.0 onwards, this library uses the `async` / `await` [syntax](https://msdn.microsoft.com/en-gb/library/mt674882.aspx) from .NET 4.5+.
 
 This means that you can now use the Pusher .NET library asynchronously using the following code style:
 
@@ -232,7 +232,7 @@ DoIndependentWork();
 ITriggerResult result = await resultTask;
 ```
 
-This also means that the v4.0.0 library is only officially compatible with .NET 4.5 and above (including .NET Core). If you need to support older versions of the .NET framework then you have a few options:
+This also means that the library is now only officially compatible with .NET 4.5 and above (including .NET Core). If you need to support older versions of the .NET framework then you have a few options:
 
 * Use a previous version of the library, such as [v3.0.0](https://www.nuget.org/packages/PusherServer/3.0.0)
 * Use a workaround package such as [Microsoft Async](https://www.nuget.org/packages/Microsoft.Bcl.Async) or AsyncBridge (https://www.nuget.org/packages/AsyncBridge.Net35).
