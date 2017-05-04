@@ -235,7 +235,7 @@ ITriggerResult result = await resultTask;
 This also means that the library is now only officially compatible with .NET 4.5 and above (including .NET Core). If you need to support older versions of the .NET framework then you have a few options:
 
 * Use a previous version of the library, such as [v3.0.0](https://www.nuget.org/packages/PusherServer/3.0.0)
-* Use a workaround package such as [Microsoft Async](https://www.nuget.org/packages/Microsoft.Bcl.Async) or AsyncBridge (https://www.nuget.org/packages/AsyncBridge.Net35).
+* Use a workaround package such as [Microsoft Async](https://www.nuget.org/packages/Microsoft.Bcl.Async) or [AsyncBridge](https://www.nuget.org/packages/AsyncBridge.Net35).
 
 Please note that neither of these workarounds will be officially supported by Pusher.
 
