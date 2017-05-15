@@ -35,6 +35,10 @@ namespace PusherServer.RestfulClient
             _httpClient = new HttpClient { BaseAddress = baseAddress };
             _libraryName = libraryName;
             _version = version.ToString(3);
+            _httpClient.DefaultRequestHeaders.Clear();
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
+            _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Version", _version);
         }
 
         ///<inheritDoc/>
@@ -45,10 +49,6 @@ namespace PusherServer.RestfulClient
         ///<inheritDoc/>
         public async Task<GetResult<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest)
         {
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
-            _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Version", _version);
-
             if (pusherRestRequest.Method == PusherMethod.GET)
             {
                 var response = await _httpClient.GetAsync(pusherRestRequest.ResourceUri);
@@ -63,11 +63,6 @@ namespace PusherServer.RestfulClient
         ///<inheritDoc/>
         public async Task<TriggerResult> ExecutePostAsync(IPusherRestRequest pusherRestRequest)
         {
-            _httpClient.DefaultRequestHeaders.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
-            _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Version", _version);
-
             if (pusherRestRequest.Method == PusherMethod.POST)
             {
                 var content = new StringContent(pusherRestRequest.GetContentAsJsonString(), Encoding.UTF8, "application/json");
