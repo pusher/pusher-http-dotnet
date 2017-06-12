@@ -20,15 +20,8 @@ Install-Package PusherServer
 ### Constructor
 
 ```cs
-var pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET);
-```
-
-If you created your app in a different cluster to the default cluster, specify this as follows:
-
-```cs
-
 var options = new PusherOptions();
-options.Cluster = "eu";
+options.Cluster = APP_CLUSTER;
 
 var pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET, options);
 ```
@@ -222,7 +215,10 @@ This means that you can now use the Pusher .NET library asynchronously using the
 ```
 using PusherServer;
 
-var pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET);
+var options = new PusherOptions();
+options.Cluster = APP_CLUSTER;
+
+var pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET, options);
 
 Task<ITriggerResult> resultTask = pusher.TriggerAsync( "my-channel", "my-event", new { message = "hello world" } );
 
