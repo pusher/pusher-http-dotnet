@@ -47,9 +47,9 @@ ITriggerResult result = await pusher.TriggerAsync( new string[]{ "channel-1", "c
 #### Batches
 
 ```cs
-var events = new List[]{
-  new Event(){ EventName = "test_event", Channel = "channel-1", Data = "hello world" },
-  new Event(){ EventName = "test_event", Channel = "channel-1", Data = "my name is bob" },
+var events = new []{
+  new Event {Channel = "channel-1", EventName = "test_event", Data = "hello world"},
+  new Event {Channel = "channel-1", EventName = "test_event", Data = "my name is bob"}
 }
 
 ITriggerResult result = await pusher.TriggerAsync(events)
