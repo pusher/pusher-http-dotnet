@@ -77,7 +77,7 @@ namespace PusherServer
         /// <inheritdoc/>
         public async Task<ITriggerResult> TriggerAsync(string channelName, string eventName, object data, ITriggerOptions options = null)
         {
-            return await TriggerAsync(new[] { channelName }, eventName, data, options);
+            return await TriggerAsync(new[] { channelName }, eventName, data, options).ConfigureAwait(false);
         }
 
         /// <inheritdoc/>
@@ -92,7 +92,7 @@ namespace PusherServer
 
             DebugTriggerRequest(request);
 
-            var result = await _options.RestClient.ExecutePostAsync(request);
+            var result = await _options.RestClient.ExecutePostAsync(request).ConfigureAwait(false);
 
             DebugTriggerResponse(result);
 
@@ -108,7 +108,7 @@ namespace PusherServer
 
             DebugTriggerRequest(request);
 
-            var result = await _options.RestClient.ExecutePostAsync(request);
+            var result = await _options.RestClient.ExecutePostAsync(request).ConfigureAwait(false);
 
             DebugTriggerResponse(result);
 
@@ -175,7 +175,7 @@ namespace PusherServer
         {
             var request = _factory.Build(PusherMethod.GET, resource, parameters);
 
-            var response = await _options.RestClient.ExecuteGetAsync<T>(request);
+            var response = await _options.RestClient.ExecuteGetAsync<T>(request).ConfigureAwait(false);
 
             return response;
         }
@@ -193,7 +193,7 @@ namespace PusherServer
 
             var request = _factory.Build(PusherMethod.GET, string.Format(ChannelUsersResource, channelName));
 
-            var response = await _options.RestClient.ExecuteGetAsync<T>(request);
+            var response = await _options.RestClient.ExecuteGetAsync<T>(request).ConfigureAwait(false);
 
             return response;
         }
@@ -205,7 +205,7 @@ namespace PusherServer
 
             var request = _factory.Build(PusherMethod.GET, string.Format(ChannelResource, channelName), info);
 
-            var response = await _options.RestClient.ExecuteGetAsync<T>(request);
+            var response = await _options.RestClient.ExecuteGetAsync<T>(request).ConfigureAwait(false);
 
             return response;
         }
@@ -215,7 +215,7 @@ namespace PusherServer
         {
             var request = _factory.Build(PusherMethod.GET, MultipleChannelsResource, info);
 
-            var response = await _options.RestClient.ExecuteGetAsync<T>(request);
+            var response = await _options.RestClient.ExecuteGetAsync<T>(request).ConfigureAwait(false);
 
             return response;
         }
