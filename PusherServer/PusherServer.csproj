@@ -1,193 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{D81CCD25-73B9-45E4-96BE-5BAD950715AB}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PusherServer</RootNamespace>
-    <AssemblyName>PusherServer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>net4.5;netstandard1.6;netstandard2.0</TargetFrameworks>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <FileVersion>5.0.0.0</FileVersion>
+    <Description>Pusher .NET library for interacting with the HTTP API</Description>
+    <Company>Pusher</Company>
+    <Version>5.0.0</Version>
+    <Product>pusher-http-dotnet</Product>
+    <Authors>Pusher, Phil Legetter, John McLoughlin</Authors>
+    <Copyright>Copyright © 2018</Copyright>
+    <RepositoryType>GIT</RepositoryType>
+    <RepositoryUrl>https://github.com/pusher/pusher-http-dotnet</RepositoryUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\PusherServer.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\PusherServer.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.XML" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\PusherServer.Core\AuthenticationData.cs">
-      <Link>AuthenticationData.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\BatchEvent.cs">
-      <Link>BatchEvent.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\BatchTriggerBody.cs">
-      <Link>BatchTriggerBody.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\ChannelsList.cs">
-      <Link>ChannelsList.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\CryptoHelper.cs">
-      <Link>CryptoHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\DefaultDeserializer.cs">
-      <Link>DefaultDeserializer.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\DefaultSerializer.cs">
-      <Link>DefaultSerializer.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\Event.cs">
-      <Link>Event.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\EventIdData.cs">
-      <Link>EventIdData.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\Exceptions\TriggerResponseException.cs">
-      <Link>Exceptions\TriggerResponseException.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\GetResult.cs">
-      <Link>GetResult.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\IAuthenticationData.cs">
-      <Link>IAuthenticationData.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\IDeserializeJsonStrings.cs">
-      <Link>IDeserializeJsonStrings.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\IGetResult.cs">
-      <Link>IGetResult.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\IPusher.cs">
-      <Link>IPusher.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\IPusherOptions.cs">
-      <Link>IPusherOptions.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\IRequestResult.cs">
-      <Link>IRequestResult.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\ISerializeObjectsToJson.cs">
-      <Link>ISerializeObjectsToJson.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\ITriggerOptions.cs">
-      <Link>ITriggerOptions.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\ITriggerResult.cs">
-      <Link>ITriggerResult.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\IWebHook.cs">
-      <Link>IWebHook.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\PresenceChannelData.cs">
-      <Link>PresenceChannelData.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\Pusher.cs">
-      <Link>Pusher.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\PusherOptions.cs">
-      <Link>PusherOptions.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RawBodySerializer.cs">
-      <Link>RawBodySerializer.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RequestResult.cs">
-      <Link>RequestResult.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RestfulClient\AuthenticatedRequestFactory.cs">
-      <Link>RestfulClient\AuthenticatedRequestFactory.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RestfulClient\IAuthenticatedRequestFactory.cs">
-      <Link>RestfulClient\IAuthenticatedRequestFactory.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RestfulClient\IPusherRestClient.cs">
-      <Link>RestfulClient\IPusherRestClient.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RestfulClient\IPusherRestRequest.cs">
-      <Link>RestfulClient\IPusherRestRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RestfulClient\PusherMethod.cs">
-      <Link>RestfulClient\PusherMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RestfulClient\PusherRestClient.cs">
-      <Link>RestfulClient\PusherRestClient.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\RestfulClient\PusherRestRequest.cs">
-      <Link>RestfulClient\PusherRestRequest.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\TriggerBody.cs">
-      <Link>TriggerBody.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\TriggerOptions.cs">
-      <Link>TriggerOptions.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\TriggerResult.cs">
-      <Link>TriggerResult.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\Util\ReadOnlyDictionary.cs">
-      <Link>Util\ReadOnlyDictionary.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\ValidationHelper.cs">
-      <Link>ValidationHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\WebHook.cs">
-      <Link>WebHook.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\WebHookData.cs">
-      <Link>WebHookData.cs</Link>
-    </Compile>
-    <Compile Include="..\PusherServer.Core\WebHookEvent.cs">
-      <Link>WebHookEvent.cs</Link>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="PusherServer.nuspec" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
