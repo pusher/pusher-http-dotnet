@@ -210,7 +210,7 @@ else {
 
 From v4.0.0 onwards, this library uses the `async` / `await` [syntax](https://msdn.microsoft.com/en-gb/library/mt674882.aspx) from .NET 4.5+.
 
-This means that you can now use the Pusher Channels .NET library asynchronously using the following code style:
+This means that you can now use the Channels .NET library asynchronously using the following code style:
 
 ```
 using PusherServer;
