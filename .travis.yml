@@ -9,12 +9,6 @@ matrix:
       dotnet: 1.1.14
       os: linux
       dist: trusty
-    - env: DOTNETCORE=1
-      sudo: required
-      mono: none
-      dotnet: 1.1.14
-      os: linux
-      dist: trusty
     - mono: 4.4.2
       os: linux
       dist: trusty
@@ -25,7 +19,6 @@ before_script:
   - if [ -z "${DOTNETCORE}" ]; then nuget restore pusher-dotnet-server.sln; fi
 
 script:
-  - dotnet restore
   - if [ -n "${DOTNETCORE}" ]; then sudo bash -x ./build.sh; fi
   - if [ -z "${DOTNETCORE}" ]; then xbuild /p:Configuration=Release pusher-dotnet-server.sln; fi
   - if [ -z "${DOTNETCORE}" ]; then nunit-console PusherServer.Tests/bin/Release/PusherServer.Tests.dll; fi
