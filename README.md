@@ -1,12 +1,12 @@
-# Pusher .NET HTTP API library
+# Pusher Channels .NET HTTP API library
 
 [![Build Status](https://travis-ci.org/pusher/pusher-http-dotnet.svg?branch=master)](https://travis-ci.org/pusher/pusher-http-dotnet)
 
-This is a .NET library for interacting with the Pusher HTTP API.
+This is a .NET library for interacting with the Pusher Channels HTTP API.
 
-Registering at <http://pusher.com> and use the application credentials within your app as shown below.
+Registering at <http://pusher.com/channels> and use the application credentials within your app as shown below.
 
-Comprehensive documentation can be found at <http://pusher.com/docs/>.
+Comprehensive documentation can be found at <http://pusher.com/docs/channels>.
 
 ## Installation
 
@@ -57,7 +57,7 @@ ITriggerResult result = await pusher.TriggerAsync(events)
 
 ### Excluding event recipients
 
-In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more information see: <http://pusher.com/docs/publisher_api_guide/publisher_excluding_recipients>.
+In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more information see: <https://pusher.com/docs/channels/server_api/excluding-event-recipients>.
 
 ```cs
 ITriggerResult result = await pusher.TriggerAsync(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
@@ -65,16 +65,16 @@ ITriggerResult result = await pusher.TriggerAsync(channel, event, data, new Trig
 
 ### Authenticating Private channels
 
-To authorise your users to access private channels on Pusher, you can use the `Authenticate` function:
+To authorise your users to access private channels on Channels, you can use the `Authenticate` function:
 
 ```cs
 var auth = pusher.Authenticate( channelName, socketId );
 var json = auth.ToJson();
 ```
 
-The `json` can then be returned to the client which will then use it for validation of the subscription with Pusher.
+The `json` can then be returned to the client which will then use it for validation of the subscription with Channels.
 
-For more information see: <http://pusher.com/docs/authenticating_users>
+For more information see: <https://pusher.com/docs/channels/server_api/authenticating-users>
 
 ### Authenticating Presence channels
 
@@ -92,15 +92,15 @@ var auth = pusher.Authenticate( channelName, socketId, channelData );
 var json = auth.ToJson();
 ```
 
-The `json` can then be returned to the client which will then use it for validation of the subscription with Pusher.
+The `json` can then be returned to the client which will then use it for validation of the subscription with Channels.
 
-For more information see: <http://pusher.com/docs/authenticating_users>
+For more information see: <https://pusher.com/docs/channels/server_api/authenticating-users>
 
 ### Application State
 
 It is possible to query the state of your Pusher application using the generic `Pusher.GetAsync( resource )` method and overloads.
 
-For full details see: <http://pusher.com/docs/rest_api>
+For full details see: <https://pusher.com/docs/channels/library_auth_reference/rest-api>
 
 #### List channels
 
@@ -168,10 +168,10 @@ IGetResult<object> result = await pusher.FetchUsersFromPresenceChannelAsync<obje
 
 ### WebHooks
 
-Pusher will trigger WebHooks based on the settings you have for your application. You can consume these and use them
+Channels will trigger WebHooks based on the settings you have for your application. You can consume these and use them
 within your application as follows.
 
-For more information see <https://pusher.com/docs/webhooks>.
+For more information see <https://pusher.com/docs/channels/server_api/webhooks>.
 
 ```cs
 // How you get these depends on the framework you're using
@@ -210,7 +210,7 @@ else {
 
 From v4.0.0 onwards, this library uses the `async` / `await` [syntax](https://msdn.microsoft.com/en-gb/library/mt674882.aspx) from .NET 4.5+.
 
-This means that you can now use the Pusher .NET library asynchronously using the following code style:
+This means that you can now use the Channels .NET library asynchronously using the following code style:
 
 ```
 using PusherServer;
