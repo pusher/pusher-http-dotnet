@@ -6,9 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PusherServer.Core\PusherServer.Core.csproj" />
+    <ProjectReference Include="..\PusherServer\PusherServer.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Net.Http" />
