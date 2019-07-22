@@ -2,16 +2,16 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;net472;netstandard1.3;netstandard2.0</TargetFrameworks>
-    <AssemblyName>PusherServer.Core</AssemblyName>
-    <PackageId>PusherServer.Core</PackageId>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <AssemblyName>PusherServer</AssemblyName>
+    <PackageId>PusherServer</PackageId>
+    <Authors>Pusher, Phil Leggetter, John McLoughlin</Authors>
+    <Company>Pusher</Company>
+    <Description>Pusher .NET library for interacting with the HTTP API</Description>
+    <Copyright>Copyright ©  2016</Copyright>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <PackageReleaseNotes>See https://github.com/pusher/pusher-http-dotnet/blob/master/CHANGELOG.md for full details</PackageReleaseNotes>
+    <PackageTags>pusher realtime</PackageTags>
+    <Version>4.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,11 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net472' ">
-      <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="." />
+    <None Include="..\CHANGELOG.md" Pack="true" PackagePath="." />
+  </ItemGroup>
 </Project>
