@@ -1,5 +1,4 @@
 ﻿using PusherClient;
-using System.Web.Script.Serialization;
 
 namespace PusherServer.Tests.Helpers
 {

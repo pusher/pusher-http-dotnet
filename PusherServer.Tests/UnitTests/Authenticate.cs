@@ -1,6 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using PusherServer.Tests.Helpers;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -9,7 +10,7 @@ namespace PusherServer.Tests.UnitTests
     {
         IPusher _pusher;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
@@ -28,83 +29,83 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void socket_id_cannot_contain_colon_prefix()
         {
             _pusher.Authenticate("private-test", ":444.444");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void socket_id_cannot_contain_colon_suffix()
         {
             _pusher.Authenticate("private-test", "444.444:");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void socket_id_cannot_contain_letters_suffix()
         {
             _pusher.Authenticate("private-test", "444.444a");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void socket_id_must_contain_a_period_point()
         {
             _pusher.Authenticate("private-test", "444");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void socket_id_must_not_contain_newline_prefix()
         {
             _pusher.Authenticate("private-test", "\n444.444");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void socket_id_must_not_contain_newline_suffix()
         {
             _pusher.Authenticate("private-test", "444.444\n");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void socket_id_must_not_be_empty_string()
         {
             _pusher.Authenticate("private-test", string.Empty);
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void channel_must_not_have_trailing_colon()
         {
             AuthWithChannelName("private-channel:");
         }
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void channel_name_must_not_have_leading_colon()
         {
             AuthWithChannelName(":private-channel");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void channel_name_must_not_have_leading_colon_newline()
         {
             AuthWithChannelName(":\nprivate-channel");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void channel_name_must_not_have_trailing_colon_newline()
         {
             AuthWithChannelName("private-channel\n:");
         }
 
         [Test]
-        [ExpectedException]
+        [ExpectedException(typeof(ArgumentException))]
         public void channel_names_must_not_exceed_allowed_length()
         {
             var channelName = new String('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
@@ -129,7 +130,7 @@ namespace PusherServer.Tests.UnitTests
     {
         private IPusher _pusher;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);

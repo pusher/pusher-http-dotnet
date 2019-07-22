@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
+using PusherServer.Tests.Helpers;
 using System;
 
 namespace PusherServer.Tests.UnitTests

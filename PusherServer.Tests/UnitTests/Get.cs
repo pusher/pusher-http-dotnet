@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using PusherServer.RestfulClient;
+using System.Threading.Tasks;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -28,7 +29,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void url_is_in_expected_format()
+        public async Task url_is_in_expected_format()
         {
             await _pusher.GetAsync<object>("/channels");
 
@@ -42,7 +43,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void GET_request_is_made()
+        public async Task GET_request_is_made()
         {
             await _pusher.GetAsync<object>("/channels");
 
@@ -56,7 +57,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void additional_parameters_should_be_added_to_query_string()
+        public async Task additional_parameters_should_be_added_to_query_string()
         {
             await _pusher.GetAsync<object>("/channels", new { filter_by_prefix = "presence-", info = "user_count" });
 

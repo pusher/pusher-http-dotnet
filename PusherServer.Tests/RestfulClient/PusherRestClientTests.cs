@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using PusherServer.RestfulClient;
 using PusherServer.Tests.RestfulClient.Fakes;
@@ -9,7 +10,7 @@ namespace PusherServer.Tests.RestfulClient
     public class When_making_a_request
     {
         [Test]
-        public async void then_the_get_request_should_be_made_with_a_valid_resource()
+        public async Task then_the_get_request_should_be_made_with_a_valid_resource()
         {
             var factory = new AuthenticatedRequestFactory(Config.AppKey, Config.AppId, Config.AppSecret);
             var request = factory.Build(PusherMethod.GET, "/channels/newRestClient");
@@ -22,7 +23,7 @@ namespace PusherServer.Tests.RestfulClient
         }
 
         //[Test]
-        //public async void then_the_post_request_should_be_made_with_a_valid_resource()
+        //public async Task then_the_post_request_should_be_made_with_a_valid_resource()
         //{
         //    var factory = new AuthenticatedRequestFactory(Config.AppKey, Config.AppId, Config.AppSecret);
 

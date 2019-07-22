@@ -4,6 +4,7 @@ using System.Net.Http;
 using NSubstitute;
 using NUnit.Framework;
 using PusherServer.Exceptions;
+using PusherServer.Tests.Helpers;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -24,7 +25,7 @@ namespace PusherServer.Tests.UnitTests
     {
         private HttpResponseMessage V7_PROTOCOL_SUCCESSFUL_RESPONSE;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetUp()
         {
             V7_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<HttpResponseMessage>();

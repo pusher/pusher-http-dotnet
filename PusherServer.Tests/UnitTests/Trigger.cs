@@ -23,7 +23,7 @@ namespace PusherServer.Tests.UnitTests
         private HttpResponseMessage _v7ProtocolSuccessfulResponse;
         private HttpResponseMessage _v8ProtocolSuccessfulResponse;
         
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetUp()
         {
             _v7ProtocolSuccessfulResponse = Substitute.For<HttpResponseMessage>();
@@ -55,7 +55,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void url_resource_is_in_expected_format()
+        public async Task url_resource_is_in_expected_format()
         {
             await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
@@ -69,7 +69,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void post_payload_contains_channelName_eventName_and_eventData()
+        public async Task post_payload_contains_channelName_eventName_and_eventData()
         {
             await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
@@ -83,7 +83,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void with_async_and_a_single_channel_the_request_is_made()
+        public async Task with_async_and_a_single_channel_the_request_is_made()
         {
             await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
@@ -93,7 +93,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void with_async_and_a_single_channel_and_trigger_options_the_request_is_made()
+        public async Task with_async_and_a_single_channel_and_trigger_options_the_request_is_made()
         {
             await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
 
@@ -103,7 +103,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void with_async_and_multiple_channels_the_request_is_made()
+        public async Task with_async_and_multiple_channels_the_request_is_made()
         {
             await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData);
 
@@ -113,7 +113,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void with_async_and_multiple_channels_and_trigger_options_the_request_is_made()
+        public async Task with_async_and_multiple_channels_and_trigger_options_the_request_is_made()
         {
             await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData);
 
@@ -123,7 +123,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring()
+        public async Task on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
             var expectedSocketId = "123.098";
             
@@ -143,7 +143,7 @@ namespace PusherServer.Tests.UnitTests
 
 
         [Test]
-        public async void on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring_async()
+        public async Task on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring_async()
         {
             var expectedSocketId = "123.098";
 
@@ -166,7 +166,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring()
+        public async Task on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring()
         {
             var expectedSocketId = "123.456";
 
@@ -185,7 +185,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring_async()
+        public async Task on_a_multiple_channels_the_socket_id_parameter_should_be_present_in_the_querystring_async()
         {
             var expectedSocketId = "123.456";
 
@@ -209,7 +209,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void socket_id_cannot_contain_colon_prefix()
+        public async Task socket_id_cannot_contain_colon_prefix()
         {
             FormatException caughtException = null;
 
@@ -227,7 +227,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void socket_id_cannot_contain_colon_suffix()
+        public async Task socket_id_cannot_contain_colon_suffix()
         {
             FormatException caughtException = null;
 
@@ -245,7 +245,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void socket_id_cannot_contain_letters_suffix()
+        public async Task socket_id_cannot_contain_letters_suffix()
         {
             FormatException caughtException = null;
 
@@ -263,7 +263,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void socket_id_must_contain_a_period_point()
+        public async Task socket_id_must_contain_a_period_point()
         {
             FormatException caughtException = null;
 
@@ -281,7 +281,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void socket_id_must_not_contain_newline_prefix()
+        public async Task socket_id_must_not_contain_newline_prefix()
         {
             FormatException caughtException = null;
 
@@ -299,7 +299,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void socket_id_must_not_contain_newline_suffix()
+        public async Task socket_id_must_not_contain_newline_suffix()
         {
             FormatException caughtException = null;
 
@@ -317,7 +317,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void socket_id_must_not_be_empty_string()
+        public async Task socket_id_must_not_be_empty_string()
         {
             FormatException caughtException = null;
 
@@ -335,7 +335,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void channel_must_not_have_trailing_colon()
+        public async Task channel_must_not_have_trailing_colon()
 		{
             FormatException caughtException = null;
 
@@ -352,7 +352,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.AreEqualIgnoringCase("channel name \"test_channel:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
         }
 		[Test]
-		public async void channel_name_must_not_have_leading_colon()
+		public async Task channel_name_must_not_have_leading_colon()
 		{
             FormatException caughtException = null;
 
@@ -370,7 +370,7 @@ namespace PusherServer.Tests.UnitTests
         }
 		
         [Test]
-		public async void channel_name_must_not_have_leading_colon_newline()
+		public async Task channel_name_must_not_have_leading_colon_newline()
         {
             FormatException caughtException = null;
 
@@ -388,7 +388,7 @@ namespace PusherServer.Tests.UnitTests
         }
 		
         [Test]
-        public async void channel_name_must_not_have_trailing_colon_newline()
+        public async Task channel_name_must_not_have_trailing_colon_newline()
         {
             FormatException caughtException = null;
 
@@ -406,7 +406,7 @@ namespace PusherServer.Tests.UnitTests
         }
 		
 		[Test]
-		public async void channel_names_in_array_must_be_validated()
+		public async Task channel_names_in_array_must_be_validated()
 		{
 		    FormatException caughtException = null;
 
@@ -424,7 +424,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void channel_names_must_not_exceed_allowed_length()
+        public async Task channel_names_must_not_exceed_allowed_length()
         {
             ArgumentOutOfRangeException caughtException = null;
 
@@ -443,7 +443,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void event_arrays_must_not_exceed_allowed_length()
+        public async Task event_arrays_must_not_exceed_allowed_length()
         {
             ArgumentOutOfRangeException caughtException = null;
 
@@ -463,7 +463,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void event_arrays_will_be_rejected_if_a_channel_name_is_to_long()
+        public async Task event_arrays_will_be_rejected_if_a_channel_name_is_to_long()
         {
             ArgumentOutOfRangeException caughtException = null;
 

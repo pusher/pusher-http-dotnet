@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
@@ -13,7 +14,7 @@ namespace PusherServer.Tests.AcceptanceTests
     {
         IPusher _pusher;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
@@ -24,7 +25,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async void It_should_return_a_200_response_async()
+        public async Task It_should_return_a_200_response_async()
         {
             ITriggerResult asyncResult = await _pusher.TriggerAsync("my-channel", "my_event", new {hello = "world"});
 
@@ -33,7 +34,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
         [Test]
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
-        public async void it_should_expose_the_event_id_async()
+        public async Task it_should_expose_the_event_id_async()
         {
             var waiting = new AutoResetEvent(false);
 
@@ -45,7 +46,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async void It_should_be_received_by_a_client_async()
+        public async Task It_should_be_received_by_a_client_async()
         {
             string channelName = "my_channel";
             string eventName = "my_event";
@@ -96,7 +97,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async void it_can_trigger_an_event_with_a_percent_in_the_message_async()
+        public async Task it_can_trigger_an_event_with_a_percent_in_the_message_async()
         {
             var eventJSON = File.ReadAllText("AcceptanceTests/percent-message.json");
             var message = JsonConvert.DeserializeObject(eventJSON);
@@ -110,7 +111,7 @@ namespace PusherServer.Tests.AcceptanceTests
     public class When_Triggering_an_Event_on_a_multiple_Channels
     {
         [Test]
-        public async void It_should_return_a_200_response_async()
+        public async Task It_should_return_a_200_response_async()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
@@ -127,7 +128,7 @@ namespace PusherServer.Tests.AcceptanceTests
     public class When_Triggering_a_Batch_of_Events
     {
         [Test]
-        public async void It_should_return_a_200_response_async()
+        public async Task It_should_return_a_200_response_async()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
@@ -161,7 +162,7 @@ namespace PusherServer.Tests.AcceptanceTests
     {
         IPusher _pusher = null;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
@@ -174,7 +175,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async void It_should_return_a_200_response()
+        public async Task It_should_return_a_200_response()
         {
             ITriggerResult result = await _pusher.TriggerAsync("my-channel", "my_event", new {hello = "world"});
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
@@ -182,7 +183,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
         [Test]
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
-        public async void It_should_expose_a_single_event_id_when_publishing_to_a_single_channel()
+        public async Task It_should_expose_a_single_event_id_when_publishing_to_a_single_channel()
         {
             ITriggerResult result = await _pusher.TriggerAsync("ch1", "my_event", new {hello = "world"});
             Assert.IsTrue(result.EventIds.ContainsKey("ch1"));
@@ -191,7 +192,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
         [Test]
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
-        public async void It_should_expose_a_multiple_event_ids_when_publishing_to_multiple_channels()
+        public async Task It_should_expose_a_multiple_event_ids_when_publishing_to_multiple_channels()
         {
             var channels = new string[] {"ch1", "ch2", "ch3"};
             ITriggerResult result = await _pusher.TriggerAsync(channels, "my_event", new {hello = "world"});
