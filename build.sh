@@ -3,7 +3,6 @@
 # exit if any command fails
 set -e
 
-dotnet restore ./PusherServer.Core/PusherServer.Core.csproj
+dotnet build -c Release
 
-# Instead, run directly with mono for the full .net version
-dotnet build ./PusherServer.Core/PusherServer.Core.csproj -c Release
+dotnet test ./PusherServer.Tests/PusherServer.Tests.csproj -c Release --no-build --no-restore
