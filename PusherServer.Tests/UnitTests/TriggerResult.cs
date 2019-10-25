@@ -54,14 +54,21 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        [ExpectedException(typeof (TriggerResponseException))]
         public void it_should_treat_non_JSON_content_in_the_request_body_as_a_failed_request()
         {
             HttpResponseMessage response = Substitute.For<HttpResponseMessage>();
             response.Content = new StringContent("FISH");
             response.StatusCode = HttpStatusCode.OK;
 
-            new TriggerResult(response, "FISH");
+            try
+            {
+                new TriggerResult(response, "FISH");
+                Assert.Fail("Exception was not thrown");
+            }
+            catch (TriggerResponseException ex)
+            {
+                Assert.IsTrue(ex.Message.Contains("FISH"), "exception message includes response");
+            }
         }
 
         [Test]
