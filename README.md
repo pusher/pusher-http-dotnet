@@ -178,7 +178,7 @@ within your application as follows.
 For more information see <https://pusher.com/docs/channels/server_api/webhooks>.
 
 ```cs
-// How you get these depends on the framework you're using
+// How you get these depends on the framework you are using
 
 // HTTP_X_PUSHER_SIGNATURE from HTTP Header
 var receivedSignature = "value";
