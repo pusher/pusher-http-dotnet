@@ -1,9 +1,9 @@
 # Changelog
 
-## 4.1.0
+## 4.2.0
 * [CHANGED] Project now targets DotNet Standard 1.6. The API has not changed.
 
-## 4.0.0 beta
+## 4.0.0-rc1, 4.1.0
 * [ADDED] support for the .NET Core
 * [CHANGED] The library now is built against .NET 4.5
 * [CHANGED] Removed the dependency on RestSharp, and replaced with the .NETs HttpClient class.
