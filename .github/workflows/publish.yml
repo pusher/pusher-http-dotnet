@@ -1,0 +1,21 @@
+name: Publish
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup MS Build
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Restore dependencies
+      run: nuget restore pusher-dotnet-server.sln
+    - name: Pack
+      run: msbuild /t:Pack /p:configuration=release pusher-dotnet-server.sln
+    - name: Publish
+      run: nuget push ./bin/Release/*.nupkg -NonInteractive -Source https://api.nuget.org/v3/index.json -SkipDuplicate -ApiKey ${{ secrets.NUGET_API_KEY }}
