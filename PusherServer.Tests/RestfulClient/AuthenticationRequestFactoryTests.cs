@@ -13,7 +13,7 @@ namespace PusherServer.Tests.RestfulClient
 
         private TestObjectFactory _factory;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             // Arrange

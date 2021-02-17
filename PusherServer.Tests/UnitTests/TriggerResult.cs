@@ -4,6 +4,7 @@ using System.Net.Http;
 using NSubstitute;
 using NUnit.Framework;
 using PusherServer.Exceptions;
+using PusherServer.Tests.Helpers;
 
 namespace PusherServer.Tests.UnitTests
 {
@@ -24,7 +25,7 @@ namespace PusherServer.Tests.UnitTests
     {
         private HttpResponseMessage V7_PROTOCOL_SUCCESSFUL_RESPONSE;
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void FixtureSetUp()
         {
             V7_PROTOCOL_SUCCESSFUL_RESPONSE = Substitute.For<HttpResponseMessage>();
@@ -62,6 +63,15 @@ namespace PusherServer.Tests.UnitTests
             response.StatusCode = HttpStatusCode.OK;
 
             new TriggerResult(response, "FISH");
+            try
+            {
+                new TriggerResult(response, "FISH");
+                Assert.Fail("Exception was not thrown");
+            }
+            catch (TriggerResponseException ex)
+            {
+                Assert.IsTrue(ex.Message.Contains("FISH"), "exception message includes response");
+            }
         }
 
         [Test]

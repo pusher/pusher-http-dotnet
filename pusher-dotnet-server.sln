@@ -1,10 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1401
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53-1898-4AE9-B229-F917B8F52DB2}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
 		.travis.yml = .travis.yml
 		CHANGELOG.md = CHANGELOG.md
 		package.cmd = package.cmd
@@ -19,36 +20,23 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|Mixed Platforms = Debug|Mixed Platforms
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|Mixed Platforms = Release|Mixed Platforms
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Release|x86.ActiveCfg = Release|Any CPU
 		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F862B6B8-B34C-4C14-A0C3-1E48E39956C0}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = PusherRESTDotNet.vsmdi
