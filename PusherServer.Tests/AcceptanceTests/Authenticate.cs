@@ -9,7 +9,7 @@ namespace PusherServer.Tests.AcceptanceTests
     [TestFixture]
     public class When_authenticating_a_private_subscription
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Net;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace PusherServer.Tests.AcceptanceTests
@@ -7,14 +8,14 @@ namespace PusherServer.Tests.AcceptanceTests
     [TestFixture]
     public class When_application_channels_are_queried
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
         }
 
         [Test]
-        public async void It_should_return_a_200_response()
+        public async Task It_should_return_a_200_response()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
@@ -27,7 +28,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async void It_should_be_possible_to_deserialize_the_request_result_body_as_an_object()
+        public async Task It_should_be_possible_to_deserialize_the_request_result_body_as_an_object()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
@@ -40,7 +41,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async void It_should_be_possible_to_deserialize_the_a_channels_result_body_as_an_ChannelsList()
+        public async Task It_should_be_possible_to_deserialize_the_a_channels_result_body_as_an_ChannelsList()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {

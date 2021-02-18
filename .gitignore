@@ -18,3 +18,5 @@ msbuild.log
 .vs/
 PusherServer.Core/project.lock.json
 *.userprefs
+TestResults/
+AppConfig.test.json

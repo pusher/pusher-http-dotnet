@@ -1,14 +1,17 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using PusherServer.RestfulClient;
+using PusherServer.Tests.Helpers;
+using System.Threading.Tasks;
 
 namespace PusherServer.Tests.UnitTests
 {
     [TestFixture]
     public class When_using_async_Get_to_retrieve_a_list_of_application_channels
     {
-        IPusher _pusher;
-        IPusherRestClient _subPusherClient;
+        private IPusher _pusher;
+        private IPusherRestClient _subPusherClient;
+        private IApplicationConfig _config;
 
         [SetUp]
         public void Setup()
@@ -20,15 +23,18 @@ namespace PusherServer.Tests.UnitTests
                 RestClient = _subPusherClient
             };
 
-            Config.AppId = "test-app-id";
-            Config.AppKey = "test-app-key";
-            Config.AppSecret = "test-app-secret";
+            _config = new ApplicationConfig
+            {
+                AppId = "test-app-id",
+                AppKey = "test-app-key",
+                AppSecret = "test-app-secret",
+            };
 
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, options);
+            _pusher = new Pusher(_config.AppId, _config.AppKey, _config.AppSecret, options);
         }
 
         [Test]
-        public async void url_is_in_expected_format()
+        public async Task url_is_in_expected_format()
         {
             await _pusher.GetAsync<object>("/channels");
 
@@ -36,13 +42,13 @@ namespace PusherServer.Tests.UnitTests
             _subPusherClient.Received().ExecuteGetAsync<object>(
 #pragma warning restore 4014
                 Arg.Is<IPusherRestRequest>(
-                    x => x.ResourceUri.StartsWith("/apps/" + Config.AppId + "/channels")
+                    x => x.ResourceUri.StartsWith("/apps/" + _config.AppId + "/channels")
                 )
             );
         }
 
         [Test]
-        public async void GET_request_is_made()
+        public async Task GET_request_is_made()
         {
             await _pusher.GetAsync<object>("/channels");
 
@@ -56,7 +62,7 @@ namespace PusherServer.Tests.UnitTests
         }
 
         [Test]
-        public async void additional_parameters_should_be_added_to_query_string()
+        public async Task additional_parameters_should_be_added_to_query_string()
         {
             await _pusher.GetAsync<object>("/channels", new { filter_by_prefix = "presence-", info = "user_count" });
 

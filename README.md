@@ -241,10 +241,11 @@ Please note that neither of these workarounds will be officially supported by Pu
 
 ## Development Notes
 
-* Developed using Visual Studio Community 2015
-* The NUnit test framework is used for testing, your copy of Visual Studio needs the "NUnit test adapter" installed from Tools -> Extensions and Updates if you wish to run the test from the IDE.
+* Developed using Visual Studio Community 2017
 * PusherServer acceptance tests depends on [PusherClient](https://github.com/pusher-community/pusher-websocket-dotnet).
-* PusherServer has two variations, the original version for .NET, and a .NET Core version.  The source files all leave within the .NET Core folder, with links from the .NET project to these files to create the .NET version.
+* PusherServer has two variations, the original version for .NET, and a .NET Core version.  The source files all live in the .NET Core folder, with links from the .NET project to these files to create the .NET version.
+
+The Pusher application settings are now loaded from a JSON config file stored in the root of the source tree and named `AppConfig.test.json`. Make a copy of `./AppConfig.sample.json` and name it `AppConfig.test.json`. Modify the contents of `AppConfig.test.json` with your test application settings. You should be good to run all the tests successfully.
 
 ### Alternative environments
 

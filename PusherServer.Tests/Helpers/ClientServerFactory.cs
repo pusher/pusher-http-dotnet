@@ -24,7 +24,10 @@ namespace PusherServer.Tests.Helpers
                             user_id = "Mr Pusher",
                             user_info = new { twitter_id = "@pusher" }
                         })
-                });
+                })
+                {
+                    Host = Config.WebSocketHost,
+                };
 
             pusherClient.Connected += delegate { reset.Set(); };
 
@@ -47,7 +50,10 @@ namespace PusherServer.Tests.Helpers
         /// <returns></returns>
         public static PusherServer.Pusher CreateServer()
         {
-            return new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            return new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions
+            {
+                HostName = Config.HttpHost
+            });
         }
     }
 }

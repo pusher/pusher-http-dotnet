@@ -27,7 +27,7 @@ namespace PusherServer
             }
             catch (Exception)
             {
-                string msg = $"The response body from the Pusher HTTP endpoint could not be parsed as JSON: {Environment.NewLine}{response.Content}";
+                string msg = $"The response body from the Pusher HTTP endpoint could not be parsed as JSON: {Environment.NewLine}{responseContent}";
                 throw new TriggerResponseException(msg);
             }
 
