@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PusherServer.Exceptions;
+using System;
 using System.Text.RegularExpressions;
 
 namespace PusherServer
@@ -26,7 +27,7 @@ namespace PusherServer
         /// <summary>
         /// The maximum event batch size accepted by Pusher
         /// </summary>
-        public static int MAX_BATCH_SIZE = 100;
+        public static int MAX_BATCH_SIZE = 10;
 
         /// <summary>
         /// Validate a socket_id value
@@ -77,15 +78,26 @@ namespace PusherServer
 
         internal static void ValidateBatchEvents(Event[] events)
         {
-            if (events.Length > 100)
+            if (events.Length > MAX_BATCH_SIZE)
             {
-                throw new ArgumentOutOfRangeException(nameof(events), $"Only {MAX_BATCH_SIZE} events permitted per batch, {events.Length} submitted");
+                throw new EventBatchSizeExceededException(nameof(events), events.Length);
             }
 
             foreach (Event e in events)
             {
                 ValidateChannelName(e.Channel);
                 ValidateSocketId(e.SocketId);
+            }
+        }
+
+        internal static void ValidateBatchEventData(string data, IPusherOptions options)
+        {
+            if (options != null && options.BatchEventDataSizeLimit.HasValue)
+            {
+                if (data != null && data.Length > options.BatchEventDataSizeLimit.Value)
+                {
+                    throw new EventDataSizeExceededException(options.BatchEventDataSizeLimit.Value, data.Length);
+                }
             }
         }
     }

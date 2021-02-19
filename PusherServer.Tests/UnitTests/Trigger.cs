@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using NSubstitute;
 using NUnit.Framework;
+using PusherServer.Exceptions;
 using PusherServer.RestfulClient;
 using PusherServer.Tests.Helpers;
 
@@ -145,7 +145,6 @@ namespace PusherServer.Tests.UnitTests
                 )
             );
         }
-
 
         [Test]
         public async Task on_a_single_channel_the_socket_id_parameter_should_be_present_in_the_querystring_async()
@@ -356,6 +355,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.IsNotNull(caughtException);
             StringAssert.AreEqualIgnoringCase("channel name \"test_channel:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
         }
+
 		[Test]
 		public async Task channel_name_must_not_have_leading_colon()
 		{
@@ -450,31 +450,31 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task event_arrays_must_not_exceed_allowed_length()
         {
-            ArgumentOutOfRangeException caughtException = null;
+            EventBatchSizeExceededException caughtException = null;
 
             try
             {
-                var events = CreateEvents(101);
+                var events = DataHelper.CreateEvents(numberOfEvents: 11);
 
                 await TriggerWithBatch(events.ToArray());
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (EventBatchSizeExceededException ex)
             {
                 caughtException = ex;
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase($"Only 100 events permitted per batch, 101 submitted{Environment.NewLine}Parameter name: events", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase($"Only 10 events permitted per batch.{Environment.NewLine}Parameter name: events{Environment.NewLine}Actual value was 11.", caughtException.Message);
         }
 
         [Test]
-        public async Task event_arrays_will_be_rejected_if_a_channel_name_is_to_long()
+        public async Task event_arrays_will_be_rejected_if_a_channel_name_is_too_long()
         {
             ArgumentOutOfRangeException caughtException = null;
 
             try
             {
-                var events = CreateEvents(10);
+                var events = DataHelper.CreateEvents(numberOfEvents: 9);
                 events.Add(new Event {Channel = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1)});
 
                 await TriggerWithBatch(events.ToArray());
@@ -494,10 +494,10 @@ namespace PusherServer.Tests.UnitTests
             {
                 name = eventName,
                 channels = new[] { channelName },
-                data = JsonConvert.SerializeObject(eventData)
+                data = DefaultSerializer.Default.Serialize(eventData)
             };
 
-            var expected = JsonConvert.SerializeObject(expectedBody);
+            var expected = DefaultSerializer.Default.Serialize(expectedBody);
 
             return request.GetContentAsJsonString().Contains(expected);
         }
@@ -531,18 +531,6 @@ namespace PusherServer.Tests.UnitTests
             var parameter = request.GetContentAsJsonString();
             return parameter.Contains("socket_id") &&
                    parameter.Contains(expectedSocketId);
-        }
-
-        private List<Event> CreateEvents(int numberOfEvents)
-        {
-            var events = new List<Event>();
-
-            for (int i = 0; i < numberOfEvents; i++)
-            {
-                events.Add(new Event { Channel = "testChannel", EventName = "testEvent"});
-            }
-
-            return events;
         }
     }
 }

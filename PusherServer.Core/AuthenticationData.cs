@@ -37,7 +37,7 @@ namespace PusherServer
                 var stringToSign = _socketId + ":" + _channelName;
                 if (_presenceData != null)
                 {
-                    var presenceJson = JsonConvert.SerializeObject(_presenceData);
+                    var presenceJson = DefaultSerializer.Default.Serialize(_presenceData);
                     stringToSign += ":" + presenceJson;
                 }
                 
@@ -56,7 +56,7 @@ namespace PusherServer
                 string json = null;
                 if (_presenceData != null)
                 {
-                    json = JsonConvert.SerializeObject(_presenceData);
+                    json = DefaultSerializer.Default.Serialize(_presenceData);
                 }
                 return json;
             }
@@ -64,7 +64,7 @@ namespace PusherServer
 
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this);
+            return DefaultSerializer.Default.Serialize(this);
         }
 
         public override string ToString()

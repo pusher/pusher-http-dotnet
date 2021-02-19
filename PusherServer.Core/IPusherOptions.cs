@@ -54,6 +54,16 @@ namespace PusherServer
         string Cluster { get; set; }
 
         /// <summary>
+        /// Gets or sets the size limit for the <c>Data</c> property of an <see cref="Event"/>.
+        /// This is normally 10KB but SDK customers can request a larger limit.
+        /// </summary>
+        /// <remarks>
+        /// If this value is specified each <c>Event.Data</c> field will be validated before triggering an event on the server.
+        /// The validation check will happen client side rather than server side if this value is specified.
+        /// </remarks>
+        int? BatchEventDataSizeLimit { get; set; }
+
+        /// <summary>
         /// Gets the base Url based on the set Options
         /// </summary>
         /// <returns>The constructed URL</returns>

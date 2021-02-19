@@ -14,8 +14,13 @@ namespace PusherServer
         /// </summary>
         public const string DEFAULT_REST_API_HOST = "api.pusherapp.com";
 
-        private static int DEFAULT_HTTPS_PORT = 443;
-        private static int DEFAULT_HTTP_PORT = 80;
+        /// <summary>
+        /// The default batch event data size limit in bytes.
+        /// </summary>
+        public const int DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT = 10 * 1024;
+
+        private const int DEFAULT_HTTPS_PORT = 443;
+        private const int DEFAULT_HTTP_PORT = 80;
 
         IPusherRestClient _pusherClient;
         bool _encrypted;
@@ -143,6 +148,9 @@ namespace PusherServer
                 _jsonDeserializer = value;
             }
         }
+
+        /// <inheritDoc/>
+        public int? BatchEventDataSizeLimit { get; set; }
 
         /// <inheritDoc/>
         public Uri GetBaseUrl()

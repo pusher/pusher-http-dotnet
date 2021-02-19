@@ -71,7 +71,7 @@ namespace PusherServer.RestfulClient
 
             if (requestBody != null)
             {
-                var bodyDataJson = JsonConvert.SerializeObject(requestBody);
+                var bodyDataJson = DefaultSerializer.Default.Serialize(requestBody);
                 var bodyMd5 = CryptoHelper.GetMd5Hash(bodyDataJson);
                 parameters.Add("body_md5", bodyMd5);
             }
