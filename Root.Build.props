@@ -1,0 +1,29 @@
+<Project>
+  <Import Project=".\NetFxOnLinux.props" />
+
+  <PropertyGroup>
+    <TargetFrameworks>net45;net472;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
+    <Authors>Pusher, Phil Leggetter, John McLoughlin</Authors>
+    <Company>Pusher</Company>
+    <Description>Pusher .NET library for interacting with the HTTP API</Description>
+    <Copyright>Copyright © 2021</Copyright>
+    <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/pusher/pusher-http-dotnet</PackageProjectUrl>
+    <PackageReleaseNotes>See https://github.com/pusher/pusher-http-dotnet/blob/master/CHANGELOG.md for full details</PackageReleaseNotes>
+    <PackageTags>pusher channels realtime websocket</PackageTags>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net472' ">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+</Project>
