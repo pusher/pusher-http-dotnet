@@ -15,7 +15,7 @@ namespace PusherServer.Tests.Helpers
         /// Creates an instance of a <see cref="JsonFileConfigLoader"/>.
         /// </summary>
         public JsonFileConfigLoader()
-            : this(Path.Combine(Assembly.GetExecutingAssembly().Location, $"..\\..\\..\\..\\{DefaultFileName}"))
+            : this(Path.Combine(Assembly.GetExecutingAssembly().Location, $"..\\..\\..\\..\\..\\{DefaultFileName}"))
         {
         }
 

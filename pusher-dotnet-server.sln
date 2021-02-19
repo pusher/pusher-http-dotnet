@@ -1,21 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.1401
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53-1898-4AE9-B229-F917B8F52DB2}"
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		.travis.yml = .travis.yml
+		AppConfig.sample.json = AppConfig.sample.json
 		CHANGELOG.md = CHANGELOG.md
+		NetFxOnLinux.props = NetFxOnLinux.props
 		package.cmd = package.cmd
-		PusherServer.nuspec = PusherServer.nuspec
 		README.md = README.md
+		Root.Build.props = Root.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PusherServer", "PusherServer\PusherServer.csproj", "{D81CCD25-73B9-45E4-96BE-5BAD950715AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer.Core", "PusherServer.Core\PusherServer.Core.csproj", "{774C7778-2724-4458-A7DA-A876DA6F6CDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PusherServer.Tests", "PusherServer.Tests\PusherServer.Tests.csproj", "{37CEF892-E818-4B9D-A144-F46FBA8F1B97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer", "PusherServer\PusherServer.csproj", "{B4874455-19D7-4050-B254-3DB5FE087284}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer.Tests", "PusherServer.Tests\PusherServer.Tests.csproj", "{68D41211-774A-4CF4-846E-0C38FD968D7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,20 +28,24 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D81CCD25-73B9-45E4-96BE-5BAD950715AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37CEF892-E818-4B9D-A144-F46FBA8F1B97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{774C7778-2724-4458-A7DA-A876DA6F6CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{774C7778-2724-4458-A7DA-A876DA6F6CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{774C7778-2724-4458-A7DA-A876DA6F6CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{774C7778-2724-4458-A7DA-A876DA6F6CDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4874455-19D7-4050-B254-3DB5FE087284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4874455-19D7-4050-B254-3DB5FE087284}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4874455-19D7-4050-B254-3DB5FE087284}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4874455-19D7-4050-B254-3DB5FE087284}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F862B6B8-B34C-4C14-A0C3-1E48E39956C0}
+		SolutionGuid = {1C25E22B-A520-4475-8E99-CFAD0D934C6E}
 	EndGlobalSection
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = PusherRESTDotNet.vsmdi
