@@ -105,7 +105,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task it_can_trigger_an_event_with_a_percent_in_the_message_async()
         {
-            string fileName = Path.Combine(Assembly.GetExecutingAssembly().Location, @"..\..\..\AcceptanceTests\percent-message.json");
+            string fileName = Path.Combine(Assembly.GetExecutingAssembly().Location, @"..\..\..\..\AcceptanceTests\percent-message.json");
             var eventJSON = File.ReadAllText(fileName);
             var message = JsonConvert.DeserializeObject(eventJSON);
 
