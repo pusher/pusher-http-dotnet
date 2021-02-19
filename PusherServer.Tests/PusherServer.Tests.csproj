@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\NetFxOnLinux.props" />
+  <Import Project="..\Root.Build.props" />
 
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks>

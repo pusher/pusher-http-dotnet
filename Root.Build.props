@@ -9,7 +9,6 @@
     <Description>Pusher .NET library for interacting with the HTTP API</Description>
     <Copyright>Copyright © 2021</Copyright>
     <RequireLicenseAcceptance>false</RequireLicenseAcceptance>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/pusher/pusher-http-dotnet</PackageProjectUrl>
     <PackageReleaseNotes>See https://github.com/pusher/pusher-http-dotnet/blob/master/CHANGELOG.md for full details</PackageReleaseNotes>
     <PackageTags>pusher channels realtime websocket</PackageTags>

@@ -13,7 +13,7 @@
     <description>$description$</description>
     <releaseNotes>See https://github.com/pusher/pusher-http-dotnet/blob/master/CHANGELOG.md for full details</releaseNotes>
     <copyright>$copyright$</copyright>
-    <tags>pusher realtime</tags>
+    <tags>pusher channels realtime websocket</tags>
     <summary>Interact with the Pusher HTTP API</summary>
     <dependencies>
       <dependency id="Newtonsoft.Json" version="9.0.1" />
