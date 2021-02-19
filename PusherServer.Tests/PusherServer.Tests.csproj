@@ -67,10 +67,12 @@
   <ItemGroup>
     <Compile Include="AcceptanceTests\Authenticate.cs" />
     <Compile Include="AcceptanceTests\ChannelState.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\ApplicationConfig.cs" />
     <Compile Include="Helpers\ClientServerFactory.cs" />
     <Compile Include="AcceptanceTests\Get.cs" />
     <Compile Include="AcceptanceTests\PresenceChannels.cs" />
+    <Compile Include="Helpers\DataHelper.cs" />
     <Compile Include="Helpers\EnvironmentVariableConfigLoader.cs" />
     <Compile Include="Helpers\ExpectedExceptionAttribute.cs" />
     <Compile Include="Helpers\IApplicationConfig.cs" />

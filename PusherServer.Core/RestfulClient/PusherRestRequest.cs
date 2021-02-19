@@ -33,7 +33,7 @@ namespace PusherServer.RestfulClient
         /// <inheritdoc/>
         public string GetContentAsJsonString()
         {
-            return Body != null ? JsonConvert.SerializeObject(Body) : null;
+            return Body != null ? DefaultSerializer.Default.Serialize(Body) : null;
         }
     }
 }

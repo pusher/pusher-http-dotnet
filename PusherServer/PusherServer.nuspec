@@ -22,6 +22,6 @@
   <files>
     <file src="..\README.md" target="" />
     <file src="..\CHANGELOG.md" target="" />
-    <file src="..\PusherServer.Core\bin\$configuration$\netStandard1.6\PusherServer.Core.dll" target="lib\netStandard1.6\PusherServer.Core.dll" />
+    <file src="..\PusherServer.Core\bin\$configuration$\netStandard1.3\PusherServer.Core.dll" target="lib\netStandard1.3\PusherServer.Core.dll" />
   </files>
 </package>

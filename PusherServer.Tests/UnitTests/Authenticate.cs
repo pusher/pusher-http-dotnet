@@ -157,7 +157,7 @@ namespace PusherServer.Tests.UnitTests
                 user_id = "unique_user_id",
                 user_info = new { twitter_id = "@leggetter" }
             };
-            string presenceJson = JsonConvert.SerializeObject(data);
+            string presenceJson = DefaultSerializer.Default.Serialize(data);
 
             string expectedAuthString = Config.AppKey + ":" + CreateSignedString(channelName, socketId, presenceJson);
 
@@ -177,7 +177,7 @@ namespace PusherServer.Tests.UnitTests
                 user_info = new { twitter_id = "@leggetter" }
             };
 
-            string expectedChannelData = JsonConvert.SerializeObject(data);
+            string expectedChannelData = DefaultSerializer.Default.Serialize(data);
 
             IAuthenticationData result = _pusher.Authenticate(channelName, socketId, data);
             Assert.AreEqual(expectedChannelData, result.channel_data);

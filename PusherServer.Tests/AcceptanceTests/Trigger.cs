@@ -1,12 +1,15 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using NUnit.Framework;
+using PusherServer.Exceptions;
+using PusherServer.Tests.Helpers;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using NUnit.Framework;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
@@ -55,8 +58,10 @@ namespace PusherServer.Tests.AcceptanceTests
             bool eventReceived = false;
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            var client = new PusherClient.Pusher(Config.AppKey);
-            client.Host = Config.WebSocketHost;
+            var client = new PusherClient.Pusher(Config.AppKey)
+            {
+                Host = Config.WebSocketHost,
+            };
             client.Connected += new PusherClient.ConnectedEventHandler(delegate (object sender)
             {
                 Debug.WriteLine("connected");
@@ -107,6 +112,20 @@ namespace PusherServer.Tests.AcceptanceTests
             ITriggerResult result = await _pusher.TriggerAsync("my-channel", "my_event", message);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
+
+        [Test]
+        [ExpectedException(typeof(EventDataSizeExceededException))]
+        public async Task It_should_fail_for_an_event_data_size_greater_than_10KB_async()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost,
+                BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
+            });
+            int size = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT + 1;
+            List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size);
+            await pusher.TriggerAsync("my-channel", "my_event", largeEvent[0]);
+        }
     }
 
     [TestFixture]
@@ -134,28 +153,50 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
-                HostName = Config.HttpHost
+                HostName = Config.HttpHost,
+                BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
             });
 
-            var events = new Event[]
-            {
-                new Event
-                {
-                    Channel = "my-channel-1",
-                    EventName = "my_event",
-                    Data = new {hello = "world"}
-                },
-                new Event
-                {
-                    Channel = "my-channel-2",
-                    EventName = "my_other_event",
-                    Data = new {hello = "other worlds"}
-                },
-            };
+            List<Event> events = DataHelper.CreateEvents(numberOfEvents: 9, eventSizeInBytes: 84);
+            int size = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT;
+            List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size);
+            events.AddRange(largeEvent);
 
-            var result = await pusher.TriggerAsync(events);
+            var result = await pusher.TriggerAsync(events.ToArray());
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Test]
+        [ExpectedException(typeof(EventDataSizeExceededException))]
+        public async Task It_should_fail_for_an_event_data_size_greater_than_10KB_async()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost,
+                BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
+            });
+
+            List<Event> events = DataHelper.CreateEvents(numberOfEvents: 9, eventSizeInBytes: 84);
+            int size = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT + 1;
+            List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size);
+            events.AddRange(largeEvent);
+
+            await pusher.TriggerAsync(events.ToArray());
+        }
+
+        [Test]
+        [ExpectedException(typeof(EventBatchSizeExceededException))]
+        public async Task It_should_fail_for_a_batch_size_greater_than_10_async()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost,
+                BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
+            });
+
+            List<Event> events = DataHelper.CreateEvents(numberOfEvents: 11, eventSizeInBytes: 92);
+            await pusher.TriggerAsync(events.ToArray());
         }
     }
 

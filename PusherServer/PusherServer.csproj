@@ -76,6 +76,12 @@
     <Compile Include="..\PusherServer.Core\EventIdData.cs">
       <Link>EventIdData.cs</Link>
     </Compile>
+    <Compile Include="..\PusherServer.Core\Exceptions\EventBatchSizeExceededException.cs">
+      <Link>Exceptions\EventBatchSizeExceededException.cs</Link>
+    </Compile>
+    <Compile Include="..\PusherServer.Core\Exceptions\EventDataSizeExceededException.cs">
+      <Link>EventDataSizeExceededException.cs</Link>
+    </Compile>
     <Compile Include="..\PusherServer.Core\Exceptions\TriggerResponseException.cs">
       <Link>Exceptions\TriggerResponseException.cs</Link>
     </Compile>

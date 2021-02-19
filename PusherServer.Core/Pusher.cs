@@ -44,7 +44,7 @@ namespace PusherServer
                 Attribute attr = typeof(Pusher).GetTypeInfo().Assembly.GetCustomAttribute(typeof(AssemblyProductAttribute));
 
                 AssemblyProductAttribute adAttr = (AssemblyProductAttribute)attr;
-                
+
                 return adAttr.Product;
             }
         }
@@ -126,6 +126,7 @@ namespace PusherServer
                 data = _options.JsonSerializer.Serialize(data),
                 channels = channelNames
             };
+            ValidationHelper.ValidateBatchEventData(bodyData.data, _options);
 
             if (string.IsNullOrEmpty(options.SocketId) == false)
             {
@@ -138,14 +139,22 @@ namespace PusherServer
         private BatchTriggerBody CreateBatchTriggerBody(Event[] events)
         {
             ValidationHelper.ValidateBatchEvents(events);
-            
-            var batchEvents = events.Select(e => new BatchEvent
+
+            BatchEvent[] batchEvents = new BatchEvent[events.Length];
+            int index = 0;
+            foreach (Event item in events)
             {
-                name = e.EventName,
-                channel = e.Channel,
-                socket_id = e.SocketId,
-                data = _options.JsonSerializer.Serialize(e.Data)
-            }).ToArray();
+                BatchEvent batchEvent = new BatchEvent
+                {
+                    name = item.EventName,
+                    channel = item.Channel,
+                    socket_id = item.SocketId,
+                    data = _options.JsonSerializer.Serialize(item.Data),
+                };
+                ValidationHelper.ValidateBatchEventData(batchEvent.data, _options);
+
+                batchEvents[index++] = batchEvent;
+            }
 
             return new BatchTriggerBody()
             {
