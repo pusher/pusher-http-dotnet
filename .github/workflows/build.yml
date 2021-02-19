@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ github-actions ]
+    branches: [ release-4.3 ]
 
 jobs:
   build:
@@ -11,13 +11,28 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.x
+    - name: Setup Pusher App credentials
+      env:
+        APP_ID: ${{ secrets.CI_APP_ID }}
+        APP_KEY: ${{ secrets.CI_APP_KEY }}
+        APP_SECRET: ${{ secrets.CI_APP_SECRET }}
+        APP_CLUSTER: ${{ secrets.CI_APP_CLUSTER }}
+      run: |
+        echo "{
+        `"AppId`": `"$env:APP_ID`",
+        `"AppKey`": `"$env:APP_KEY`",
+        `"AppSecret`": `"$env:APP_SECRET`",
+        `"HttpHost`": `"api-$env:APP_CLUSTER.pusher.com`",
+        `"WebSocketHost`": `"ws-${env:APP_CLUSTER}.pusher.com`"
+        }" > AppConfig.test.json
+
+    - name: Setup MS Build
+      uses: microsoft/setup-msbuild@v1.0.2
+    - name: Setup VSTest
+      uses: darenm/Setup-VSTest@v1
     - name: Restore dependencies
       run: nuget restore pusher-dotnet-server.sln
     - name: Build
-      run: dotnet build --no-restore -c Release pusher-dotnet-server.sln
+      run: msbuild /p:deterministic=true /p:msbuildArchitecture=x64 /p:configuration=release pusher-dotnet-server.sln
     - name: Test
-      run: dotnet test -c Release --no-build --no-restore ./PusherServer.Tests/PusherServer.Tests.csproj
+      run: vstest.console.exe ".\PusherServer.Tests\bin\Release\net45\PusherServer.Tests.dll" /TestAdapterPath:".\PusherServer.Tests\bin\Release\net45\"
