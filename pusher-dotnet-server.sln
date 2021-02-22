@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53
 		.travis.yml = .travis.yml
 		AppConfig.sample.json = AppConfig.sample.json
 		CHANGELOG.md = CHANGELOG.md
+		LICENSE.txt = LICENSE.txt
 		NetFxOnLinux.props = NetFxOnLinux.props
 		package.cmd = package.cmd
 		README.md = README.md
