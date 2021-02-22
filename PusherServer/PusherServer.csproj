@@ -61,4 +61,18 @@
     <Folder Include="RestfulClient\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Properties\icon-128.png" Pack="true" PackagePath="\" />
+    <None Include="..\README.md" Link="Properties\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\CHANGELOG.md" Link="Properties\CHANGELOG.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 
+         This is only here for backwards compatibility with the PusherServer.nuspec file.
+         This will be removed in the next major release when PusherServer.Core.dll is deprecated.
+    -->
+    <None Include="..\PusherServer.Core\bin\$(Configuration)\netstandard1.3\PusherServer.Core.dll" Link="Properties\PusherServer.Core.dll" Pack="true" PackagePath="lib\netStandard1.3\PusherServer.Core.dll" />
+  </ItemGroup>
+
 </Project>
