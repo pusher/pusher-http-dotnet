@@ -16,8 +16,11 @@
     <Compile Include="..\PusherServer.Core\DefaultSerializer.cs" Link="DefaultSerializer.cs" />
     <Compile Include="..\PusherServer.Core\Event.cs" Link="Event.cs" />
     <Compile Include="..\PusherServer.Core\EventIdData.cs" Link="EventIdData.cs" />
+    <Compile Include="..\PusherServer.Core\Exceptions\ChannelNameFormatException.cs" Link="Exceptions\ChannelNameFormatException.cs" />
+    <Compile Include="..\PusherServer.Core\Exceptions\ChannelNameLengthExceededException.cs" Link="Exceptions\ChannelNameLengthExceededException.cs" />
     <Compile Include="..\PusherServer.Core\Exceptions\EventBatchSizeExceededException.cs" Link="Exceptions\EventBatchSizeExceededException.cs" />
     <Compile Include="..\PusherServer.Core\Exceptions\EventDataSizeExceededException.cs" Link="Exceptions\EventDataSizeExceededException.cs" />
+    <Compile Include="..\PusherServer.Core\Exceptions\SocketIdFormatException.cs" Link="Exceptions\SocketIdFormatException.cs" />
     <Compile Include="..\PusherServer.Core\Exceptions\TriggerResponseException.cs" Link="Exceptions\TriggerResponseException.cs" />
     <Compile Include="..\PusherServer.Core\GetResult.cs" Link="GetResult.cs" />
     <Compile Include="..\PusherServer.Core\IAuthenticationData.cs" Link="IAuthenticationData.cs" />

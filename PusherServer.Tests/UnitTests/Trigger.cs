@@ -227,7 +227,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("socket_id \":444.444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The socket id \":444.444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
@@ -245,7 +245,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("socket_id \"444.444:\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The socket id \"444.444:\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
@@ -263,7 +263,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("socket_id \"444.444a\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The socket id \"444.444a\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
@@ -281,7 +281,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("socket_id \"444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The socket id \"444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
@@ -299,7 +299,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("socket_id \"\n444.444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The socket id \"\n444.444\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
@@ -317,7 +317,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("socket_id \"444.444\n\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The socket id \"444.444\n\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
@@ -335,7 +335,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("socket_id \"\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The socket id \"\" was not in the form: \\A\\d+\\.\\d+\\z", caughtException.Message);
         }
 
         [Test]
@@ -353,7 +353,7 @@ namespace PusherServer.Tests.UnitTests
 		    }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("channel name \"test_channel:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The channel name \"test_channel:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
         }
 
 		[Test]
@@ -371,7 +371,7 @@ namespace PusherServer.Tests.UnitTests
 		    }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("channel name \":test_channel\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The channel name \":test_channel\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
         }
 		
         [Test]
@@ -389,7 +389,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("channel name \":\ntest_channel\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The channel name \":\ntest_channel\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
         }
 		
         [Test]
@@ -407,7 +407,7 @@ namespace PusherServer.Tests.UnitTests
 		    }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("channel name \"test_channel\n:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The channel name \"test_channel\n:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
         }
 		
 		[Test]
@@ -425,7 +425,7 @@ namespace PusherServer.Tests.UnitTests
 		    }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase("channel name \"test_channel\n:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase("The channel name \"test_channel\n:\" was not in the form: \\A[a-zA-Z0-9_=@,.;\\-]+\\z", caughtException.Message);
         }
 
         [Test]
@@ -433,9 +433,9 @@ namespace PusherServer.Tests.UnitTests
         {
             ArgumentOutOfRangeException caughtException = null;
 
+            string channelName = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
             try
             {
-                var channelName = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
                 await TriggerWithChannelName(channelName);
             }
             catch (ArgumentOutOfRangeException ex)
@@ -444,7 +444,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase($"The length of the channel name was greater than the allowed 164 characters{Environment.NewLine}Parameter name: channelName", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase($"The length of the channel name is greater than the allowed {ValidationHelper.CHANNEL_NAME_MAX_LENGTH} characters.{Environment.NewLine}Parameter name: channelName{Environment.NewLine}Actual value was {channelName.Length}.", caughtException.Message);
         }
 
         [Test]
@@ -472,10 +472,11 @@ namespace PusherServer.Tests.UnitTests
         {
             ArgumentOutOfRangeException caughtException = null;
 
+            string channelName = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
             try
             {
                 var events = DataHelper.CreateEvents(numberOfEvents: 9);
-                events.Add(new Event {Channel = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1)});
+                events.Add(new Event {Channel = channelName});
 
                 await TriggerWithBatch(events.ToArray());
             }
@@ -485,7 +486,7 @@ namespace PusherServer.Tests.UnitTests
             }
 
             Assert.IsNotNull(caughtException);
-            StringAssert.AreEqualIgnoringCase($"The length of the channel name was greater than the allowed 164 characters{Environment.NewLine}Parameter name: channelName", caughtException.Message);
+            StringAssert.AreEqualIgnoringCase($"The length of the channel name is greater than the allowed {ValidationHelper.CHANNEL_NAME_MAX_LENGTH} characters.{Environment.NewLine}Parameter name: channelName{Environment.NewLine}Actual value was {channelName.Length}.", caughtException.Message);
         }
 
         private bool CheckRequestContainsPayload(IPusherRestRequest request, string channelName, string eventName, object eventData)
