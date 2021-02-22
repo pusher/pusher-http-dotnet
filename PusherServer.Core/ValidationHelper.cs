@@ -1,5 +1,5 @@
 ﻿using PusherServer.Exceptions;
-using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace PusherServer
@@ -30,36 +30,34 @@ namespace PusherServer
         public static int MAX_BATCH_SIZE = 10;
 
         /// <summary>
-        /// Validate a socket_id value
+        /// Validate a <paramref name="socketId"/> value.
         /// </summary>
         /// <param name="socketId">The value to be checked.</param>
-        /// <exception cref="FormatException">If the socket_id name is not in the allowed format.</exception>
+        /// <exception cref="SocketIdFormatException">If the <paramref name="socketId"/> is not in the allowed format.</exception>
         internal static void ValidateSocketId(string socketId)
         {
             if (socketId != null && SOCKET_ID_REGEX.IsMatch(socketId) == false)
             {
-                string msg = $"socket_id \"{socketId}\" was not in the form: {SOCKET_ID_REGEX}";
-                throw new FormatException(msg);
+                throw new SocketIdFormatException(actualValue: socketId);
             }
         }
 
         /// <summary>
-        /// Validate a single channel name is in the allowed format.
+        /// Validate a <paramref name="channelName"/>.
         /// </summary>
-        /// <param name="channelName">The channel name to be checked</param>
-        /// <exception cref="FormatException">If the channel name is not in the allowed format.</exception>
+        /// <param name="channelName">The channel name to be checked.</param>
+        /// <exception cref="ChannelNameLengthExceededException">If the length of the <paramref name="channelName"/> is longer than expected.</exception>
+        /// <exception cref="ChannelNameFormatException">If the <paramref name="channelName"/> is not in the allowed format.</exception>
         internal static void ValidateChannelName(string channelName)
         {
             if(channelName.Length > CHANNEL_NAME_MAX_LENGTH)
             {
-                string msg = $"The length of the channel name was greater than the allowed {CHANNEL_NAME_MAX_LENGTH} characters";
-                throw new ArgumentOutOfRangeException(nameof(channelName), msg);
+                throw new ChannelNameLengthExceededException(nameof(channelName), channelName.Length);
             }
 
             if (CHANNEL_NAME_REGEX.IsMatch(channelName) == false)
             {
-                string msg = $"channel name \"{channelName}\" was not in the form: {CHANNEL_NAME_REGEX}";
-                throw new FormatException(msg);
+                throw new ChannelNameFormatException(actualValue: channelName);
             }
         }
 
@@ -67,8 +65,9 @@ namespace PusherServer
         /// Validate an array of channel names
         /// </summary>
         /// <param name="channelNames">The array of channel names</param>
-        /// <exception cref="FormatException">If any channel names are not in the allowed format.</exception>
-        internal static void ValidateChannelNames(string[] channelNames)
+        /// <exception cref="ChannelNameLengthExceededException">If the length of any channel name is longer than expected.</exception>
+        /// <exception cref="ChannelNameFormatException">If any channel names are not in the allowed format.</exception>
+        internal static void ValidateChannelNames(IEnumerable<string> channelNames)
         {
             foreach(string name in channelNames)
             {
@@ -76,6 +75,13 @@ namespace PusherServer
             }
         }
 
+        /// <summary>
+        /// Validates a batch of events.
+        /// </summary>
+        /// <param name="events">The batch of events to validate.</param>
+        /// <exception cref="ChannelNameLengthExceededException">If the length of any channel name is longer than expected.</exception>
+        /// <exception cref="ChannelNameFormatException">If any channel names are not in the allowed format.</exception>
+        /// <exception cref="EventBatchSizeExceededException">If the size of the batch is greater than 10.</exception>
         internal static void ValidateBatchEvents(Event[] events)
         {
             if (events.Length > MAX_BATCH_SIZE)
@@ -90,6 +96,13 @@ namespace PusherServer
             }
         }
 
+        /// <summary>
+        /// Validates the size of the data field for a batch event.
+        /// </summary>
+        /// <param name="data">The data filed to validate.</param>
+        /// <param name="options">The current <see cref="IPusherOptions"/>.</param>
+        /// <exception cref="EventDataSizeExceededException">If the size of <paramref name="data"/> is greater than the expected.</exception>
+        /// <remarks>Note: the size of the data field is only validated if the <c>IPusherOption.BatchEventDataSizeLimit</c> is specified.</remarks>
         internal static void ValidateBatchEventData(string data, IPusherOptions options)
         {
             if (options != null && options.BatchEventDataSizeLimit.HasValue)
