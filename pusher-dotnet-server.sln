@@ -22,6 +22,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer.Core", "PusherServer.Core\PusherServer.Core.csproj", "{5C7F039D-1591-474A-86CD-59EE6D925DE7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer", "PusherServer\PusherServer.csproj", "{1B404714-5F81-4F3E-836E-106D88972A59}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5C7F039D-1591-474A-86CD-59EE6D925DE7} = {5C7F039D-1591-474A-86CD-59EE6D925DE7}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

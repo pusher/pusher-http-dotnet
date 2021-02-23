@@ -48,6 +48,8 @@
     <Compile Include="..\PusherServer\TriggerBody.cs" Link="TriggerBody.cs" />
     <Compile Include="..\PusherServer\TriggerOptions.cs" Link="TriggerOptions.cs" />
     <Compile Include="..\PusherServer\TriggerResult.cs" Link="TriggerResult.cs" />
+    <Compile Include="..\PusherServer\Util\DebugTraceLogger.cs" Link="Util\DebugTraceLogger.cs" />
+    <Compile Include="..\PusherServer\Util\ITraceLogger.cs" Link="Util\ITraceLogger.cs" />
     <Compile Include="..\PusherServer\Util\ReadOnlyDictionary.cs" Link="Util\ReadOnlyDictionary.cs" />
     <Compile Include="..\PusherServer\ValidationHelper.cs" Link="ValidationHelper.cs" />
     <Compile Include="..\PusherServer\WebHook.cs" Link="WebHook.cs" />
