@@ -99,17 +99,23 @@ namespace PusherServer
         /// <summary>
         /// Validates the size of the data field for a batch event.
         /// </summary>
-        /// <param name="data">The data filed to validate.</param>
+        /// <param name="data">The data field to validate.</param>
+        /// <param name="channelName">The name of a channel associated with event data.</param>
+        /// <param name="eventName">The name of the event.</param>
         /// <param name="options">The current <see cref="IPusherOptions"/>.</param>
         /// <exception cref="EventDataSizeExceededException">If the size of <paramref name="data"/> is greater than the expected.</exception>
         /// <remarks>Note: the size of the data field is only validated if the <c>IPusherOption.BatchEventDataSizeLimit</c> is specified.</remarks>
-        internal static void ValidateBatchEventData(string data, IPusherOptions options)
+        internal static void ValidateBatchEventData(string data, string channelName, string eventName, IPusherOptions options)
         {
             if (options != null && options.BatchEventDataSizeLimit.HasValue)
             {
                 if (data != null && data.Length > options.BatchEventDataSizeLimit.Value)
                 {
-                    throw new EventDataSizeExceededException(options.BatchEventDataSizeLimit.Value, data.Length);
+                    throw new EventDataSizeExceededException(options.BatchEventDataSizeLimit.Value, data.Length)
+                    {
+                        ChannelName = channelName,
+                        EventName = eventName,
+                    };
                 }
             }
         }

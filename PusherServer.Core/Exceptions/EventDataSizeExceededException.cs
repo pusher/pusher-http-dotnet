@@ -16,5 +16,15 @@ namespace PusherServer.Exceptions
             base($"The data content of this event exceeds the allowed maximum ({sizeLimitInBytes} bytes). The actual size is {actualValue} bytes.")
         {
         }
+
+        /// <summary>
+        /// Gets or sets the name of a channel associated with event data that has caused the exception.
+        /// </summary>
+        public string ChannelName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of an event associated with data that has caused the exception.
+        /// </summary>
+        public string EventName { get; set; }
     }
 }

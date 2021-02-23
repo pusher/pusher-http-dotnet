@@ -105,7 +105,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task it_can_trigger_an_event_with_a_percent_in_the_message_async()
         {
-            string fileName = Path.Combine(Assembly.GetExecutingAssembly().Location, @"..\..\..\..\AcceptanceTests\percent-message.json");
+            string fileName = Path.Combine(Assembly.GetExecutingAssembly().Location, @"../../../../AcceptanceTests/percent-message.json");
             var eventJSON = File.ReadAllText(fileName);
             var message = JsonConvert.DeserializeObject(eventJSON);
 
@@ -124,7 +124,16 @@ namespace PusherServer.Tests.AcceptanceTests
             });
             int size = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT + 1;
             List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size);
-            await pusher.TriggerAsync("my-channel", "my_event", largeEvent[0]);
+            try
+            {
+                await pusher.TriggerAsync("my-channel", "my_event", largeEvent[0]);
+            }
+            catch(EventDataSizeExceededException e)
+            {
+                Assert.AreEqual("my-channel", e.ChannelName, nameof(e.ChannelName));
+                Assert.AreEqual("my_event", e.EventName, nameof(e.EventName));
+                throw;
+            }
         }
     }
 
@@ -182,7 +191,16 @@ namespace PusherServer.Tests.AcceptanceTests
             List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size);
             events.AddRange(largeEvent);
 
-            await pusher.TriggerAsync(events.ToArray());
+            try
+            {
+                await pusher.TriggerAsync(events.ToArray());
+            }
+            catch (EventDataSizeExceededException e)
+            {
+                Assert.AreEqual("testChannel", e.ChannelName, nameof(e.ChannelName));
+                Assert.AreEqual("testEvent", e.EventName, nameof(e.EventName));
+                throw;
+            }
         }
 
         [Test]
