@@ -17,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53
 		Root.Build.props = Root.Build.props
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer.Core", "PusherServer.Core\PusherServer.Core.csproj", "{774C7778-2724-4458-A7DA-A876DA6F6CDE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer", "PusherServer\PusherServer.csproj", "{B4874455-19D7-4050-B254-3DB5FE087284}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer.Tests", "PusherServer.Tests\PusherServer.Tests.csproj", "{68D41211-774A-4CF4-846E-0C38FD968D7C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer.Core", "PusherServer.Core\PusherServer.Core.csproj", "{5C7F039D-1591-474A-86CD-59EE6D925DE7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer", "PusherServer\PusherServer.csproj", "{1B404714-5F81-4F3E-836E-106D88972A59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,18 +29,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{774C7778-2724-4458-A7DA-A876DA6F6CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{774C7778-2724-4458-A7DA-A876DA6F6CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{774C7778-2724-4458-A7DA-A876DA6F6CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{774C7778-2724-4458-A7DA-A876DA6F6CDE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4874455-19D7-4050-B254-3DB5FE087284}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4874455-19D7-4050-B254-3DB5FE087284}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4874455-19D7-4050-B254-3DB5FE087284}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4874455-19D7-4050-B254-3DB5FE087284}.Release|Any CPU.Build.0 = Release|Any CPU
 		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C7F039D-1591-474A-86CD-59EE6D925DE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C7F039D-1591-474A-86CD-59EE6D925DE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C7F039D-1591-474A-86CD-59EE6D925DE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C7F039D-1591-474A-86CD-59EE6D925DE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B404714-5F81-4F3E-836E-106D88972A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B404714-5F81-4F3E-836E-106D88972A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B404714-5F81-4F3E-836E-106D88972A59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B404714-5F81-4F3E-836E-106D88972A59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
