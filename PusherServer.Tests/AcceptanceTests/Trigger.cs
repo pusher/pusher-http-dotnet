@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using PusherServer.Exceptions;
 using PusherServer.Tests.Helpers;
+using PusherServer.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,7 +25,8 @@ namespace PusherServer.Tests.AcceptanceTests
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
-                HostName = Config.HttpHost
+                HostName = Config.HttpHost,
+                TraceLogger = new DebugTraceLogger(),
             });
         }
 

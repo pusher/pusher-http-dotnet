@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using PusherServer.RestfulClient;
@@ -237,12 +236,12 @@ namespace PusherServer
 
         private void DebugTriggerRequest(IPusherRestRequest request)
         {
-            Debug.WriteLine($"Method: {request.Method}{Environment.NewLine}Host: {_options.RestClient.BaseUrl}{Environment.NewLine}Resource: {request.ResourceUri}{Environment.NewLine}Body:{request.Body}");
+            _options.TraceLogger?.Trace($"Method: {request.Method}{Environment.NewLine}Host: {_options.RestClient.BaseUrl}{Environment.NewLine}Resource: {request.ResourceUri}{Environment.NewLine}Body:{request.Body}");
         }
 
         private void DebugTriggerResponse(TriggerResult response)
         {
-            Debug.WriteLine($"Response{Environment.NewLine}StatusCode: {response.StatusCode}{Environment.NewLine}Body: {response.OriginalContent}");
+            _options.TraceLogger?.Trace($"Response{Environment.NewLine}StatusCode: {response.StatusCode}{Environment.NewLine}Body: {response.OriginalContent}");
         }
 
         private static void ThrowArgumentExceptionIfNullOrEmpty(string value, string argumentName)

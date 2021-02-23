@@ -64,6 +64,8 @@ ITriggerResult result = await pusher.TriggerAsync(events);
 
 #### Detecting event data that exceeds the 10KB threshold
 
+Rather than relying on the server to validate message size you can now perform this client side before submitting a trigger event. Here is an example on how to do this:
+
 ```cs
 IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
 {
@@ -235,7 +237,17 @@ else {
   // webHook.ValidationErrors
 }
 ```
+#### Debug tracing
 
+Debug tracing is now off by default. To enable it use the new Pusher option: TraceLogger.
+
+```cs
+IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+{
+    HostName = Config.HttpHost,
+    TraceLogger = new DebugTraceLogger(),
+});
+```
 ### Asynchronous programming
 
 From v4.0.0 onwards, this library uses the `async` / `await` [syntax](https://msdn.microsoft.com/en-gb/library/mt674882.aspx) from .NET 4.5+.

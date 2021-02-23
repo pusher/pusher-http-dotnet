@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using PusherServer.RestfulClient;
+using PusherServer.Util;
 
 namespace PusherServer
 {
@@ -151,6 +152,9 @@ namespace PusherServer
 
         /// <inheritDoc/>
         public int? BatchEventDataSizeLimit { get; set; }
+
+        /// <inheritDoc/>
+        public ITraceLogger TraceLogger { get; set; }
 
         /// <inheritDoc/>
         public Uri GetBaseUrl()

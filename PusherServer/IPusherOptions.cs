@@ -1,5 +1,6 @@
 ﻿using System;
 using PusherServer.RestfulClient;
+using PusherServer.Util;
 
 namespace PusherServer
 {
@@ -62,6 +63,11 @@ namespace PusherServer
         /// The validation check will happen client side rather than server side if this value is specified.
         /// </remarks>
         int? BatchEventDataSizeLimit { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="ITraceLogger"/> to use for tracing debug messages.
+        /// </summary>
+        ITraceLogger TraceLogger { get; set; }
 
         /// <summary>
         /// Gets the base Url based on the set Options
