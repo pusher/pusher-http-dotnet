@@ -126,7 +126,13 @@ namespace PusherServer
                 data = _options.JsonSerializer.Serialize(data),
                 channels = channelNames
             };
-            ValidationHelper.ValidateBatchEventData(bodyData.data, _options);
+            string channelName = null;
+            if (channelNames != null && channelNames.Length > 0)
+            {
+                channelName = channelNames[0];
+            }
+
+            ValidationHelper.ValidateBatchEventData(bodyData.data, channelName, eventName, _options);
 
             if (string.IsNullOrEmpty(options.SocketId) == false)
             {
@@ -151,7 +157,7 @@ namespace PusherServer
                     socket_id = item.SocketId,
                     data = _options.JsonSerializer.Serialize(item.Data),
                 };
-                ValidationHelper.ValidateBatchEventData(batchEvent.data, _options);
+                ValidationHelper.ValidateBatchEventData(batchEvent.data, batchEvent.channel, batchEvent.name, _options);
 
                 batchEvents[index++] = batchEvent;
             }
@@ -171,7 +177,7 @@ namespace PusherServer
         ///<inheritDoc/>
         public IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
         {
-            if(presenceData == null)
+            if (presenceData == null)
             {
                 throw new ArgumentNullException(nameof(presenceData));
             }

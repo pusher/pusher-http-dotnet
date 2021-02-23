@@ -11,7 +11,10 @@ Comprehensive documentation can be found at <http://pusher.com/docs/channels>.
 
 # Supported platforms
  - .NET Standard 1.3
+ - .NET 4.5
  - Unity 2018.1
+
+ Note: from release 4.3.0 PusherServer.dll and PusherServer.Core.dll are equivalent. Applications should reference PusherServer.dll and not PusherServer.Core.dll. We have kept PusherServer.Core.dll for backwards compatibility but will be removing it in our next major release as it is now redundant.
 
 ## Installation
 
@@ -52,12 +55,35 @@ ITriggerResult result = await pusher.TriggerAsync( new string[]{ "channel-1", "c
 #### Batches
 
 ```cs
-var events = new List[]{
-  new Event(){ EventName = "test_event", Channel = "channel-1", Data = "hello world" },
-  new Event(){ EventName = "test_event", Channel = "channel-1", Data = "my name is bob" },
-}
+var events = new[]{
+    new Event {Channel = "channel-1", EventName = "test_event", Data = "hello world"},
+    new Event {Channel = "channel-1", EventName = "test_event", Data = "my name is bob"}
+};
 
-ITriggerResult result = await pusher.TriggerAsync(events)
+ITriggerResult result = await pusher.TriggerAsync(events);
+```
+
+#### Detecting event data that exceeds the 10KB threshold
+
+```cs
+IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+{
+    HostName = Config.HttpHost,
+    BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT, // 10KB
+});
+
+try
+{
+     var events = new[]{
+        new Event {Channel = "channel-1", EventName = "test_event-1", Data = "hello world"},
+        new Event {Channel = "channel-2", EventName = "test_event-2", Data = new string('Q', 10 * 1024 + 1)},
+    };
+    await pusher.TriggerAsync(events);
+}
+catch (EventDataSizeExceededException eventDataSizeError)
+{
+    // Handle the error when event data exceeds 10KB
+}
 ```
 
 ### Excluding event recipients
@@ -265,12 +291,6 @@ xbuild pusher-dotnet-server.sln
 ```
 
 During the build, there will be a warning about a section called TestCaseManagementSettings in the GlobalSection.  Please ignore this, as it is a Visual Studio specific setting.
-
-#### Different solutions in this repository
-
-There are 3 solution files in this repository.  One for just .NET, one for just .NET Core and a third one with both the platforms in.
-
-The source files for this project can be found under the .NET Core project.  These files are then linked to in the .NET project to allow creation for both platforms.
 
 ## Publish to NuGet
 
