@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.3.0
+* [CHANGED] PusherServer and PusherServer.Core project structure to target net45, net472, netstandard1.3 and netstandard2.0
+* [FIXED] TriggerResult exception text should include content
+* [CHANGED] Bump NUnit version to 3.11
+* [FIXED] Failing tests for Pusher apps in a cluster other than the default
+* [ADDED] Json config file for test application settings
+* [ADDED] Exception classes EventBatchSizeExceededException and EventDataSizeExceededException for client side validation
+* [ADDED] BatchEventDataSizeLimit to IPusherOptions
+* [CHANGED] Default Json serializer to use the option NullValueHandling.Ignore
+* [ADDED] Exception classes ChannelNameFormatException, ChannelNameLengthExceededException and SocketIdFormatException
+* [ADDED] Interface ITraceLogger and applied it as a property to IPusherOptions
+
 ## 4.2.0
 * [CHANGED] Project now targets DotNet Standard 1.6. The API has not changed.
 
