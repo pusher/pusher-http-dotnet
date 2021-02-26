@@ -1,8 +1,8 @@
+name: Github Release
+
 on:
   push:
     tags:
-
-name: Create Github Release
 
 jobs:
   build:
