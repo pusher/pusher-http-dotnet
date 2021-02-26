@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.3.1
+* [CHANGED] PusherServer.Core should not be packed
+
 ## 4.3.0
 * [CHANGED] PusherServer and PusherServer.Core project structure to target net45, net472, netstandard1.3 and netstandard2.0
 * [FIXED] TriggerResult exception text should include content
