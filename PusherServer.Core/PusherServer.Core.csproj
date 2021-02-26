@@ -4,6 +4,7 @@
   <PropertyGroup>
     <AssemblyName>PusherServer.Core</AssemblyName>
     <PackageId>PusherServer.Core</PackageId>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
