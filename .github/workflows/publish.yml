@@ -16,6 +16,6 @@ jobs:
     - name: Restore dependencies
       run: nuget restore pusher-dotnet-server.sln
     - name: Pack
-      run: msbuild /t:Pack /p:configuration=release pusher-dotnet-server.sln
+      run: msbuild /t:Pack /p:configuration=release PusherServer/PusherServer.csproj
     - name: Publish
-      run: nuget push ./bin/Release/*.nupkg -NonInteractive -Source https://api.nuget.org/v3/index.json -SkipDuplicate -ApiKey ${{ secrets.NUGET_API_KEY }}
+      run: nuget push ./bin/release/*.nupkg -NonInteractive -Source https://api.nuget.org/v3/index.json -SkipDuplicate -ApiKey ${{ secrets.NUGET_API_KEY }}
