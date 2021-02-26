@@ -1,6 +1,7 @@
 # Pusher Channels .NET HTTP API library
 
-[![Build Status](https://travis-ci.org/pusher/pusher-http-dotnet.svg?branch=master)](https://travis-ci.org/pusher/pusher-http-dotnet)
+[![NuGet Badge](https://buildstats.info/nuget/pusherserver)](https://www.nuget.org/packages/PusherServer/)
+![Build](https://github.com/pusher/pusher-http-dotnet/workflows/Build/badge.svg)
 
 This is a .NET library for interacting with the Pusher Channels HTTP API.
 
