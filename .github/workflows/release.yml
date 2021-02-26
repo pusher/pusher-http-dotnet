@@ -64,5 +64,7 @@ jobs:
            cp CHANGELOG.tmp CHANGELOG.md
            git add Root.Build.props CHANGELOG.md
            git commit -m "Bump to version ${{ env.VERSION }}"
-      - run: |
-           git push
+      - name: Tag release
+        run: gh release create ${{ env.VERSION }} -F CHANGELOG.tmp
+      - name: Push
+        run: git push
