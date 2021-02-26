@@ -55,16 +55,15 @@ jobs:
           sed -i 's/<Version>[^<]*<\/Version>/<Version>${{ env.VERSION }}<\/Version>/' Root.Build.props
       - name: Prepare CHANGELOG
         run: |
-           echo "${{ github.event.pull_request.body }}" | csplit -s - "/##/"
-           echo "# Changelog
+          echo "${{ github.event.pull_request.body }}" | csplit -s - "/##/"
+          echo "# Changelog
 
-           ## ${{ env.VERSION }}" >> CHANGELOG.tmp
-           grep "^*" xx01 >> CHANGELOG.tmp
-           grep -v "^# " CHANGELOG.md >> CHANGELOG.tmp
-           cp CHANGELOG.tmp CHANGELOG.md
-           git add Root.Build.props CHANGELOG.md
-           git commit -m "Bump to version ${{ env.VERSION }}"
-      - name: Tag release
-        run: gh release create ${{ env.VERSION }} -F CHANGELOG.tmp
+          ## ${{ env.VERSION }}" >> CHANGELOG.tmp
+          grep "^*" xx01 >> CHANGELOG.tmp
+          grep -v "^# " CHANGELOG.md >> CHANGELOG.tmp
+          cp CHANGELOG.tmp CHANGELOG.md
+          git add Root.Build.props CHANGELOG.md
+          git commit -m "Bump to version ${{ env.VERSION }}"
       - name: Push
         run: git push
+
