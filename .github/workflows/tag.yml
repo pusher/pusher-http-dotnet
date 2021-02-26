@@ -22,17 +22,6 @@ jobs:
         run: |
           export NEW_VERSION=$(grep "<Version>.*</Version>" Root.Build.props | cut -d'>' -f 2 | cut -d'<' -f 1)
           echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
-      - name: Prepare CHANGELOG
-        run: |
-          echo "${{ github.event.pull_request.body }}" | csplit -s - "/##/"
-          echo "# Changelog
-
-          ## ${{ env.VERSION }}" >> CHANGELOG.tmp
-          grep "^*" xx01 >> CHANGELOG.tmp
-          grep -v "^# " CHANGELOG.md >> CHANGELOG.tmp
-          cp CHANGELOG.tmp CHANGELOG.md
-          git add Root.Build.props CHANGELOG.md
-          git commit -m "Bump to version ${{ env.VERSION }}"
       - name: Tag release
         run: git tag ${{ env.VERSION }}
       - name: Push
