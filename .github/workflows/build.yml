@@ -28,3 +28,5 @@ jobs:
         PUSHER_APP_HOST: api-${{ secrets.CI_APP_CLUSTER }}.pusher.com
         PUSHER_APP_WEB_SOCKET_HOST: ws-${{ secrets.CI_APP_CLUSTER }}.pusher.com
       run: vstest.console.exe "./PusherServer.Tests/bin/Release/net45/PusherServer.Tests.dll" /TestAdapterPath:"./PusherServer.Tests/bin/Release/net45/"
+    - name: Test pack
+      run: msbuild /t:Pack /p:configuration=release PusherServer/PusherServer.csproj
