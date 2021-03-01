@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.RestfulClient;
 using PusherServer.Tests.RestfulClient.Fakes;
 
 namespace PusherServer.Tests.RestfulClient
 {
-    [TestFixture]
+    [TestClass]
     public class When_creating_an_authenticated_request_for_pusher
     {
         private AuthenticatedRequestFactory _authenticatedRequestFactory;
@@ -24,7 +24,7 @@ namespace PusherServer.Tests.RestfulClient
             _requestBody = _factory.Create("Test Property 4", 5, false);
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_be_made_with_no_parameters()
         {
             // Act
@@ -39,7 +39,7 @@ namespace PusherServer.Tests.RestfulClient
             StringAssert.Contains(@"auth_timestamp=", request.ResourceUri);
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_be_made_with_parameters_from_a_source_object()
         {
             // Act
@@ -55,7 +55,7 @@ namespace PusherServer.Tests.RestfulClient
             StringAssert.Contains(@"Property1=Test Property 1&Property2=2&Property3=True", request.ResourceUri);
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_be_made_with_a_content_object()
         {
             // Act
@@ -71,7 +71,7 @@ namespace PusherServer.Tests.RestfulClient
             StringAssert.Contains(@"auth_signature=", request.ResourceUri);
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_be_made_with_parameters_from_a_source_object_and_a_content_object()
         {
             // Act
@@ -89,7 +89,7 @@ namespace PusherServer.Tests.RestfulClient
             StringAssert.Contains(@"body_md5=41db1761b31df9dc02b2811b38c010d4", request.ResourceUri);
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_return_the_body_as_a_string()
         {
             // Act

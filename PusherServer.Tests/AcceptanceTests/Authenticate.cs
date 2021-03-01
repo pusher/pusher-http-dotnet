@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.Tests.Helpers;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
-    [TestFixture]
+    [TestClass]
     public class When_authenticating_a_private_subscription
     {
         [OneTimeSetUp]
@@ -15,7 +15,7 @@ namespace PusherServer.Tests.AcceptanceTests
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
         }
 
-        [Test]
+        [TestMethod]
         public void the_authentication_token_for_a_private_channel_should_be_accepted_by_Pusher()
         {
             PusherServer.Pusher pusherServer = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
@@ -61,7 +61,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.IsTrue(subscribed);
         }
 
-        [Test]
+        [TestMethod]
         public void the_authentication_token_for_a_presence_channel_should_be_accepted_by_Pusher()
         {
             PusherServer.Pusher pusherServer = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()

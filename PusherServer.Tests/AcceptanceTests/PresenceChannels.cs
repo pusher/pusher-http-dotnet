@@ -2,15 +2,15 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.Tests.Helpers;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
-    [TestFixture]
+    [TestClass]
     public class When_querying_the_Presence_Channel
     {
-        [Test]
+        [TestMethod]
         public async Task Should_get_a_list_of_subscribed_users_asynchronously_when_using_the_correct_channel_name_and_users_are_subscribed()
         {
             var reset = new AutoResetEvent(false);
@@ -29,7 +29,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual("Mr Pusher", result.Data.Users[0].Id);
         }
 
-        [Test]
+        [TestMethod]
         public async Task Should_get_an_empty_list_of_subscribed_users_asynchronously_when_using_the_correct_channel_name_and_no_users_are_subscribed()
         {
             var reset = new AutoResetEvent(false);
@@ -46,7 +46,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual(0, result.Data.Users.Length);
         }
 
-        [Test]
+        [TestMethod]
         public async Task should_return_bad_request_asynchronously_using_an_incorrect_channel_name_and_users_are_subscribed()
         {
             var reset = new AutoResetEvent(false);
@@ -63,7 +63,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
         }
 
-        [Test]
+        [TestMethod]
         public async Task should_throw_an_exception_when_given_a_null_for_a_channel_name_async()
         {
             var reset = new AutoResetEvent(false);
@@ -86,7 +86,7 @@ namespace PusherServer.Tests.AcceptanceTests
             StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
         }
 
-        [Test]
+        [TestMethod]
         public async Task should_throw_an_exception_when_given_an_empty_string_for_a_channel_name_async()
         {
             var reset = new AutoResetEvent(false);

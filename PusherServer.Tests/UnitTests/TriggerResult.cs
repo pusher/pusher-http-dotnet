@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using NSubstitute;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.Exceptions;
 using PusherServer.Tests.Helpers;
 
@@ -20,7 +20,7 @@ namespace PusherServer.Tests.UnitTests
 
     }
 
-    [TestFixture]
+    [TestClass]
     public class When_initialisation_a_TriggerEvent
     {
         private HttpResponseMessage V7_PROTOCOL_SUCCESSFUL_RESPONSE;
@@ -33,28 +33,28 @@ namespace PusherServer.Tests.UnitTests
             V7_PROTOCOL_SUCCESSFUL_RESPONSE.StatusCode = HttpStatusCode.OK;
         }
 
-        [Test]
+        [TestMethod]
         [ExpectedException(typeof (ArgumentNullException))]
         public void it_should_not_accept_a_null_response()
         {
             new TriggerResult(null, null);
         }
 
-        [Test]
+        [TestMethod]
         public void it_should_treat_a_v7_protocol_200_response_as_a_successful_request()
         {
             var triggerResult = new TriggerResult(V7_PROTOCOL_SUCCESSFUL_RESPONSE, "{}");
             Assert.AreEqual(HttpStatusCode.OK, triggerResult.StatusCode);
         }
 
-        [Test]
+        [TestMethod]
         public void it_should_have_no_event_id_value_when_a_v7_protocol_200_response_is_returned()
         {
             var triggerResult = new TriggerResult(V7_PROTOCOL_SUCCESSFUL_RESPONSE, "{}");
             Assert.AreEqual(0, triggerResult.EventIds.Count);
         }
 
-        [Test]
+        [TestMethod]
         [ExpectedException(typeof (TriggerResponseException))]
         public void it_should_treat_non_JSON_content_in_the_request_body_as_a_failed_request()
         {
@@ -74,7 +74,7 @@ namespace PusherServer.Tests.UnitTests
             }
         }
 
-        [Test]
+        [TestMethod]
         [ExpectedException(typeof (NotSupportedException))]
         public void it_should_not_be_possible_to_change_EventIds()
         {

@@ -1,12 +1,12 @@
 ﻿using NSubstitute;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.RestfulClient;
 using PusherServer.Tests.Helpers;
 using System.Threading.Tasks;
 
 namespace PusherServer.Tests.UnitTests
 {
-    [TestFixture]
+    [TestClass]
     public class When_using_async_Get_to_retrieve_a_list_of_application_channels
     {
         private IPusher _pusher;
@@ -33,7 +33,7 @@ namespace PusherServer.Tests.UnitTests
             _pusher = new Pusher(_config.AppId, _config.AppKey, _config.AppSecret, options);
         }
 
-        [Test]
+        [TestMethod]
         public async Task url_is_in_expected_format()
         {
             await _pusher.GetAsync<object>("/channels");
@@ -47,7 +47,7 @@ namespace PusherServer.Tests.UnitTests
             );
         }
 
-        [Test]
+        [TestMethod]
         public async Task GET_request_is_made()
         {
             await _pusher.GetAsync<object>("/channels");
@@ -61,7 +61,7 @@ namespace PusherServer.Tests.UnitTests
             );
         }
 
-        [Test]
+        [TestMethod]
         public async Task additional_parameters_should_be_added_to_query_string()
         {
             await _pusher.GetAsync<object>("/channels", new { filter_by_prefix = "presence-", info = "user_count" });

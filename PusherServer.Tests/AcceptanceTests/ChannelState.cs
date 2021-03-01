@@ -2,15 +2,15 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.Tests.Helpers;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
-    [TestFixture]
+    [TestClass]
     public class When_querying_a_Channel
     {
-        [Test]
+        [TestMethod]
         public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
         {
             var channelName = "presence-state-channel-async-1";
@@ -28,7 +28,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual(1, response.Data.User_Count);
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
         {
             var reset = new AutoResetEvent(false);
@@ -44,7 +44,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.IsTrue(response.Data.Occupied);
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_not_return_the_state_based_asynchronously_When_given_a_channel_name_that_exists_an_bad_attributes()
         {
             var reset = new AutoResetEvent(false);
@@ -61,7 +61,7 @@ namespace PusherServer.Tests.AcceptanceTests
             StringAssert.IsMatch("info should be a comma separated list of attributes", result.Body);
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_throw_an_exception_when_given_an_empty_string_as_a_channel_name_async()
         {
             var pusherServer = ClientServerFactory.CreateServer();
@@ -82,7 +82,7 @@ namespace PusherServer.Tests.AcceptanceTests
             StringAssert.IsMatch("channelName cannot be null or empty", caughtException.Message);
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_throw_an_exception_when_given_a_null_as_a_channel_name_async()
         {
             var pusherServer = ClientServerFactory.CreateServer();
@@ -110,10 +110,10 @@ namespace PusherServer.Tests.AcceptanceTests
         }
     }
 
-    [TestFixture]
+    [TestClass]
     public class When_querying_Multiple_Channels
     {
-        [Test]
+        [TestMethod]
         public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
         {
             var reset = new AutoResetEvent(false);
@@ -134,7 +134,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual(1, ((Newtonsoft.Json.Linq.JValue)((result.Data as Newtonsoft.Json.Linq.JObject)["channels"]["presence-multiple-state-channel-async-3"]["user_count"])).Value);
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
         {
             var reset = new AutoResetEvent(false);
@@ -151,7 +151,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_not_return_the_state_asynchronously_based_When_given_a_channel_name_that_exists_an_bad_attributes()
         {
             AutoResetEvent reset = new AutoResetEvent(false);

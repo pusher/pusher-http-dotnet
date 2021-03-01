@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.RestfulClient;
 using PusherServer.Tests.RestfulClient.Fakes;
 
 namespace PusherServer.Tests.RestfulClient
 {
-    [TestFixture]
+    [TestClass]
     public class When_making_a_request
     {
-        [Test]
+        [TestMethod]
         public async Task then_the_get_request_should_be_made_with_a_valid_resource()
         {
             var factory = new AuthenticatedRequestFactory(Config.AppKey, Config.AppId, Config.AppSecret);

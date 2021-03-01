@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
-    [TestFixture]
+    [TestClass]
     public class When_application_channels_are_queried
     {
         [OneTimeSetUp]
@@ -14,7 +14,7 @@ namespace PusherServer.Tests.AcceptanceTests
             PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_return_a_200_response()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
@@ -27,7 +27,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_be_possible_to_deserialize_the_request_result_body_as_an_object()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
@@ -40,7 +40,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.NotNull(result.Data);
         }
 
-        [Test]
+        [TestMethod]
         public async Task It_should_be_possible_to_deserialize_the_a_channels_result_body_as_an_ChannelsList()
         {
             IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()

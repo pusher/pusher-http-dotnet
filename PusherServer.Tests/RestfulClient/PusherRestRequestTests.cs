@@ -1,11 +1,11 @@
 ﻿using System;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.RestfulClient;
 using PusherServer.Tests.RestfulClient.Fakes;
 
 namespace PusherServer.Tests.RestfulClient
 {
-    [TestFixture]
+    [TestClass]
     public class When_using_a_pusher_rest_request
     {
         private TestObjectFactory _factory;
@@ -16,7 +16,7 @@ namespace PusherServer.Tests.RestfulClient
             _factory = new TestObjectFactory();
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_return_the_resource()
         {
             // Act
@@ -27,7 +27,7 @@ namespace PusherServer.Tests.RestfulClient
             StringAssert.AreEqualIgnoringCase("testUrl", request.ResourceUri);
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_return_the_body_as_a_string_when_present()
         {
             // Arrange
@@ -42,7 +42,7 @@ namespace PusherServer.Tests.RestfulClient
             StringAssert.Contains("{\"Property1\":\"Test Property 1\",\"Property2\":2,\"Property3\":true}", jsonString);
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_return_the_body_as_null_when_not_present()
         {
             // Arrange
@@ -56,7 +56,7 @@ namespace PusherServer.Tests.RestfulClient
             Assert.IsNull(jsonString);
         }
 
-        [Test]
+        [TestMethod]
         public void then_the_request_should_throw_an_exception_when_given_an_unpopulated_resource_uri()
         {
             // Arrange

@@ -1,35 +1,35 @@
 ﻿using NSubstitute;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PusherServer.Tests.Helpers;
 using System;
 
 namespace PusherServer.Tests.UnitTests
 {
-    [TestFixture]
+    [TestClass]
     public class When_creating_a_new_PusherOptions_instance
     {
-        [Test]
+        [TestMethod]
         public void a_default_RestClient_should_be_used_if_one_is_not_set_on_PusherOptions_parameter()
         {
             var options = new PusherOptions();
             Assert.IsNotNull(options.RestClient);
         }
 
-        [Test]
+        [TestMethod]
         public void Port_defaults_to_80()
         {
             var options = new PusherOptions();
             Assert.AreEqual(80, options.Port);
         }
 
-        [Test]
+        [TestMethod]
         public void when_Encrypted_option_is_set_Port_is_changed_to_443()
         {
             var options = new PusherOptions() { Encrypted = true };
             Assert.AreEqual(443, options.Port);
         }
 
-        [Test]
+        [TestMethod]
         public void when_Encrypted_option_is_set_Port_is_changed_to_443_unless_Port_has_already_been_modified()
         {
             var options = new PusherOptions() { Port = 90 };
@@ -37,7 +37,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.AreEqual(90, options.Port);
         }
 
-        [Test]
+        [TestMethod]
         public void the_default_options_should_be_used_to_create_the_base_url_when_no_settings_are_changed()
         {
             var options = new PusherOptions();
@@ -45,7 +45,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("http://api.pusherapp.com", options.GetBaseUrl().AbsoluteUri);
         }
 
-        [Test]
+        [TestMethod]
         public void the_default_cluster_is_null()
         {
           var options = new PusherOptions();
@@ -53,7 +53,7 @@ namespace PusherServer.Tests.UnitTests
           Assert.AreEqual(null, options.Cluster);
         }
 
-        [Test]
+        [TestMethod]
         public void the_default_encrypted_options_should_be_used_to_create_the_base_url_when_encrypted_is_true()
         {
             var options = new PusherOptions();
@@ -62,7 +62,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("https://api.pusherapp.com", options.GetBaseUrl().AbsoluteUri);
         }
 
-        [Test]
+        [TestMethod]
         public void the_new_cluster_should_be_used_to_create_the_base_url()
         {
           var options= new PusherOptions();
@@ -71,7 +71,7 @@ namespace PusherServer.Tests.UnitTests
           StringAssert.IsMatch("http://api-eu.pusher.com", options.GetBaseUrl().AbsoluteUri);
         }
 
-        [Test]
+        [TestMethod]
         public void the_new_port_should_be_used_to_create_the_base_url()
         {
             var options = new PusherOptions();
@@ -80,7 +80,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("http://api.pusherapp.com:100", options.GetBaseUrl().AbsoluteUri);
         }
 
-        [Test]
+        [TestMethod]
         public void the_new_port_should_be_used_to_create_the_base_url_when_its_encrypted()
         {
             var options = new PusherOptions();
@@ -90,7 +90,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("https://api.pusherapp.com:100", options.GetBaseUrl().AbsoluteUri);
         }
 
-        [Test]
+        [TestMethod]
         public void the_new_cluster_should_be_used_to_create_the_base_url_when_its_encrypted_and_has_a_custom_port()
         {
           var options = new PusherOptions();
@@ -101,7 +101,7 @@ namespace PusherServer.Tests.UnitTests
           StringAssert.IsMatch("https://api-eu.pusher.com:100", options.GetBaseUrl().AbsoluteUri);
         }
 
-        [Test]
+        [TestMethod]
         public void the_cluster_should_be_ignored_when_host_name_is_set_first()
         {
           var options = new PusherOptions();
@@ -112,7 +112,7 @@ namespace PusherServer.Tests.UnitTests
           Assert.AreEqual(null, options.Cluster);
         }
 
-        [Test]
+        [TestMethod]
         public void the_cluster_should_be_ignored_when_host_name_is_set_after()
         {
           var options = new PusherOptions();
@@ -125,7 +125,7 @@ namespace PusherServer.Tests.UnitTests
           Assert.AreEqual(null, options.Cluster);
         }
 
-        [Test]
+        [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void https_scheme_is_not_allowed_when_setting_host()
         {
@@ -133,7 +133,7 @@ namespace PusherServer.Tests.UnitTests
             httpsOptions.HostName = "https://api.pusherapp.com";
         }
 
-        [Test]
+        [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void http_scheme_is_not_allowed_when_setting_host()
         {
@@ -141,7 +141,7 @@ namespace PusherServer.Tests.UnitTests
             httpsOptions.HostName = "http://api.pusherapp.com";
         }
 
-        [Test]
+        [TestMethod]
         [ExpectedException(typeof(FormatException))]
         public void ftp_scheme_is_not_allowed_when_setting_host()
         {
@@ -149,7 +149,7 @@ namespace PusherServer.Tests.UnitTests
             httpsOptions.HostName = "ftp://api.pusherapp.com";
         }
 
-        [Test]
+        [TestMethod]
         public void the_json_deserialiser_should_be_the_default_one_when_none_is_set()
         {
             var options = new PusherOptions();
@@ -157,7 +157,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.IsInstanceOf<DefaultDeserializer>(options.JsonDeserializer);
         }
 
-        [Test]
+        [TestMethod]
         public void the_json_deserialiser_should_be_the_supplied_one_when_set()
         {
             var options = new PusherOptions();
@@ -166,7 +166,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.IsInstanceOf<FakeDeserialiser>(options.JsonDeserializer);
         }
 
-        [Test]
+        [TestMethod]
         public void the_json_deserialiser_should_be_the_supplied_one_when_set_with_a_custom_and_the_set_to_null()
         {
             var options = new PusherOptions();
@@ -176,7 +176,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.IsInstanceOf<DefaultDeserializer>(options.JsonDeserializer);
         }
 
-        [Test]
+        [TestMethod]
         public void the_json_serialiser_should_be_the_default_one_when_none_is_set()
         {
             var options = new PusherOptions();
@@ -184,7 +184,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.IsInstanceOf<DefaultSerializer>(options.JsonSerializer);
         }
 
-        [Test]
+        [TestMethod]
         public void the_json_serialiser_should_be_the_supplied_one_when_set()
         {
             var options = new PusherOptions();
@@ -193,7 +193,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.IsInstanceOf<FakeSerialiser>(options.JsonSerializer);
         }
 
-        [Test]
+        [TestMethod]
         public void the_json_serialiser_should_be_the_default_one_when_set_with_a_custom_and_the_set_to_null()
         {
             var options = new PusherOptions();

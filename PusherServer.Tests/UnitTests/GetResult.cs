@@ -2,14 +2,14 @@
 using System.Net;
 using System.Net.Http;
 using NSubstitute;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PusherServer.Tests.UnitTests
 {
-    [TestFixture]
+    [TestClass]
     public class When_using_GetResult_to_deserialise_a_rest_response
     {
-        [Test]
+        [TestMethod]
         public void GetResult_should_gracefully_handle_a_deserialisation_exception()
         {
             var stubRestResponse = Substitute.For<HttpResponseMessage>();
@@ -24,7 +24,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.AreEqual(stubRestResponse, getResult.Response);
         }
 
-        [Test]
+        [TestMethod]
         public void GetResult_should_deserialise_a_valid_json_response()
         {
             var stubRestResponse = Substitute.For<HttpResponseMessage>();

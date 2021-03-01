@@ -1,9 +1,9 @@
 ﻿using System;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PusherServer.Tests.UnitTests
 {
-    [TestFixture]
+    [TestClass]
     public class when_creating_a_webhook
     {
         private static string GenerateValidSignature(string secret, string stringToSign)
@@ -16,7 +16,7 @@ namespace PusherServer.Tests.UnitTests
         static string validBody = "{\"time_ms\": 1327078148132, \"events\": [{\"name\": \"channel_occupied\", \"channel\": \"test_channel\" }]}";
         static string validSignature = GenerateValidSignature(secret, validBody);
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_be_valid_if_all_params_are_as_expected()
         {
             var webHook = new WebHook(secret, validSignature, validBody);
@@ -24,7 +24,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.IsTrue(webHook.IsValid);
         }
 
-        [Test]
+        [TestMethod]
         public void the_event_name_can_be_retrieved_from_the_WebHook()
         {
             var webHook = new WebHook(secret, validSignature, validBody);
@@ -32,7 +32,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.AreEqual("channel_occupied", webHook.Events[0]["name"]);
         }
 
-        [Test]
+        [TestMethod]
         public void the_channel_name_can_be_retrieved_from_the_WebHook()
         {
             var webHook = new WebHook(secret, validSignature, validBody);
@@ -40,7 +40,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.AreEqual("test_channel", webHook.Events[0]["channel"]);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_can_contain_multiple_events()
         {
             var body = "{\"time_ms\": 1327078148132, \"events\": " +
@@ -57,7 +57,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.AreEqual("channel_vacated", webHook.Events[1]["name"]);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_throw_exception_if_secret_is_null()
         {
             ArgumentException caughtException = null;
@@ -74,7 +74,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("A secret must be provided" + Environment.NewLine + "Parameter name: secret", caughtException.Message);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_throw_exception_if_secret_is_empty()
         {
             ArgumentException caughtException = null;
@@ -91,7 +91,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("A secret must be provided" + Environment.NewLine + "Parameter name: secret", caughtException.Message);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_be_invalid_if_they_signature_is_null()
         {
             var webHook = new WebHook(secret, null, validBody);
@@ -102,7 +102,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch(@"The signature did not validate\. Expected \. Got 003a63ce4da20830c4fecffb63d5b3944b64989b6458e15b26e08e244f758954", webHook.ValidationErrors[1]);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_be_invalid_if_they_signature_is_empty()
         {
             var webHook = new WebHook(secret, string.Empty, validBody);
@@ -113,7 +113,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch(@"The signature did not validate\. Expected \. Got 003a63ce4da20830c4fecffb63d5b3944b64989b6458e15b26e08e244f758954", webHook.ValidationErrors[1]);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_be_invalid_if_they_body_is_null()
         {
             var webHook = new WebHook(secret, validSignature, null);
@@ -123,7 +123,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch(@"The supplied body to check was null or empty\. A body to check must be provided\.", webHook.ValidationErrors[0]);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_be_invalid_if_they_body_is_empty()
         {
             var webHook = new WebHook(secret, validSignature, string.Empty);
@@ -133,7 +133,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch(@"The supplied body to check was null or empty\. A body to check must be provided\.", webHook.ValidationErrors[0]);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_not_be_valid_when_given_invalid_JSON_for_the_body()
         {
             var secret = "1c9c753dddfd049dd7f1";
@@ -146,7 +146,7 @@ namespace PusherServer.Tests.UnitTests
             StringAssert.IsMatch("Exception occurred parsing the body as JSON: .*", webHook.ValidationErrors[0]);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_will_be_valid_given_alternative_values()
         {
             var signature = "851f492bab8f7652a2e4c82cd0212d97b4e678edf085c06bf640ed45ee7b1169";
@@ -157,7 +157,7 @@ namespace PusherServer.Tests.UnitTests
             Assert.IsTrue(webHook.IsValid);
         }
 
-        [Test]
+        [TestMethod]
         public void the_WebHook_time_in_ms_is_correctly_parsed()
         {
             var fakeMillis = "1423850522000";
