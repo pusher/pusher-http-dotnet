@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.3.2
+* [CHANGED] Make the GH release task depend tag creation
+
 ## 4.3.1
 * [CHANGED] PusherServer.Core should not be packed
 
