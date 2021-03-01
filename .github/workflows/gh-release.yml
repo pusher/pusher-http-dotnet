@@ -2,10 +2,33 @@ name: Github Release
 
 on:
   push:
-    tags:
+    branches: [ master ]
 
 jobs:
-  build:
+  prepare-release:
+    name: Prepare release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup git
+        run: |
+          git config user.email "pusher-ci@pusher.com"
+          git config user.name "Pusher CI"
+          git fetch
+          git checkout ${{ github.event.pull_request.head.ref }}
+      - name: Prepare package
+        run: |
+          export NEW_VERSION=$(grep "<Version>.*</Version>" Root.Build.props | cut -d'>' -f 2 | cut -d'<' -f 1)
+          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
+      - name: Tag release
+        run: git tag ${{ env.VERSION }}
+      - name: Push
+        run: git push --tags
+
+  create-release:
+    needs: prepare-release
     name: Create Release
     runs-on: ubuntu-latest
     steps:
