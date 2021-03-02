@@ -51,8 +51,8 @@ namespace PusherServer.RestfulClient
         {
             if (pusherRestRequest.Method == PusherMethod.GET)
             {
-                var response = await _httpClient.GetAsync(pusherRestRequest.ResourceUri);
-                var responseContent = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.GetAsync(pusherRestRequest.ResourceUri).ConfigureAwait(false);
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 return new GetResult<T>(response, responseContent);
             }
@@ -67,8 +67,8 @@ namespace PusherServer.RestfulClient
             {
                 var content = new StringContent(pusherRestRequest.GetContentAsJsonString(), Encoding.UTF8, "application/json");
 
-                var response = await _httpClient.PostAsync(pusherRestRequest.ResourceUri, content);
-                var responseContent = await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.PostAsync(pusherRestRequest.ResourceUri, content).ConfigureAwait(false);
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 return new TriggerResult(response, responseContent);
             }

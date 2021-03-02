@@ -36,7 +36,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task url_is_in_expected_format()
         {
-            await _pusher.GetAsync<object>("/channels");
+            await _pusher.GetAsync<object>("/channels").ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecuteGetAsync<object>(
@@ -50,7 +50,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task GET_request_is_made()
         {
-            await _pusher.GetAsync<object>("/channels");
+            await _pusher.GetAsync<object>("/channels").ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecuteGetAsync<object>(
@@ -64,7 +64,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task additional_parameters_should_be_added_to_query_string()
         {
-            await _pusher.GetAsync<object>("/channels", new { filter_by_prefix = "presence-", info = "user_count" });
+            await _pusher.GetAsync<object>("/channels", new { filter_by_prefix = "presence-", info = "user_count" }).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecuteGetAsync<object>(
