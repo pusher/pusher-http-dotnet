@@ -5,10 +5,9 @@ on:
     branches: [ master ]
 
 jobs:
-  prepare-release:
-    name: Prepare release
+  create-release:
+    name: Create Release
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -16,41 +15,21 @@ jobs:
         run: |
           git config user.email "pusher-ci@pusher.com"
           git config user.name "Pusher CI"
-          git fetch
-          git checkout ${{ github.event.pull_request.head.ref }}
-      - name: Prepare package
-        run: |
-          export NEW_VERSION=$(grep "<Version>.*</Version>" Root.Build.props | cut -d'>' -f 2 | cut -d'<' -f 1)
-          echo "VERSION=$NEW_VERSION" >> $GITHUB_ENV
-      - name: Tag release
-        run: git tag ${{ env.VERSION }}
-      - name: Push
-        run: git push --tags
-
-  create-release:
-    needs: prepare-release
-    name: Create Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
       - name: Prepare description
         run: |
           csplit -s CHANGELOG.md "/##/" {1}
           cat xx01 > CHANGELOG.tmp
       - name: Prepare tag
         run: |
-          export REF=${{ github.ref }}
-          export TAG=${REF##*/}
+          export TAG=$(head -1 CHANGELOG.tmp | cut -d' ' -f2)
           echo "TAG=$TAG" >> $GITHUB_ENV
       - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.TAG }}
-          release_name: Release ${{ env.TAG }}
+          release_name: ${{ env.TAG }}
           body_path: CHANGELOG.tmp
           draft: false
           prerelease: false
