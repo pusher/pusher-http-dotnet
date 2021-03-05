@@ -62,7 +62,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task url_resource_is_in_expected_format()
         {
-            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(
@@ -76,7 +76,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task post_payload_contains_channelName_eventName_and_eventData()
         {
-            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(
@@ -90,7 +90,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task with_async_and_a_single_channel_the_request_is_made()
         {
-            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
@@ -100,7 +100,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task with_async_and_a_single_channel_and_trigger_options_the_request_is_made()
         {
-            await _pusher.TriggerAsync(_channelName, _eventName, _eventData);
+            await _pusher.TriggerAsync(_channelName, _eventName, _eventData).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
@@ -110,7 +110,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task with_async_and_multiple_channels_the_request_is_made()
         {
-            await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData);
+            await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
@@ -120,7 +120,7 @@ namespace PusherServer.Tests.UnitTests
         [Test]
         public async Task with_async_and_multiple_channels_and_trigger_options_the_request_is_made()
         {
-            await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData);
+            await _pusher.TriggerAsync(new[] { "fish", "pie" }, _eventName, _eventData).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Any<IPusherRestRequest>());
@@ -135,7 +135,7 @@ namespace PusherServer.Tests.UnitTests
             await _pusher.TriggerAsync(_channelName, _eventName, _eventData, new TriggerOptions()
                     {
                         SocketId = expectedSocketId
-                    });
+                    }).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(
@@ -159,7 +159,7 @@ namespace PusherServer.Tests.UnitTests
                 {
                     SocketId = expectedSocketId
                 }
-            );
+            ).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(Arg.Is<IPusherRestRequest>(
@@ -177,7 +177,7 @@ namespace PusherServer.Tests.UnitTests
             await _pusher.TriggerAsync(new[]{ "my-channel", "my-channel-2" }, _eventName, _eventData, new TriggerOptions()
                     {
                         SocketId = expectedSocketId
-                    });
+                    }).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(
@@ -201,7 +201,7 @@ namespace PusherServer.Tests.UnitTests
                     {
                         SocketId = expectedSocketId
                     }
-                );
+                ).ConfigureAwait(false);
 
 #pragma warning disable 4014
             _subPusherClient.Received().ExecutePostAsync(
@@ -219,7 +219,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                await TriggerWithSocketId(":444.444");
+                await TriggerWithSocketId(":444.444").ConfigureAwait(false);
             }
             catch (FormatException ex)
             {
@@ -237,7 +237,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                await TriggerWithSocketId("444.444:");
+                await TriggerWithSocketId("444.444:").ConfigureAwait(false);
             }
             catch (FormatException ex)
             {
@@ -255,7 +255,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                await TriggerWithSocketId("444.444a");
+                await TriggerWithSocketId("444.444a").ConfigureAwait(false);
             }
             catch (FormatException ex)
             {
@@ -273,7 +273,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                await TriggerWithSocketId("444");
+                await TriggerWithSocketId("444").ConfigureAwait(false);
             }
             catch (FormatException ex)
             {
@@ -291,7 +291,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                await TriggerWithSocketId("\n444.444");
+                await TriggerWithSocketId("\n444.444").ConfigureAwait(false);
             }
             catch (FormatException ex)
             {
@@ -309,7 +309,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                await TriggerWithSocketId("444.444\n");
+                await TriggerWithSocketId("444.444\n").ConfigureAwait(false);
             }
             catch (FormatException ex)
             {
@@ -327,7 +327,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                await TriggerWithSocketId(string.Empty);
+                await TriggerWithSocketId(string.Empty).ConfigureAwait(false);
             }
             catch (FormatException ex)
             {
@@ -345,8 +345,8 @@ namespace PusherServer.Tests.UnitTests
 
             try
 		    {
-		        await TriggerWithChannelName("test_channel:");
-		    }
+		        await TriggerWithChannelName("test_channel:").ConfigureAwait(false);
+            }
 		    catch (FormatException ex)
 		    {
 		        caughtException = ex;
@@ -363,8 +363,8 @@ namespace PusherServer.Tests.UnitTests
 
             try
 		    {
-		        await TriggerWithChannelName(":test_channel");
-		    }
+		        await TriggerWithChannelName(":test_channel").ConfigureAwait(false);
+            }
 		    catch (FormatException ex)
 		    {
                 caughtException = ex;
@@ -381,7 +381,7 @@ namespace PusherServer.Tests.UnitTests
 
             try
             {
-                await TriggerWithChannelName(":\ntest_channel");
+                await TriggerWithChannelName(":\ntest_channel").ConfigureAwait(false);
             }
             catch (FormatException ex)
             {
@@ -399,8 +399,8 @@ namespace PusherServer.Tests.UnitTests
 
 		    try
 		    {
-		        await TriggerWithChannelName("test_channel\n:");
-		    }
+		        await TriggerWithChannelName("test_channel\n:").ConfigureAwait(false);
+            }
 		    catch (FormatException ex)
 		    {
 		        caughtException = ex;
@@ -417,8 +417,8 @@ namespace PusherServer.Tests.UnitTests
 
 		    try
 		    {
-		        await _pusher.TriggerAsync(new[] { "this_one_is_okay", "test_channel\n:" }, _eventName, _eventData);
-		    }
+		        await _pusher.TriggerAsync(new[] { "this_one_is_okay", "test_channel\n:" }, _eventName, _eventData).ConfigureAwait(false);
+            }
 		    catch (FormatException ex)
 		    {
 		        caughtException = ex;
@@ -436,7 +436,7 @@ namespace PusherServer.Tests.UnitTests
             string channelName = new string('a', ValidationHelper.CHANNEL_NAME_MAX_LENGTH + 1);
             try
             {
-                await TriggerWithChannelName(channelName);
+                await TriggerWithChannelName(channelName).ConfigureAwait(false);
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -456,7 +456,7 @@ namespace PusherServer.Tests.UnitTests
             {
                 var events = DataHelper.CreateEvents(numberOfEvents: 11);
 
-                await TriggerWithBatch(events.ToArray());
+                await TriggerWithBatch(events.ToArray()).ConfigureAwait(false);
             }
             catch (EventBatchSizeExceededException ex)
             {
@@ -478,7 +478,7 @@ namespace PusherServer.Tests.UnitTests
                 var events = DataHelper.CreateEvents(numberOfEvents: 9);
                 events.Add(new Event {Channel = channelName});
 
-                await TriggerWithBatch(events.ToArray());
+                await TriggerWithBatch(events.ToArray()).ConfigureAwait(false);
             }
             catch (ArgumentOutOfRangeException ex)
             {
@@ -508,21 +508,21 @@ namespace PusherServer.Tests.UnitTests
             var response = await _pusher.TriggerAsync(_channelName, _eventName, _eventData, new TriggerOptions()
             {
                 SocketId = socketId
-            });
+            }).ConfigureAwait(false);
 
             return response;
         }
 
         private async Task<ITriggerResult> TriggerWithChannelName(string channelName)
         {
-            var response = await _pusher.TriggerAsync(channelName, _eventName, _eventData);
+            var response = await _pusher.TriggerAsync(channelName, _eventName, _eventData).ConfigureAwait(false);
 
             return response;
         }
 
         private async Task<ITriggerResult> TriggerWithBatch(Event[] events)
         {
-            var response = await _pusher.TriggerAsync(events);
+            var response = await _pusher.TriggerAsync(events).ConfigureAwait(false);
 
             return response;
         }

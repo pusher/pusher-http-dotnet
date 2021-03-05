@@ -33,7 +33,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task It_should_return_a_200_response_async()
         {
-            ITriggerResult asyncResult = await _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" });
+            ITriggerResult asyncResult = await _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" }).ConfigureAwait(false);
 
             Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
         }
@@ -44,7 +44,7 @@ namespace PusherServer.Tests.AcceptanceTests
         {
             var waiting = new AutoResetEvent(false);
 
-            ITriggerResult asyncResult = await _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" });
+            ITriggerResult asyncResult = await _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" }).ConfigureAwait(false);
 
             waiting.Set();
 
@@ -96,7 +96,7 @@ namespace PusherServer.Tests.AcceptanceTests
             });
 
             Debug.WriteLine("Bound. Triggering");
-            await _pusher.TriggerAsync(channelName, eventName, new { hello = "world" });
+            await _pusher.TriggerAsync(channelName, eventName, new { hello = "world" }).ConfigureAwait(false);
 
             Debug.WriteLine("waiting for event to be received");
             reset.WaitOne(TimeSpan.FromSeconds(10));
@@ -111,7 +111,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var eventJSON = File.ReadAllText(fileName);
             var message = JsonConvert.DeserializeObject(eventJSON);
 
-            ITriggerResult result = await _pusher.TriggerAsync("my-channel", "my_event", message);
+            ITriggerResult result = await _pusher.TriggerAsync("my-channel", "my_event", message).ConfigureAwait(false);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
@@ -128,7 +128,7 @@ namespace PusherServer.Tests.AcceptanceTests
             List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size);
             try
             {
-                await pusher.TriggerAsync("my-channel", "my_event", largeEvent[0]);
+                await pusher.TriggerAsync("my-channel", "my_event", largeEvent[0]).ConfigureAwait(false);
             }
             catch(EventDataSizeExceededException e)
             {
@@ -150,7 +150,7 @@ namespace PusherServer.Tests.AcceptanceTests
                 HostName = Config.HttpHost
             });
 
-            ITriggerResult asyncResult = await pusher.TriggerAsync(new string[] { "my-channel-1", "my-channel-2" }, "my_event", new { hello = "world" });
+            ITriggerResult asyncResult = await pusher.TriggerAsync(new string[] { "my-channel-1", "my-channel-2" }, "my_event", new { hello = "world" }).ConfigureAwait(false);
 
             Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
         }
@@ -173,7 +173,7 @@ namespace PusherServer.Tests.AcceptanceTests
             List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size);
             events.AddRange(largeEvent);
 
-            var result = await pusher.TriggerAsync(events.ToArray());
+            var result = await pusher.TriggerAsync(events.ToArray()).ConfigureAwait(false);
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
@@ -195,7 +195,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             try
             {
-                await pusher.TriggerAsync(events.ToArray());
+                await pusher.TriggerAsync(events.ToArray()).ConfigureAwait(false);
             }
             catch (EventDataSizeExceededException e)
             {
@@ -216,7 +216,7 @@ namespace PusherServer.Tests.AcceptanceTests
             });
 
             List<Event> events = DataHelper.CreateEvents(numberOfEvents: 11, eventSizeInBytes: 92);
-            await pusher.TriggerAsync(events.ToArray());
+            await pusher.TriggerAsync(events.ToArray()).ConfigureAwait(false);
         }
     }
 
@@ -240,7 +240,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task It_should_return_a_200_response()
         {
-            ITriggerResult result = await _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" });
+            ITriggerResult result = await _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" }).ConfigureAwait(false);
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
@@ -248,7 +248,7 @@ namespace PusherServer.Tests.AcceptanceTests
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
         public async Task It_should_expose_a_single_event_id_when_publishing_to_a_single_channel()
         {
-            ITriggerResult result = await _pusher.TriggerAsync("ch1", "my_event", new { hello = "world" });
+            ITriggerResult result = await _pusher.TriggerAsync("ch1", "my_event", new { hello = "world" }).ConfigureAwait(false);
             Assert.IsTrue(result.EventIds.ContainsKey("ch1"));
             Assert.AreEqual(1, result.EventIds.Count);
         }
@@ -258,7 +258,7 @@ namespace PusherServer.Tests.AcceptanceTests
         public async Task It_should_expose_a_multiple_event_ids_when_publishing_to_multiple_channels()
         {
             var channels = new string[] { "ch1", "ch2", "ch3" };
-            ITriggerResult result = await _pusher.TriggerAsync(channels, "my_event", new { hello = "world" });
+            ITriggerResult result = await _pusher.TriggerAsync(channels, "my_event", new { hello = "world" }).ConfigureAwait(false);
             Assert.IsTrue(result.EventIds.ContainsKey("ch1"));
             Assert.IsTrue(result.EventIds.ContainsKey("ch2"));
             Assert.IsTrue(result.EventIds.ContainsKey("ch3"));

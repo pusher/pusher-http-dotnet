@@ -20,7 +20,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
             var info = new { info = "user_count" };
-            var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName, info);
+            var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName, info).ConfigureAwait(false);
 
             reset.Set();
 
@@ -38,7 +38,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName);
+            var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName).ConfigureAwait(false);
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.IsTrue(response.Data.Occupied);
@@ -56,7 +56,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var info = new { info = "does-not-exist" };
 
-            var result = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName, info);
+            var result = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName, info).ConfigureAwait(false);
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
             StringAssert.IsMatch("info should be a comma separated list of attributes", result.Body);
         }
@@ -72,7 +72,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             try
             {
-                var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(string.Empty, info);
+                var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(string.Empty, info).ConfigureAwait(false);
             }
             catch (ArgumentException ex)
             {
@@ -93,7 +93,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             try
             {
-                var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(null, info);
+                var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(null, info).ConfigureAwait(false);
             }
             catch (ArgumentException ex)
             {
@@ -125,7 +125,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var info = new { info = "user_count", filter_by_prefix = "presence-" };
 
-            var result = await pusherServer.FetchStateForChannelsAsync<object>(info);
+            var result = await pusherServer.FetchStateForChannelsAsync<object>(info).ConfigureAwait(false);
 
             reset.Set();
 
@@ -144,7 +144,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            var result = await pusherServer.FetchStateForChannelsAsync<object>();
+            var result = await pusherServer.FetchStateForChannelsAsync<object>().ConfigureAwait(false);
 
             reset.Set();
 
@@ -163,7 +163,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var info = new { info = "does-not-exist" };
 
-            var result = await pusherServer.FetchStateForChannelsAsync<object>(info);
+            var result = await pusherServer.FetchStateForChannelsAsync<object>(info).ConfigureAwait(false);
 
             reset.Set();
 

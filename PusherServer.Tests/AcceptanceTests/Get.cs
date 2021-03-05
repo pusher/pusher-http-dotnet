@@ -22,7 +22,7 @@ namespace PusherServer.Tests.AcceptanceTests
                 HostName = Config.HttpHost
             });
 
-            IGetResult<object> result = await pusher.GetAsync<object>("/channels");
+            IGetResult<object> result = await pusher.GetAsync<object>("/channels").ConfigureAwait(false);
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
@@ -35,7 +35,7 @@ namespace PusherServer.Tests.AcceptanceTests
                 HostName = Config.HttpHost
             });
 
-            IGetResult<object> result = await pusher.GetAsync<object>("/channels");
+            IGetResult<object> result = await pusher.GetAsync<object>("/channels").ConfigureAwait(false);
 
             Assert.NotNull(result.Data);
         }
@@ -48,7 +48,7 @@ namespace PusherServer.Tests.AcceptanceTests
                 HostName = Config.HttpHost
             });
 
-            IGetResult<ChannelsList> result = await pusher.GetAsync<ChannelsList>("/channels");
+            IGetResult<ChannelsList> result = await pusher.GetAsync<ChannelsList>("/channels").ConfigureAwait(false);
 
             Assert.IsTrue(result.Data.Channels.Count >= 0);
         }

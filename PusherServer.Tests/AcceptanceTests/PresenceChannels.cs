@@ -20,7 +20,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName);
+            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName).ConfigureAwait(false);
 
             reset.Set();
 
@@ -38,7 +38,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             var pusherServer = ClientServerFactory.CreateServer();
 
-            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName);
+            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(channelName).ConfigureAwait(false);
 
             reset.Set();
 
@@ -56,7 +56,7 @@ namespace PusherServer.Tests.AcceptanceTests
             var pusherServer = ClientServerFactory.CreateServer();
             var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
 
-            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>("test-channel-async");
+            IGetResult<PresenceChannelMessage> result = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>("test-channel-async").ConfigureAwait(false);
 
             reset.Set();
 
@@ -74,7 +74,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             try
             {
-                var response = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(null);
+                var response = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(null).ConfigureAwait(false);
                 reset.Set();
             }
             catch (ArgumentException ex)
@@ -97,7 +97,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             try
             {
-                var response = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(string.Empty);
+                var response = await pusherServer.FetchUsersFromPresenceChannelAsync<PresenceChannelMessage>(string.Empty).ConfigureAwait(false);
                 reset.Set();
             }
             catch (ArgumentException ex)
