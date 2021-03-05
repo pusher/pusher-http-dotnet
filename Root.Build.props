@@ -13,7 +13,7 @@
     <PackageTags>pusher channels realtime websocket</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon-128.png</PackageIcon>
-    <Version>4.3.2</Version>
+    <Version>4.4.0</Version>
     <AssemblyVersion>$(Version).0</AssemblyVersion>
     <FileVersion>$(Version).0</FileVersion>
   </PropertyGroup>

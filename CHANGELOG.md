@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.4.0
+* [REMOVED] PusherServer.Core project
+* [FIXED] Use .ConfigureAwait(false) on every await
+
 ## 4.3.2
 * [CHANGED] Make the GH release task depend tag creation
 
