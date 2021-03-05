@@ -13,18 +13,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Files", "Files", "{13FCFB53
 		LICENSE.txt = LICENSE.txt
 		NetFxOnLinux.props = NetFxOnLinux.props
 		package.cmd = package.cmd
+		pull_request_template.md = pull_request_template.md
 		README.md = README.md
 		Root.Build.props = Root.Build.props
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer.Tests", "PusherServer.Tests\PusherServer.Tests.csproj", "{68D41211-774A-4CF4-846E-0C38FD968D7C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer.Core", "PusherServer.Core\PusherServer.Core.csproj", "{5C7F039D-1591-474A-86CD-59EE6D925DE7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PusherServer", "PusherServer\PusherServer.csproj", "{1B404714-5F81-4F3E-836E-106D88972A59}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5C7F039D-1591-474A-86CD-59EE6D925DE7} = {5C7F039D-1591-474A-86CD-59EE6D925DE7}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,10 +32,6 @@ Global
 		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68D41211-774A-4CF4-846E-0C38FD968D7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C7F039D-1591-474A-86CD-59EE6D925DE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C7F039D-1591-474A-86CD-59EE6D925DE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C7F039D-1591-474A-86CD-59EE6D925DE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C7F039D-1591-474A-86CD-59EE6D925DE7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1B404714-5F81-4F3E-836E-106D88972A59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B404714-5F81-4F3E-836E-106D88972A59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B404714-5F81-4F3E-836E-106D88972A59}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -14,7 +14,7 @@ Comprehensive documentation can be found at <http://pusher.com/docs/channels>.
  - .NET 4.5
  - Unity 2018.1
 
- Note: from release 4.3.0 PusherServer.dll and PusherServer.Core.dll are equivalent. Applications should reference PusherServer.dll and not PusherServer.Core.dll. We have kept PusherServer.Core.dll for backwards compatibility but will be removing it in our next major release as it is now redundant.
+ Note: from release 4.4.0 PusherServer.Core.dll has been removed. Applications should reference PusherServer.dll instead.
 
 ## Installation
 
@@ -303,17 +303,6 @@ xbuild pusher-dotnet-server.sln
 ```
 
 During the build, there will be a warning about a section called TestCaseManagementSettings in the GlobalSection.  Please ignore this, as it is a Visual Studio specific setting.
-
-## Publish to NuGet
-
-You should be familiar with [creating and publishing NuGet packages](http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package).
-
-From the `pusher-dotnet-server` directory:
-
-1. Update `./PusherServer/Properties/AssemblyInfo.cs` and `./PusherServer.Core/Properties/AssemblyInfo.cs` with new version number.
-2. Check and change any info required in `PusherServer/PusherServer.nuspec`.
-3. Run `package.cmd` to pack a package to deploy to NuGet.
-3. Run `tools/nuget.exe push PusherServer.{VERSION}.nupkg'.
 
 ## License
 
