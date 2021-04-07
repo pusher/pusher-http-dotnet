@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Cryptography;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using PusherServer.Tests.Helpers;
 
@@ -22,6 +23,31 @@ namespace PusherServer.Tests.AcceptanceTests
             });
 
             string channelName = "private-channel";
+
+            await pusherClient.ConnectAsync().ConfigureAwait(false);
+
+            var channel = await pusherClient.SubscribeAsync(channelName).ConfigureAwait(false);
+
+            Assert.IsTrue(channel.IsSubscribed, nameof(channel.IsSubscribed));
+        }
+
+        [Test]
+        public async Task the_authentication_token_for_a_private_encrypted_channel_should_be_accepted_by_Pusher()
+        {
+            PusherServer.Pusher pusherServer = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost,
+                EncryptionMasterKey = DataHelper.GenerateEncryptionMasterKey(),
+            });
+
+            PusherClient.Pusher pusherClient = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
+            {
+                Authorizer = new InMemoryAuthorizer(pusherServer),
+                Cluster = Config.Cluster,
+                TraceLogger = new PusherClient.TraceLogger(),
+            });
+
+            string channelName = "private-encrypted-channel";
 
             await pusherClient.ConnectAsync().ConfigureAwait(false);
 

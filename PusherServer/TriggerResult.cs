@@ -19,7 +19,7 @@ namespace PusherServer
         /// <param name="responseContent">The response content as a string</param>
         public TriggerResult(HttpResponseMessage response, string responseContent) : base(response, responseContent)
         {
-            EventIdData eventIdData = null;
+            EventIdData eventIdData;
 
             try
             {

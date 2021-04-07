@@ -169,7 +169,17 @@ namespace PusherServer
         ///<inheritDoc/>
         public IAuthenticationData Authenticate(string channelName, string socketId)
         {
-            return new AuthenticationData(_appKey, _appSecret, channelName, socketId);
+            IAuthenticationData result;
+            if (IsPrivateEncryptedChannel(channelName))
+            {
+                result = new AuthenticationData(_appKey, _appSecret, channelName, socketId, _options.EncryptionMasterKey);
+            }
+            else
+            {
+                result = new AuthenticationData(_appKey, _appSecret, channelName, socketId);
+            }
+
+            return result;
         }
 
         ///<inheritDoc/>
@@ -249,6 +259,20 @@ namespace PusherServer
             {
                 throw new ArgumentException($"{argumentName} cannot be null or empty");
             }
+        }
+
+        private static bool IsPrivateEncryptedChannel(string channelName)
+        {
+            bool result = false;
+            if (channelName != null)
+            {
+                if (channelName.StartsWith("private-encrypted-", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = true;
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace PusherServer
     /// </summary>
     public class EventIdData
     {
-        private Dictionary<string, string> _eventIds = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _eventIds = new Dictionary<string, string>();
 
         /// <summary>
         /// Dictionary of channel name to event ID for the triggered event.

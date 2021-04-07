@@ -27,6 +27,7 @@ namespace PusherServer.Tests.UnitTests
 
             IAuthenticationData result = _pusher.Authenticate(channelName, socketId);
             Assert.AreEqual(expectedAuthString, result.auth);
+            Assert.IsNull(result.shared_secret, nameof(result.shared_secret));
         }
 
         [Test]
@@ -127,6 +128,48 @@ namespace PusherServer.Tests.UnitTests
     }
 
     [TestFixture]
+    public class When_authenticating_a_private_encrypted_channel
+    {
+        [Test]
+        public void the_auth_response_is_valid()
+        {
+            string channelName = "private-encrypted-channel";
+            Pusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions
+            {
+                EncryptionMasterKey = DataHelper.GenerateEncryptionMasterKey(),
+            });
+
+            IAuthenticationData result = pusher.Authenticate(channelName, "123.456");
+
+            Assert.IsNotNull(result, nameof(IAuthenticationData));
+            Assert.IsNotNull(result.shared_secret, nameof(result.shared_secret));
+            Assert.IsNotNull(Convert.FromBase64String(result.shared_secret));
+        }
+
+        [Test]
+        [ExpectedException(typeof(EncryptionMasterKeyException))]
+        public void encryption_master_key_should_be_defined()
+        {
+            string channelName = "private-encrypted-channel";
+            Pusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
+            pusher.Authenticate(channelName, "123.456");
+        }
+
+
+        [Test]
+        [ExpectedException(typeof(EncryptionMasterKeyException))]
+        public void encryption_master_key_should_be_well_defined()
+        {
+            string channelName = "private-encrypted-channel";
+            Pusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions
+            {
+                EncryptionMasterKey = new byte[] { 1, 2 },
+            });
+            pusher.Authenticate(channelName, "123.456");
+        }
+    }
+
+    [TestFixture]
     public class When_authenticating_a_presence_channel
     {
         private IPusher _pusher;
@@ -164,6 +207,7 @@ namespace PusherServer.Tests.UnitTests
 
             IAuthenticationData result = _pusher.Authenticate(channelName, socketId, data);
             Assert.AreEqual(expectedAuthString, result.auth);
+            Assert.IsNull(result.shared_secret, nameof(result.shared_secret));
         }
 
         [Test]

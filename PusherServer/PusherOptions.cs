@@ -163,6 +163,9 @@ namespace PusherServer
         public ITraceLogger TraceLogger { get; set; }
 
         /// <inheritDoc/>
+        public byte[] EncryptionMasterKey { get; set; }
+
+        /// <inheritDoc/>
         public Uri GetBaseUrl()
         {
             string baseUrl = (Encrypted ? "https" : "http") + "://" + HostName + GetPort();

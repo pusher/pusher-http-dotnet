@@ -75,6 +75,11 @@ namespace PusherServer
         ITraceLogger TraceLogger { get; set; }
 
         /// <summary>
+        /// Gets or sets the encryption master key. The key is required to be 32 bytes in length.
+        /// </summary>
+        byte[] EncryptionMasterKey { get; set; }
+
+        /// <summary>
         /// Gets the base Url based on the set Options
         /// </summary>
         /// <returns>The constructed URL</returns>

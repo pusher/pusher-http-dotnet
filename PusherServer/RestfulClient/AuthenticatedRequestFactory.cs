@@ -52,9 +52,11 @@ namespace PusherServer.RestfulClient
 
             string requestUrl = $"{path}?auth_signature={authSignature}&{queryString}";
 
-            IPusherRestRequest request = new PusherRestRequest(requestUrl);
-            request.Method = requestType;
-            request.Body = requestBody;
+            IPusherRestRequest request = new PusherRestRequest(requestUrl)
+            {
+                Method = requestType,
+                Body = requestBody,
+            };
 
             return request;
         }

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using Newtonsoft.Json;
 
 namespace PusherServer
 {
@@ -11,6 +10,7 @@ namespace PusherServer
         private readonly string _channelName;
         private readonly string _socketId;
         private readonly PresenceChannelData _presenceData;
+        private readonly byte[] _key;
 
         public AuthenticationData(string appKey, string appSecret, string channelName, string socketId)
         {
@@ -23,8 +23,16 @@ namespace PusherServer
             _socketId = socketId;
         }
 
-        public AuthenticationData(string appKey, string appSecret, string channelName, string socketId, PresenceChannelData presenceData):
-            this(appKey, appSecret, channelName, socketId)
+        public AuthenticationData(string appKey, string appSecret, string channelName, string socketId, byte[] masterEncryptionKey)
+            : this(appKey, appSecret, channelName, socketId)
+        {
+            ValidationHelper.ValidateEncryptionMasterKey(masterEncryptionKey);
+
+            _key = masterEncryptionKey;
+        }
+
+        public AuthenticationData(string appKey, string appSecret, string channelName, string socketId, PresenceChannelData presenceData)
+            : this(appKey, appSecret, channelName, socketId)
         {
             _presenceData = presenceData;
         }
@@ -59,6 +67,21 @@ namespace PusherServer
                     json = DefaultSerializer.Default.Serialize(_presenceData);
                 }
                 return json;
+            }
+        }
+
+        [DataMember(Name = "shared_secret", IsRequired = false, EmitDefaultValue = false)]
+        public string shared_secret
+        {
+            get
+            {
+                string result = null;
+                if (_key != null)
+                {
+                    result = CryptoHelper.GenerateSharedSecret(_key, _channelName);
+                }
+
+                return result;
             }
         }
 

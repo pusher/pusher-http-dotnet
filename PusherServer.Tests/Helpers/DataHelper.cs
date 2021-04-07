@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace PusherServer.Tests.Helpers
 {
@@ -24,6 +25,14 @@ namespace PusherServer.Tests.Helpers
             }
 
             return events;
+        }
+
+        internal static byte[] GenerateEncryptionMasterKey()
+        {
+            RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
+            byte[] key = new byte[32];
+            random.GetBytes(key);
+            return key;
         }
     }
 }

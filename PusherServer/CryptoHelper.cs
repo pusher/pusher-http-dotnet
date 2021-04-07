@@ -6,28 +6,34 @@ using System.Text;
 
 namespace PusherServer
 {
-	internal class CryptoHelper
-	{
-		internal static string GetMd5Hash(string jsonData)
-		{
+    internal class CryptoHelper
+    {
+        internal static string GetMd5Hash(string jsonData)
+        {
             using (var md5 = MD5.Create())
             {
                 var result = md5.ComputeHash(Encoding.UTF8.GetBytes(jsonData));
                 return BytesToHex(result);
             }
-		}
+        }
 
-		private static string BytesToHex(IEnumerable<byte> byteArray)
-		{
-			return String.Concat(byteArray.Select(bytes => bytes.ToString("x2")).ToArray());
-		}
+        private static string BytesToHex(IEnumerable<byte> byteArray)
+        {
+            return String.Concat(byteArray.Select(bytes => bytes.ToString("x2")).ToArray());
+        }
 
-		internal static string GetHmac256(string secret, string toSign)
-		{
-			var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-			var hash = hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(toSign));
+        internal static string GetHmac256(string secret, string toSign)
+        {
+            var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
+            var hash = hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(toSign));
+            return BytesToHex(hash);
+        }
 
-			return BytesToHex(hash);
-		}
-	}
+        internal static string GenerateSharedSecret(byte[] key, string toSign)
+        {
+            var hmacsha256 = new HMACSHA256(key);
+            byte[] hash = hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(toSign));
+            return Convert.ToBase64String(hash);
+        }
+    }
 }
