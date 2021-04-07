@@ -28,7 +28,7 @@ namespace PusherServer.RestfulClient
         Uri BaseUrl { get; }
 
         /// <summary>
-        /// Gets or sets the Pusher rest client timeout. The default timeout is 30 seconds.
+        /// Gets or sets the Pusher rest client timeout. The default timeout is 100 seconds.
         /// </summary>
         TimeSpan Timeout { get; set; }
     }

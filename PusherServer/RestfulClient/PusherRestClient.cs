@@ -39,7 +39,6 @@ namespace PusherServer.RestfulClient
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Version", _version);
-            _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
         ///<inheritDoc/>
