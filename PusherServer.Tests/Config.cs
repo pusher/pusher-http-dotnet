@@ -15,6 +15,7 @@ namespace PusherServer.Tests
             AppId = config.AppId;
             AppKey = config.AppKey;
             AppSecret = config.AppSecret;
+            Cluster = config.Cluster;
             HttpHost = config.HttpHost;
             WebSocketHost = config.WebSocketHost;
         }
@@ -24,6 +25,8 @@ namespace PusherServer.Tests
         public static string AppKey { get; private set; }
 
         public static string AppSecret { get; private set; }
+
+        public static string Cluster { get; private set; }
 
         public static string HttpHost { get; private set; }
 
