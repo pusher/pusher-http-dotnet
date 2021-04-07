@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net;
+﻿using System.Net;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -8,12 +7,6 @@ namespace PusherServer.Tests.AcceptanceTests
     [TestFixture]
     public class When_application_channels_are_queried
     {
-        [OneTimeSetUp]
-        public void Setup()
-        {
-            PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
-        }
-
         [Test]
         public async Task It_should_return_a_200_response()
         {

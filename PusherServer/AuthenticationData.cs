@@ -64,12 +64,12 @@ namespace PusherServer
 
         public string ToJson()
         {
-            return DefaultSerializer.Default.Serialize(this);
+            return ToString();
         }
 
         public override string ToString()
         {
-            return ToJson();
+            return DefaultSerializer.Default.Serialize(this);
         }
     }
 }

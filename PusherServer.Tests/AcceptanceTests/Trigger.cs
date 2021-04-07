@@ -22,7 +22,6 @@ namespace PusherServer.Tests.AcceptanceTests
         [OneTimeSetUp]
         public void Setup()
         {
-            PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
                 HostName = Config.HttpHost,
@@ -57,51 +56,28 @@ namespace PusherServer.Tests.AcceptanceTests
             string channelName = "my_channel";
             string eventName = "my_event";
 
-            bool eventReceived = false;
             AutoResetEvent reset = new AutoResetEvent(false);
 
-            var client = new PusherClient.Pusher(Config.AppKey)
+            var client = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
             {
-                Host = Config.WebSocketHost,
-            };
-            client.Connected += new PusherClient.ConnectedEventHandler(delegate (object sender)
-            {
-                Debug.WriteLine("connected");
-                reset.Set();
+                Cluster = Config.Cluster,
+                TraceLogger = new PusherClient.TraceLogger(),
             });
 
-            Debug.WriteLine("connecting");
-            client.Connect();
+            await client.ConnectAsync().ConfigureAwait(false);
 
-            Debug.WriteLine("waiting to connect");
-            reset.WaitOne(TimeSpan.FromSeconds(5));
+            var channel = await client.SubscribeAsync(channelName).ConfigureAwait(false);
 
-            Debug.WriteLine("subscribing");
-            var channel = client.Subscribe(channelName);
-            channel.Subscribed += new PusherClient.SubscriptionEventHandler(delegate (object s)
-            {
-                Debug.WriteLine("subscribed");
-                reset.Set();
-            });
-
-            Debug.WriteLine("waiting for Subscribed");
-            reset.WaitOne(TimeSpan.FromSeconds(5));
-
-            Debug.WriteLine("binding");
             channel.Bind(eventName, delegate (dynamic data)
             {
                 Debug.WriteLine("event received");
-                eventReceived = true;
                 reset.Set();
             });
 
-            Debug.WriteLine("Bound. Triggering");
             await _pusher.TriggerAsync(channelName, eventName, new { hello = "world" }).ConfigureAwait(false);
 
-            Debug.WriteLine("waiting for event to be received");
-            reset.WaitOne(TimeSpan.FromSeconds(10));
-
-            Assert.IsTrue(eventReceived);
+            Assert.IsTrue(channel.IsSubscribed, nameof(channel.IsSubscribed));
+            Assert.IsTrue(reset.WaitOne(TimeSpan.FromSeconds(5)), "Expected to receive an event");
         }
 
         [Test]
@@ -228,8 +204,6 @@ namespace PusherServer.Tests.AcceptanceTests
         [OneTimeSetUp]
         public void Setup()
         {
-            PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
-
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
                 Encrypted = true,

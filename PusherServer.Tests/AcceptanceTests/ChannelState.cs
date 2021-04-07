@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using PusherServer.Tests.Helpers;
@@ -14,15 +13,12 @@ namespace PusherServer.Tests.AcceptanceTests
         public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
         {
             var channelName = "presence-state-channel-async-1";
-            var reset = new AutoResetEvent(false);
 
             var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+            await ClientServerFactory.CreateClientAsync(pusherServer, channelName).ConfigureAwait(false);
 
             var info = new { info = "user_count" };
             var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName, info).ConfigureAwait(false);
-
-            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             Assert.AreEqual(1, response.Data.User_Count);
@@ -31,12 +27,10 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
         {
-            var reset = new AutoResetEvent(false);
-
             var channelName = "presence-state-channel-async-1";
 
             var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+            await ClientServerFactory.CreateClientAsync(pusherServer, channelName).ConfigureAwait(false);
 
             var response = await pusherServer.FetchStateForChannelAsync<ChannelStateMessage>(channelName).ConfigureAwait(false);
 
@@ -47,12 +41,10 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task It_should_not_return_the_state_based_asynchronously_When_given_a_channel_name_that_exists_an_bad_attributes()
         {
-            var reset = new AutoResetEvent(false);
-
             var channelName = "presence-state-channel-async-2";
 
             var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+            await ClientServerFactory.CreateClientAsync(pusherServer, channelName).ConfigureAwait(false);
 
             var info = new { info = "does-not-exist" };
 
@@ -116,37 +108,28 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
         {
-            var reset = new AutoResetEvent(false);
-
             var channelName = "presence-multiple-state-channel-async-3";
 
             var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+            await ClientServerFactory.CreateClientAsync(pusherServer, channelName).ConfigureAwait(false);
 
             var info = new { info = "user_count", filter_by_prefix = "presence-" };
 
             var result = await pusherServer.FetchStateForChannelsAsync<object>(info).ConfigureAwait(false);
 
-            reset.Set();
-
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
-            
             Assert.AreEqual(1, ((Newtonsoft.Json.Linq.JValue)((result.Data as Newtonsoft.Json.Linq.JObject)["channels"]["presence-multiple-state-channel-async-3"]["user_count"])).Value);
         }
 
         [Test]
         public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
         {
-            var reset = new AutoResetEvent(false);
-
             var channelName = "presence-multiple-state-channel-async-3";
 
             var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+            await ClientServerFactory.CreateClientAsync(pusherServer, channelName).ConfigureAwait(false);
 
             var result = await pusherServer.FetchStateForChannelsAsync<object>().ConfigureAwait(false);
-
-            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
@@ -154,18 +137,14 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task It_should_not_return_the_state_asynchronously_based_When_given_a_channel_name_that_exists_an_bad_attributes()
         {
-            AutoResetEvent reset = new AutoResetEvent(false);
-
             string channelName = "presence-multiple-state-channel-async-4";
 
             var pusherServer = ClientServerFactory.CreateServer();
-            var pusherClient = ClientServerFactory.CreateClient(pusherServer, reset, channelName);
+            await ClientServerFactory.CreateClientAsync(pusherServer, channelName).ConfigureAwait(false);
 
             var info = new { info = "does-not-exist" };
 
             var result = await pusherServer.FetchStateForChannelsAsync<object>(info).ConfigureAwait(false);
-
-            reset.Set();
 
             Assert.AreEqual(HttpStatusCode.BadRequest, result.StatusCode);
             StringAssert.IsMatch("info should be a comma separated list of attributes", result.Body);
