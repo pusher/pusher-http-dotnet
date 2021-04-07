@@ -25,10 +25,10 @@ namespace PusherServer
             {
                 eventIdData = JsonConvert.DeserializeObject<EventIdData>(responseContent);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 string msg = $"The response body from the Pusher HTTP endpoint could not be parsed as JSON: {Environment.NewLine}{responseContent}";
-                throw new TriggerResponseException(msg);
+                throw new TriggerResponseException(msg, e);
             }
 
             EventIds = new ReadOnlyDictionary<string, string>(eventIdData.event_ids);

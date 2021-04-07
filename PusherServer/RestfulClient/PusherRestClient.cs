@@ -39,6 +39,7 @@ namespace PusherServer.RestfulClient
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Name", _libraryName);
             _httpClient.DefaultRequestHeaders.Add("Pusher-Library-Version", _version);
+            _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
         ///<inheritDoc/>
@@ -47,22 +48,38 @@ namespace PusherServer.RestfulClient
         }
 
         ///<inheritDoc/>
+        public TimeSpan Timeout
+        {
+            get
+            {
+                return _httpClient.Timeout;
+            }
+
+            set
+            {
+                _httpClient.Timeout = value;
+            }
+        }
+
+        ///<inheritDoc/>
         public async Task<GetResult<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest)
         {
+            GetResult<T> result = null;
             if (pusherRestRequest.Method == PusherMethod.GET)
             {
                 var response = await _httpClient.GetAsync(pusherRestRequest.ResourceUri).ConfigureAwait(false);
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                return new GetResult<T>(response, responseContent);
+                result = new GetResult<T>(response, responseContent);
             }
 
-            return null;
+            return result;
         }
 
         ///<inheritDoc/>
         public async Task<TriggerResult> ExecutePostAsync(IPusherRestRequest pusherRestRequest)
         {
+            TriggerResult result = null;
             if (pusherRestRequest.Method == PusherMethod.POST)
             {
                 var content = new StringContent(pusherRestRequest.GetContentAsJsonString(), Encoding.UTF8, "application/json");
@@ -70,10 +87,10 @@ namespace PusherServer.RestfulClient
                 var response = await _httpClient.PostAsync(pusherRestRequest.ResourceUri, content).ConfigureAwait(false);
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                return new TriggerResult(response, responseContent);
+                result = new TriggerResult(response, responseContent);
             }
 
-            return null;
+            return result;
         }
     }
 }

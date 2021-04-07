@@ -19,10 +19,6 @@ namespace PusherServer
             {
                 return _eventIds;
             }
-            set
-            {
-                _eventIds = value;
-            }
         }
     }
 }

@@ -87,13 +87,19 @@ namespace PusherServer
             {
                 if (_pusherClient == null)
                 {
-                    _pusherClient = new PusherRestClient(GetBaseUrl(), Pusher.LIBRARY_NAME, Pusher.VERSION);
+                    _pusherClient = new PusherRestClient(GetBaseUrl(), Pusher.LIBRARY_NAME, Pusher.VERSION)
+                    {
+                        Timeout = RestClientTimeout,
+                    };
                 }
 
                 return _pusherClient;
             }
             set { _pusherClient = value; }
         }
+
+        /// <inheritDoc/>
+        public TimeSpan RestClientTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
         /// <inheritDoc/>
         public string HostName
