@@ -4,8 +4,8 @@ namespace PusherServer.Tests.Helpers
 {
     internal class InMemoryAuthorizer: IAuthorizer
     {
-        PusherServer.Pusher _pusher;
-        PresenceChannelData _presenceData;
+        private readonly PusherServer.Pusher _pusher;
+        private readonly PresenceChannelData _presenceData;
 
         public InMemoryAuthorizer(PusherServer.Pusher pusher):
             this(pusher, null)
@@ -20,7 +20,7 @@ namespace PusherServer.Tests.Helpers
 
         public string Authorize(string channelName, string socketId)
         {
-            IAuthenticationData auth = null;
+            IAuthenticationData auth;
             if (_presenceData != null)
             {
                 auth = _pusher.Authenticate(channelName, socketId, _presenceData);

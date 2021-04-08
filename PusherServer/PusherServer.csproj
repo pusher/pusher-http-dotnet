@@ -14,4 +14,8 @@
     <None Include="..\CHANGELOG.md" Link="Properties\CHANGELOG.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NaCl.Net" Version="0.1.13" />
+  </ItemGroup>
+
 </Project>

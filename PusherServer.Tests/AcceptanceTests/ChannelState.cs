@@ -7,10 +7,10 @@ using PusherServer.Tests.Helpers;
 namespace PusherServer.Tests.AcceptanceTests
 {
     [TestFixture]
-    public class When_querying_a_Channel
+    public class When_querying_a_channel
     {
         [Test]
-        public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
+        public async Task It_should_return_the_state_asynchronously_when_given_a_channel_name_that_exists()
         {
             var channelName = "presence-state-channel-async-1";
 
@@ -25,7 +25,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
+        public async Task It_should_return_the_state_asynchronously_when_given_a_channel_name_that_exists_and_no_info_object_is_provided()
         {
             var channelName = "presence-state-channel-async-1";
 
@@ -39,7 +39,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async Task It_should_not_return_the_state_based_asynchronously_When_given_a_channel_name_that_exists_an_bad_attributes()
+        public async Task It_should_not_return_the_state_based_asynchronously_when_given_a_channel_name_that_exists_an_bad_attributes()
         {
             var channelName = "presence-state-channel-async-2";
 
@@ -103,10 +103,10 @@ namespace PusherServer.Tests.AcceptanceTests
     }
 
     [TestFixture]
-    public class When_querying_Multiple_Channels
+    public class When_querying_multiple_channels
     {
         [Test]
-        public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists()
+        public async Task It_should_return_the_state_asynchronously_when_given_a_channel_name_that_exists()
         {
             var channelName = "presence-multiple-state-channel-async-3";
 
@@ -122,7 +122,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async Task It_should_return_the_state_asynchronously_When_given_a_channel_name_that_exists_and_no_info_object_is_provided()
+        public async Task It_should_return_the_state_asynchronously_when_given_a_channel_name_that_exists_and_no_info_object_is_provided()
         {
             var channelName = "presence-multiple-state-channel-async-3";
 
@@ -135,7 +135,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async Task It_should_not_return_the_state_asynchronously_based_When_given_a_channel_name_that_exists_an_bad_attributes()
+        public async Task It_should_not_return_the_state_asynchronously_based_when_given_a_channel_name_that_exists_an_bad_attributes()
         {
             string channelName = "presence-multiple-state-channel-async-4";
 

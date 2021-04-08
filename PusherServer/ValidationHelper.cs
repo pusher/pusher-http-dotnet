@@ -1,4 +1,5 @@
 ﻿using PusherServer.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -55,14 +56,14 @@ namespace PusherServer
         /// <exception cref="ChannelNameFormatException">If the <paramref name="channelName"/> is not in the allowed format.</exception>
         internal static void ValidateChannelName(string channelName)
         {
-            if(channelName.Length > CHANNEL_NAME_MAX_LENGTH)
-            {
-                throw new ChannelNameLengthExceededException(nameof(channelName), channelName.Length);
-            }
-
             if (CHANNEL_NAME_REGEX.IsMatch(channelName) == false)
             {
                 throw new ChannelNameFormatException(actualValue: channelName);
+            }
+
+            if (channelName.Length > CHANNEL_NAME_MAX_LENGTH)
+            {
+                throw new ChannelNameLengthExceededException(nameof(channelName), channelName.Length);
             }
         }
 
@@ -74,9 +75,22 @@ namespace PusherServer
         /// <exception cref="ChannelNameFormatException">If any channel names are not in the allowed format.</exception>
         internal static void ValidateChannelNames(IEnumerable<string> channelNames)
         {
+            int encryptedChannelCount = 0;
+            int channelCount = 0;
             foreach(string name in channelNames)
             {
                 ValidateChannelName(name);
+                if (Pusher.IsPrivateEncryptedChannel(name))
+                {
+                    encryptedChannelCount++;
+                }
+
+                channelCount++;
+            }
+
+            if (channelCount > 1 && encryptedChannelCount >= 1)
+            {
+                throw new InvalidOperationException("You cannot trigger to multiple channels when using encrypted channels.");
             }
         }
 

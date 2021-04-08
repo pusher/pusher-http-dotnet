@@ -11,7 +11,7 @@ namespace PusherServer.Tests.Helpers
             return CreateEvents(numberOfEvents, eventSizeInBytes: "{}".Length);
         }
 
-        internal static List<Event> CreateEvents(int numberOfEvents, int eventSizeInBytes)
+        internal static List<Event> CreateEvents(int numberOfEvents, int eventSizeInBytes, string channelId = "testChannel", string eventId = "testEvent")
         {
             Assert.IsTrue(eventSizeInBytes >= 2, "The event size must be greater than or equal to 2.");
 
@@ -21,7 +21,7 @@ namespace PusherServer.Tests.Helpers
             string data = new string('Q', eventSizeInBytes - "{}".Length);
             for (int i = 0; i < numberOfEvents; i++)
             {
-                events.Add(new Event { Channel = "testChannel", EventName = "testEvent", Data = data });
+                events.Add(new Event { Channel = $"{channelId}{i}", EventName = $"{eventId}{i}", Data = data });
             }
 
             return events;
@@ -29,9 +29,13 @@ namespace PusherServer.Tests.Helpers
 
         internal static byte[] GenerateEncryptionMasterKey()
         {
-            RNGCryptoServiceProvider random = new RNGCryptoServiceProvider();
-            byte[] key = new byte[32];
-            random.GetBytes(key);
+            byte[] key = null;
+            using (RandomNumberGenerator random = RandomNumberGenerator.Create())
+            {
+                key = new byte[32];
+                random.GetBytes(key);
+            }
+
             return key;
         }
     }

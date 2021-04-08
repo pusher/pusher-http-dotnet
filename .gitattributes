@@ -1,1 +1,3 @@
 *.sh eol=lf
+*.cs eol=lf
+*.csproj eol=lf

@@ -24,16 +24,24 @@ namespace PusherServer
 
         internal static string GetHmac256(string secret, string toSign)
         {
-            var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(secret));
-            var hash = hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(toSign));
-            return BytesToHex(hash);
+            using (var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(secret)))
+            {
+                var hash = hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(toSign));
+                return BytesToHex(hash);
+            }
+        }
+
+        internal static byte[] GenerateSharedSecretHash(byte[] key, string toSign)
+        {
+            using (var hmacsha256 = new HMACSHA256(key))
+            {
+                return hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(toSign));
+            }
         }
 
         internal static string GenerateSharedSecret(byte[] key, string toSign)
         {
-            var hmacsha256 = new HMACSHA256(key);
-            byte[] hash = hmacsha256.ComputeHash(Encoding.UTF8.GetBytes(toSign));
-            return Convert.ToBase64String(hash);
+            return Convert.ToBase64String(GenerateSharedSecretHash(key, toSign));
         }
     }
 }

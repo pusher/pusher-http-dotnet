@@ -21,6 +21,8 @@ namespace PusherServer
 
         private readonly IAuthenticatedRequestFactory _factory;
 
+        private readonly IChannelDataEncrypter _dataEncrypter = new ChannelDataEncrypter();
+
         /// <summary>
         /// Pusher library version information.
         /// </summary>
@@ -113,22 +115,44 @@ namespace PusherServer
             return result;
         }
 
+        private string SerializeData(string channelName, object data)
+        {
+            string result = _options.JsonSerializer.Serialize(data);
+            if (IsPrivateEncryptedChannel(channelName))
+            {
+                byte[] key = null;
+                if (_options.EncryptionMasterKey != null)
+                {
+                    key = _options.EncryptionMasterKey;
+                }
+
+                EncryptedChannelData encryptedData = _dataEncrypter.EncryptData(channelName, result, key);
+                result = _options.JsonSerializer.Serialize(encryptedData);
+            }
+
+            return result;
+        }
+
         private TriggerBody CreateTriggerBody(string[] channelNames, string eventName, object data, ITriggerOptions options)
         {
             ValidationHelper.ValidateChannelNames(channelNames);
             ValidationHelper.ValidateSocketId(options.SocketId);
 
+            string channelName = null;
+            if (channelNames != null)
+            {
+                if (channelNames.Length > 0)
+                {
+                    channelName = channelNames[0];
+                }
+            }
+
             TriggerBody bodyData = new TriggerBody()
             {
                 name = eventName,
-                data = _options.JsonSerializer.Serialize(data),
+                data = SerializeData(channelName, data),
                 channels = channelNames
             };
-            string channelName = null;
-            if (channelNames != null && channelNames.Length > 0)
-            {
-                channelName = channelNames[0];
-            }
 
             ValidationHelper.ValidateBatchEventData(bodyData.data, channelName, eventName, _options);
 
@@ -153,7 +177,7 @@ namespace PusherServer
                     name = item.EventName,
                     channel = item.Channel,
                     socket_id = item.SocketId,
-                    data = _options.JsonSerializer.Serialize(item.Data),
+                    data = SerializeData(item.Channel, item.Data),
                 };
                 ValidationHelper.ValidateBatchEventData(batchEvent.data, batchEvent.channel, batchEvent.name, _options);
 
@@ -243,6 +267,20 @@ namespace PusherServer
             return response;
         }
 
+        internal static bool IsPrivateEncryptedChannel(string channelName)
+        {
+            bool result = false;
+            if (channelName != null)
+            {
+                if (channelName.StartsWith("private-encrypted-", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = true;
+                }
+            }
+
+            return result;
+        }
+
         private void DebugTriggerRequest(IPusherRestRequest request)
         {
             _options.TraceLogger?.Trace($"Method: {request.Method}{Environment.NewLine}Host: {_options.RestClient.BaseUrl}{Environment.NewLine}Resource: {request.ResourceUri}{Environment.NewLine}Body:{request.Body}");
@@ -259,20 +297,6 @@ namespace PusherServer
             {
                 throw new ArgumentException($"{argumentName} cannot be null or empty");
             }
-        }
-
-        private static bool IsPrivateEncryptedChannel(string channelName)
-        {
-            bool result = false;
-            if (channelName != null)
-            {
-                if (channelName.StartsWith("private-encrypted-", StringComparison.OrdinalIgnoreCase))
-                {
-                    result = true;
-                }
-            }
-
-            return result;
         }
     }
 }
