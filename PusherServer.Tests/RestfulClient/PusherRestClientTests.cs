@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NUnit.Framework;
 using PusherServer.RestfulClient;
 using PusherServer.Tests.RestfulClient.Fakes;
@@ -15,11 +14,12 @@ namespace PusherServer.Tests.RestfulClient
             var factory = new AuthenticatedRequestFactory(Config.AppKey, Config.AppId, Config.AppSecret);
             var request = factory.Build(PusherMethod.GET, "/channels/newRestClient");
 
-            var client = new PusherRestClient($"http://{Config.HttpHost}", "pusher-http-dotnet", Version.Parse("4.0.0"));
+            var client = new PusherRestClient($"http://{Config.HttpHost}", "pusher-http-dotnet", Pusher.VERSION);
             var response = await client.ExecuteGetAsync<TestOccupied>(request).ConfigureAwait(false);
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.Data.Occupied);
+            Assert.AreEqual(30d, client.Timeout.TotalSeconds);
         }
     }
 }

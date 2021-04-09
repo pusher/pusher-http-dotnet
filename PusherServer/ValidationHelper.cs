@@ -1,4 +1,5 @@
 ﻿using PusherServer.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -30,6 +31,11 @@ namespace PusherServer
         public static int MAX_BATCH_SIZE = 10;
 
         /// <summary>
+        /// The expected encryption master key length.
+        /// </summary>
+        public static int ENCRYPTION_MASTER_KEY_LENGTH = 32;
+
+        /// <summary>
         /// Validate a <paramref name="socketId"/> value.
         /// </summary>
         /// <param name="socketId">The value to be checked.</param>
@@ -50,14 +56,14 @@ namespace PusherServer
         /// <exception cref="ChannelNameFormatException">If the <paramref name="channelName"/> is not in the allowed format.</exception>
         internal static void ValidateChannelName(string channelName)
         {
-            if(channelName.Length > CHANNEL_NAME_MAX_LENGTH)
-            {
-                throw new ChannelNameLengthExceededException(nameof(channelName), channelName.Length);
-            }
-
             if (CHANNEL_NAME_REGEX.IsMatch(channelName) == false)
             {
                 throw new ChannelNameFormatException(actualValue: channelName);
+            }
+
+            if (channelName.Length > CHANNEL_NAME_MAX_LENGTH)
+            {
+                throw new ChannelNameLengthExceededException(nameof(channelName), channelName.Length);
             }
         }
 
@@ -69,9 +75,22 @@ namespace PusherServer
         /// <exception cref="ChannelNameFormatException">If any channel names are not in the allowed format.</exception>
         internal static void ValidateChannelNames(IEnumerable<string> channelNames)
         {
+            int encryptedChannelCount = 0;
+            int channelCount = 0;
             foreach(string name in channelNames)
             {
                 ValidateChannelName(name);
+                if (Pusher.IsPrivateEncryptedChannel(name))
+                {
+                    encryptedChannelCount++;
+                }
+
+                channelCount++;
+            }
+
+            if (channelCount > 1 && encryptedChannelCount >= 1)
+            {
+                throw new InvalidOperationException("You cannot trigger to multiple channels when using encrypted channels.");
             }
         }
 
@@ -117,6 +136,20 @@ namespace PusherServer
                         EventName = eventName,
                     };
                 }
+            }
+        }
+
+        /// <summary>
+        /// Validate a <paramref name="encryptionMasterKey"/> value.
+        /// </summary>
+        /// <param name="encryptionMasterKey">The encryption master key to be checked.</param>
+        /// <exception cref="EncryptionMasterKeyException">If the <paramref name="encryptionMasterKey"/> is not the specified length.</exception>
+        internal static void ValidateEncryptionMasterKey(byte[] encryptionMasterKey)
+        {
+            int length = encryptionMasterKey != null ? encryptionMasterKey.Length : 0;
+            if (length != ENCRYPTION_MASTER_KEY_LENGTH)
+            {
+                throw new EncryptionMasterKeyException(nameof(encryptionMasterKey), length);
             }
         }
     }

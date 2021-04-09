@@ -2,6 +2,8 @@
   <Import Project="..\Root.Build.props" />
 
   <PropertyGroup>
+    <TargetFrameworks>net45;net472;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <NetStandardImplicitPackageVersion>2.0.0</NetStandardImplicitPackageVersion>
     <AssemblyName>PusherServer</AssemblyName>
     <PackageId>PusherServer</PackageId>
   </PropertyGroup>
@@ -10,6 +12,10 @@
     <None Include="Properties\icon-128.png" Pack="true" PackagePath="\" />
     <None Include="..\README.md" Link="Properties\README.md" Pack="true" PackagePath="\" />
     <None Include="..\CHANGELOG.md" Link="Properties\CHANGELOG.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NaCl.Net" Version="0.1.13" />
   </ItemGroup>
 
 </Project>

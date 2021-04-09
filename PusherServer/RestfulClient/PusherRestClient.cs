@@ -32,7 +32,11 @@ namespace PusherServer.RestfulClient
         /// <param name="version">The version of the Pusher library</param>
         public PusherRestClient(Uri baseAddress, string libraryName, Version version)
         {
-            _httpClient = new HttpClient { BaseAddress = baseAddress };
+            _httpClient = new HttpClient 
+            { 
+                BaseAddress = baseAddress,
+                Timeout = TimeSpan.FromSeconds(30),
+            };
             _libraryName = libraryName;
             _version = version.ToString(3);
             _httpClient.DefaultRequestHeaders.Clear();
@@ -47,22 +51,38 @@ namespace PusherServer.RestfulClient
         }
 
         ///<inheritDoc/>
+        public TimeSpan Timeout
+        {
+            get
+            {
+                return _httpClient.Timeout;
+            }
+
+            set
+            {
+                _httpClient.Timeout = value;
+            }
+        }
+
+        ///<inheritDoc/>
         public async Task<GetResult<T>> ExecuteGetAsync<T>(IPusherRestRequest pusherRestRequest)
         {
+            GetResult<T> result = null;
             if (pusherRestRequest.Method == PusherMethod.GET)
             {
                 var response = await _httpClient.GetAsync(pusherRestRequest.ResourceUri).ConfigureAwait(false);
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                return new GetResult<T>(response, responseContent);
+                result = new GetResult<T>(response, responseContent);
             }
 
-            return null;
+            return result;
         }
 
         ///<inheritDoc/>
         public async Task<TriggerResult> ExecutePostAsync(IPusherRestRequest pusherRestRequest)
         {
+            TriggerResult result = null;
             if (pusherRestRequest.Method == PusherMethod.POST)
             {
                 var content = new StringContent(pusherRestRequest.GetContentAsJsonString(), Encoding.UTF8, "application/json");
@@ -70,10 +90,10 @@ namespace PusherServer.RestfulClient
                 var response = await _httpClient.PostAsync(pusherRestRequest.ResourceUri, content).ConfigureAwait(false);
                 var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                return new TriggerResult(response, responseContent);
+                result = new TriggerResult(response, responseContent);
             }
 
-            return null;
+            return result;
         }
     }
 }

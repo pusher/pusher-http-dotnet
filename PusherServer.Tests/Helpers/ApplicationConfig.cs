@@ -16,9 +16,24 @@
         public string AppSecret { get; set; }
 
         /// <inheritdoc/>
-        public string HttpHost { get; set; }
+        public string Cluster { get; set; } = "mt1";
 
         /// <inheritdoc/>
-        public string WebSocketHost { get; set; }
+        public string HttpHost 
+        { 
+            get
+            {
+                return $"api-{Cluster}.pusher.com";
+            }
+        }
+
+        /// <inheritdoc/>
+        public string WebSocketHost
+        {
+            get
+            {
+                return $"ws-{Cluster}.pusher.com";
+            }
+        }
     }
 }

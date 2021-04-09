@@ -12,7 +12,7 @@ namespace PusherServer
         /// <summary>
         /// Gets the static default serializer.
         /// </summary>
-        public static ISerializeObjectsToJson Default { get; private set; } = new DefaultSerializer();
+        public static ISerializeObjectsToJson Default { get; } = new DefaultSerializer();
 
         /// <inheritDoc/>
         public string Serialize(object objectToSerialize)

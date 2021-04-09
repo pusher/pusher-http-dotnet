@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace PusherServer.Tests.Helpers
 {
@@ -9,46 +10,35 @@ namespace PusherServer.Tests.Helpers
         /// Create a Pusher Client, and subscribes a user
         /// </summary>
         /// <param name="pusherServer">Server to connect to</param>
-        /// <param name="reset">The AutoReset to control the subscription by the client</param>
         /// <param name="channelName">The name of the channel to subscribe to</param>
-        /// <returns>A subscribed client</returns>
-        public static PusherClient.Pusher CreateClient(Pusher pusherServer, AutoResetEvent reset, string channelName)
+        /// <returns>An awaitable task</returns>
+        public static async Task CreateClientAsync(Pusher pusherServer, string channelName)
         {
-            PusherClient.Pusher pusherClient =
-                new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions()
-                {
-                    Authorizer = new InMemoryAuthorizer(
-                        pusherServer,
-                        new PresenceChannelData()
-                        {
-                            user_id = "Mr Pusher",
-                            user_info = new { twitter_id = "@pusher" }
-                        })
-                })
-                {
-                    Host = Config.WebSocketHost,
-                };
+            PusherClient.Pusher pusherClient = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
+            {
+                Authorizer = new InMemoryAuthorizer(
+                    pusherServer,
+                    new PresenceChannelData()
+                    {
+                        user_id = "Mr Pusher",
+                        user_info = new { twitter_id = "@pusher" }
+                    }),
+                Cluster = Config.Cluster,
+                TraceLogger = new PusherClient.TraceLogger(),
+            });
 
-            pusherClient.Connected += delegate { reset.Set(); };
+            await pusherClient.ConnectAsync().ConfigureAwait(false);
 
-            pusherClient.Connect();
-
-            reset.WaitOne(TimeSpan.FromSeconds(5));
-
-            var channel = pusherClient.Subscribe(channelName);
-
-            channel.Subscribed += delegate { reset.Set(); };
-
-            reset.WaitOne(TimeSpan.FromSeconds(5));
-
-            return pusherClient;
+            AutoResetEvent subscribedEvent = new AutoResetEvent(false);
+            await pusherClient.SubscribeAsync(channelName, (sender) => { subscribedEvent.Set(); } ).ConfigureAwait(false);
+            subscribedEvent.WaitOne(TimeSpan.FromSeconds(5));
         }
 
         /// <summary>
         /// Create a Pusher Server instance
         /// </summary>
         /// <returns></returns>
-        public static PusherServer.Pusher CreateServer()
+        public static Pusher CreateServer()
         {
             return new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions
             {
