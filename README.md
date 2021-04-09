@@ -316,13 +316,15 @@ IGetResult<object> result = await pusher.FetchStateForChannelsAsync<object>();
 Retrieve a list of users that are on a presence channel:
 
 ```cs
-IGetResult<object> result = await pusher.FetchUsersFromPresenceAsync<object>("/channels/presence-channel/users" );
+IGetResult<object> result =
+    await pusher.FetchUsersFromPresenceChannelAsync<object>("/channels/presence-channel/users");
 ```
 
 or
 
 ```cs
-IGetResult<object> result = await pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel");
+IGetResult<object> result =
+    await pusher.FetchUsersFromPresenceChannelAsync<object>("my_channel");
 ```
 
 *Note: `object` has been used above because as yet there isn't a defined class that the information can be serialized on to*
@@ -394,7 +396,7 @@ From v4.0.0 onwards, this library uses the `async` / `await` [syntax](https://ms
 
 This means that you can now use the Channels .NET library asynchronously using the following code style:
 
-```
+```cs
 using PusherServer;
 
 var options = new PusherOptions();
