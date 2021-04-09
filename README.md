@@ -54,10 +54,10 @@ Install-Package PusherServer
 
 ## Getting started
 
- The minimum configuration required to use the `Pusher` object are the three
-constructor arguments which identify your Pusher Channels app - app id, app key and app secret.
+The minimum configuration required to use the `Pusher` object are the three
+constructor arguments which identify your Pusher app - app id, app key and app secret.
 You can find them by going to "App Keys" on your app at <https://dashboard.pusher.com/apps>.
-If your app is not in the default cluster "mt1", you can specify it via the `PusherOptions`.
+If your app is not in the default cluster "mt1", you can specify it via the `PusherOptions` object.
 
 
 ```cs
@@ -95,24 +95,37 @@ To trigger an event on one or more channels use the `TriggerAsync` function.
 ### Single channel
 
 ```cs
-ITriggerResult result = await pusher.TriggerAsync( "channel-1", "test_event", new { message = "hello world" } );
+ITriggerResult result = await pusher.TriggerAsync("channel-1", "test_event", new
+{
+    message = "hello world"
+}).ConfigureAwait(false);
 ```
 
 ### Multiple channels
 
 ```cs
-ITriggerResult result = await pusher.TriggerAsync( new string[]{ "channel-1", "channel-2" ], "test_event", new { message: "hello world" } );
+ITriggerResult result = await pusher.TriggerAsync(
+    new string[] 
+    { 
+        "channel-1", "channel-2"
+    },
+    "test_event",
+    new
+    {
+        message = "hello world"
+    }).ConfigureAwait(false);
 ```
 
 ### Batches
 
 ```cs
-var events = new[]{
-    new Event {Channel = "channel-1", EventName = "test_event", Data = "hello world"},
-    new Event {Channel = "channel-1", EventName = "test_event", Data = "my name is bob"}
+var events = new[]
+{
+    new Event {Channel = "channel-1", EventName = "event-1", Data = "hello world"},
+    new Event {Channel = "channel-2", EventName = "event-2", Data = "my name is bob"}
 };
 
-ITriggerResult result = await pusher.TriggerAsync(events);
+ITriggerResult result = await pusher.TriggerAsync(events).ConfigureAwait(false);
 ```
 
 ### Detecting event data that exceeds the 10KB threshold
@@ -128,11 +141,12 @@ IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new P
 
 try
 {
-     var events = new[]{
-        new Event {Channel = "channel-1", EventName = "test_event-1", Data = "hello world"},
-        new Event {Channel = "channel-2", EventName = "test_event-2", Data = new string('Q', 10 * 1024 + 1)},
+    var events = new[]
+    {
+        new Event {Channel = "channel-1", EventName = "event-1", Data = "hello world"},
+        new Event {Channel = "channel-2", EventName = "event-2", Data = new string('Q', 10 * 1024 + 1)},
     };
-    await pusher.TriggerAsync(events);
+    await pusher.TriggerAsync(events).ConfigureAwait(false);
 }
 catch (EventDataSizeExceededException eventDataSizeError)
 {
@@ -145,7 +159,10 @@ catch (EventDataSizeExceededException eventDataSizeError)
 In order to avoid the person that triggered the event also receiving it the `trigger` function can take an optional `ITriggerOptions` parameter which has a `SocketId` property. For more information see: <https://pusher.com/docs/channels/server_api/excluding-event-recipients>.
 
 ```cs
-ITriggerResult result = await pusher.TriggerAsync(channel, event, data, new TriggerOptions() { SocketId = "1234.56" } );
+ITriggerResult result = await pusher.TriggerAsync(channel, event, data, new TriggerOptions
+{
+    SocketId = "1234.56"
+}).ConfigureAwait(false);
 ```
 
 ## Authenticating channel subscription
@@ -155,7 +172,7 @@ ITriggerResult result = await pusher.TriggerAsync(channel, event, data, new Trig
 To authorise your users to access private channels on Channels, you can use the `Authenticate` function:
 
 ```cs
-var auth = pusher.Authenticate( channelName, socketId );
+var auth = pusher.Authenticate(channelName, socketId);
 var json = auth.ToJson();
 ```
 
@@ -168,14 +185,16 @@ For more information see: <https://pusher.com/docs/channels/server_api/authentic
 Using presence channels is similar to private channels, but you can specify extra data to identify that particular user:
 
 ```cs
-var channelData = new PresenceChannelData() {
-	user_id: "unique_user_id",
-	user_info: new {
-	  name = "Phil Leggetter"
-	  twitter_id = "@leggetter"
-	}
+var channelData = new PresenceChannelData
+{
+    user_id = "unique_user_id",
+    user_info = new
+    {
+        name = "Phil Leggetter",
+        twitter_id = "@leggetter",
+    }
 };
-var auth = pusher.Authenticate( channelName, socketId, channelData );
+var auth = pusher.Authenticate(channelName, socketId, channelData);
 var json = auth.ToJson();
 ```
 
@@ -253,13 +272,21 @@ IGetResult<ChannelsList> result = await pusher.FetchStateForChannelsAsync<Channe
 You can provide additional parameters to filter the list of channels that is returned.
 
 ```cs
-IGetResult<ChannelsList> result = await pusher.GetAsync<ChannelsList>("/channels", new { filter_by_prefix = "presence-" } );
+IGetResult<ChannelsList> result = await _pusher.GetAsync<ChannelsList>(
+    "/channels",
+    new
+    {
+        filter_by_prefix = "presence-"
+    }).ConfigureAwait(false);
 ```
 
 or
 
 ```cs
-IGetResult<ChannelsList> result = await pusher.FetchStateForChannelsAsync<ChannelsList>(new { filter_by_prefix = "presence-" } );
+IGetResult<ChannelsList> result = await pusher.FetchStateForChannelsAsync<ChannelsList>(new
+{
+    filter_by_prefix = "presence-"
+}).ConfigureAwait(false);
 ```
 
 ### Getting information for a channel
@@ -375,7 +402,10 @@ options.Cluster = APP_CLUSTER;
 
 var pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET, options);
 
-Task<ITriggerResult> resultTask = pusher.TriggerAsync( "my-channel", "my-event", new { message = "hello world" } );
+Task<ITriggerResult> resultTask = pusher.TriggerAsync("my-channel", "my-event", new
+{
+    message = "hello world"
+});
 
 // You can do work here that doesn't rely on the result of TriggerAsync  
 DoIndependentWork();
