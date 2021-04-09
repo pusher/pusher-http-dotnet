@@ -32,7 +32,11 @@ namespace PusherServer.RestfulClient
         /// <param name="version">The version of the Pusher library</param>
         public PusherRestClient(Uri baseAddress, string libraryName, Version version)
         {
-            _httpClient = new HttpClient { BaseAddress = baseAddress };
+            _httpClient = new HttpClient 
+            { 
+                BaseAddress = baseAddress,
+                Timeout = TimeSpan.FromSeconds(30),
+            };
             _libraryName = libraryName;
             _version = version.ToString(3);
             _httpClient.DefaultRequestHeaders.Clear();

@@ -44,7 +44,7 @@ namespace PusherServer
         IPusherRestClient RestClient { get; set; }
 
         /// <summary>
-        /// Gets or sets the Pusher rest client timeout. The default timeout is 100 seconds.
+        /// Gets or sets the Pusher rest client timeout. The default timeout is 30 seconds.
         /// </summary>
         TimeSpan RestClientTimeout { get; set; }
 

@@ -85,7 +85,7 @@ you can specify other options via the `PusherOptions` object:
 | Port                        | Integer           | The REST API port that the HTTP calls will be made to. If `Encrypted` is **true**, will default to port 443. If `Encrypted` is **false**, will default to port 80. |
 | BatchEventDataSizeLimit     | Nullable Integer  | Optional size limit for the `Data` property of a triggered event. If specified, the size check is done client side before submitting the event to the server. The size limit is normally 10KB but SDK customers can request a larger limit. |
 | EncryptionMasterKey         | Byte Array        | Optional 32 byte encryption key required for end-to-end encryption of private channels.                                                                            |
-| RestClientTimeout           | TimeSpan          | The Pusher REST API timeout. The default timeout is 100 seconds.                                                                                                   |
+| RestClientTimeout           | TimeSpan          | The Pusher REST API timeout. The default timeout is 30 seconds.                                                                                                    |
 | TraceLogger                 | ITraceLogger      | Used for tracing diagnostic events. Should not be set in production code.                                                                                          |
 
 ## Triggering events

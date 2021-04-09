@@ -19,7 +19,7 @@ namespace PusherServer.Tests.RestfulClient
 
             Assert.IsNotNull(response);
             Assert.IsFalse(response.Data.Occupied);
-            Assert.AreEqual(100d, client.Timeout.TotalSeconds);
+            Assert.AreEqual(30d, client.Timeout.TotalSeconds);
         }
     }
 }

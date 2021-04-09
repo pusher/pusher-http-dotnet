@@ -99,7 +99,7 @@ namespace PusherServer
         }
 
         /// <inheritDoc/>
-        public TimeSpan RestClientTimeout { get; set; } = TimeSpan.FromSeconds(100);
+        public TimeSpan RestClientTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
         /// <inheritDoc/>
         public string HostName
