@@ -29,14 +29,13 @@ namespace PusherServer.Tests.Helpers
 
         internal static byte[] GenerateEncryptionMasterKey()
         {
-            byte[] key = null;
+            byte[] encryptionMasterKey = new byte[32];
             using (RandomNumberGenerator random = RandomNumberGenerator.Create())
             {
-                key = new byte[32];
-                random.GetBytes(key);
+                random.GetBytes(encryptionMasterKey);
             }
 
-            return key;
+            return encryptionMasterKey;
         }
     }
 }

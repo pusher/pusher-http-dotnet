@@ -5,7 +5,6 @@ using PusherServer.Tests.Helpers;
 using PusherServer.Util;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -142,12 +141,13 @@ namespace PusherServer.Tests.AcceptanceTests
         [OneTimeSetUp]
         public void Setup()
         {
-            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions
             {
-                HostName = Config.HttpHost,
-                TraceLogger = new DebugTraceLogger(),
+                Cluster = Config.Cluster,
                 EncryptionMasterKey = DataHelper.GenerateEncryptionMasterKey(),
+                Encrypted = true,
                 BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
+                TraceLogger = new DebugTraceLogger(),
             });
         }
 
