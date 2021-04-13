@@ -2,8 +2,7 @@
   <Import Project=".\NetFxOnLinux.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>net45;net472;netstandard1.3;netstandard2.0</TargetFrameworks>
-    <Authors>Pusher, Phil Leggetter, John McLoughlin</Authors>
+    <Authors>Pusher</Authors>
     <Company>Pusher</Company>
     <Description>Pusher .NET library for interacting with the HTTP API</Description>
     <Copyright>Copyright © 2021</Copyright>
@@ -13,13 +12,13 @@
     <PackageTags>pusher channels realtime websocket</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon-128.png</PackageIcon>
-    <Version>4.4.0</Version>
+    <Version>4.5.0</Version>
     <AssemblyVersion>$(Version).0</AssemblyVersion>
     <FileVersion>$(Version).0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net472' ">

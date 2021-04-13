@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.5.0
+* [ADDED] End-to-end encryption using NaCl.Net.
+* [ADDED] EncryptionMasterKey and RestClientTimeout properties to IPusherOptions.
+* [ADDED] Cluster property to test application settings.
+* [CHANGED] Default timeout from 100 to 30 seconds.
+
 ## 4.4.0
 * [REMOVED] PusherServer.Core project
 * [FIXED] Use .ConfigureAwait(false) on every await

@@ -16,6 +16,11 @@
         string channel_data { get; }
 
         /// <summary>
+        /// Gets the shared secret for an encrypted private channel.
+        /// </summary>
+        string shared_secret { get; }
+
+        /// <summary>
         /// Returns a Json representation of the authentication data.
         /// </summary>
         /// <returns></returns>

@@ -21,13 +21,18 @@
         string AppSecret { get; set; }
 
         /// <summary>
-        /// Gets or sets the Pusher server API host name. For example, api-mt1.pusher.com.
+        /// Gets or sets the Pusher application cluster.
         /// </summary>
-        string HttpHost { get; set; }
+        string Cluster { get; set; }
 
         /// <summary>
-        /// Gets or sets the Pusher client API host name. For example, ws-mt1.pusher.com.
+        /// Gets the Pusher server API host name. For example, api-mt1.pusher.com.
         /// </summary>
-        string WebSocketHost { get; set; }
+        string HttpHost { get; }
+
+        /// <summary>
+        /// Gets the Pusher client API host name. For example, ws-mt1.pusher.com.
+        /// </summary>
+        string WebSocketHost { get; }
     }
 }

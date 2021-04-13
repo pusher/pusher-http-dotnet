@@ -36,12 +36,17 @@ namespace PusherServer
         IDeserializeJsonStrings JsonDeserializer { get; set; }
 
         /// <summary>
-        /// Gets or sets the pusher rest client. Generally only expected to be used for testing.
+        /// Gets or sets the Pusher rest client. Generally only expected to be used for testing.
         /// </summary>
         /// <value>
         /// The pusher rest client.
         /// </value>
         IPusherRestClient RestClient { get; set; }
+
+        /// <summary>
+        /// Gets or sets the Pusher rest client timeout. The default timeout is 30 seconds.
+        /// </summary>
+        TimeSpan RestClientTimeout { get; set; }
 
         /// <summary>
         /// The host of the HTTP API endpoint excluding the scheme e.g. api.pusherapp.com
@@ -68,6 +73,11 @@ namespace PusherServer
         /// Gets or sets the <see cref="ITraceLogger"/> to use for tracing debug messages.
         /// </summary>
         ITraceLogger TraceLogger { get; set; }
+
+        /// <summary>
+        /// Gets or sets the encryption master key. The key is required to be 32 bytes in length.
+        /// </summary>
+        byte[] EncryptionMasterKey { get; set; }
 
         /// <summary>
         /// Gets the base Url based on the set Options

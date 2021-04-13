@@ -2,6 +2,5 @@
   "AppId": "",
   "AppKey": "",
   "AppSecret": "",
-  "HttpHost": "api-{Cluster}.pusher.com",
-  "WebSocketHost": "ws-{Cluster}.pusher.com"
+  "Cluster": "mt1"
 }

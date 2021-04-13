@@ -19,16 +19,16 @@ namespace PusherServer
         /// <param name="responseContent">The response content as a string</param>
         public TriggerResult(HttpResponseMessage response, string responseContent) : base(response, responseContent)
         {
-            EventIdData eventIdData = null;
+            EventIdData eventIdData;
 
             try
             {
                 eventIdData = JsonConvert.DeserializeObject<EventIdData>(responseContent);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 string msg = $"The response body from the Pusher HTTP endpoint could not be parsed as JSON: {Environment.NewLine}{responseContent}";
-                throw new TriggerResponseException(msg);
+                throw new TriggerResponseException(msg, e);
             }
 
             EventIds = new ReadOnlyDictionary<string, string>(eventIdData.event_ids);

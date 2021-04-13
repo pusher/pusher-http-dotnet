@@ -5,7 +5,6 @@ using PusherServer.Tests.Helpers;
 using PusherServer.Util;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -14,15 +13,34 @@ using System.Threading.Tasks;
 
 namespace PusherServer.Tests.AcceptanceTests
 {
+    public class TestData
+    {
+        public TestData(string message)
+        {
+            Id = Guid.NewGuid();
+            Message = message;
+        }
+
+        public Guid Id { get; set; }
+
+        public string Message { get; set; }
+
+        public void Validate(TestData actual)
+        {
+            Assert.IsNotNull(actual, nameof(TestData));
+            Assert.AreEqual(Id, actual.Id, nameof(TestData.Id));
+            Assert.AreEqual(Message, actual.Message, nameof(TestData.Message));
+        }
+    }
+
     [TestFixture]
-    public class When_Triggering_an_Event_on_a_single_Channel
+    public class When_triggering_an_event_on_a_single_channel
     {
         IPusher _pusher;
 
         [OneTimeSetUp]
         public void Setup()
         {
-            PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
                 HostName = Config.HttpHost,
@@ -40,13 +58,9 @@ namespace PusherServer.Tests.AcceptanceTests
 
         [Test]
         [Ignore("This test requires a node that support batch triggers, which isn't available on the default")]
-        public async Task it_should_expose_the_event_id_async()
+        public async Task It_should_expose_the_event_id_async()
         {
-            var waiting = new AutoResetEvent(false);
-
             ITriggerResult asyncResult = await _pusher.TriggerAsync("my-channel", "my_event", new { hello = "world" }).ConfigureAwait(false);
-
-            waiting.Set();
 
             Assert.IsFalse(string.IsNullOrEmpty(asyncResult.EventIds["my-channel"]));
         }
@@ -54,58 +68,38 @@ namespace PusherServer.Tests.AcceptanceTests
         [Test]
         public async Task It_should_be_received_by_a_client_async()
         {
+            TestData actual = null;
+            TestData expected = new TestData("Hello World!");
             string channelName = "my_channel";
             string eventName = "my_event";
 
-            bool eventReceived = false;
-            AutoResetEvent reset = new AutoResetEvent(false);
+            AutoResetEvent eventReceived = new AutoResetEvent(false);
 
-            var client = new PusherClient.Pusher(Config.AppKey)
+            var client = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
             {
-                Host = Config.WebSocketHost,
-            };
-            client.Connected += new PusherClient.ConnectedEventHandler(delegate (object sender)
-            {
-                Debug.WriteLine("connected");
-                reset.Set();
+                Cluster = Config.Cluster,
+                TraceLogger = new PusherClient.TraceLogger(),
             });
 
-            Debug.WriteLine("connecting");
-            client.Connect();
+            await client.ConnectAsync().ConfigureAwait(false);
 
-            Debug.WriteLine("waiting to connect");
-            reset.WaitOne(TimeSpan.FromSeconds(5));
+            var channel = await client.SubscribeAsync(channelName).ConfigureAwait(false);
 
-            Debug.WriteLine("subscribing");
-            var channel = client.Subscribe(channelName);
-            channel.Subscribed += new PusherClient.SubscriptionEventHandler(delegate (object s)
+            channel.Bind(eventName, delegate (PusherClient.PusherEvent data)
             {
-                Debug.WriteLine("subscribed");
-                reset.Set();
+                actual = JsonConvert.DeserializeObject<TestData>(data.Data);
+                eventReceived.Set();
             });
 
-            Debug.WriteLine("waiting for Subscribed");
-            reset.WaitOne(TimeSpan.FromSeconds(5));
+            await _pusher.TriggerAsync(channelName, eventName, expected).ConfigureAwait(false);
 
-            Debug.WriteLine("binding");
-            channel.Bind(eventName, delegate (dynamic data)
-            {
-                Debug.WriteLine("event received");
-                eventReceived = true;
-                reset.Set();
-            });
-
-            Debug.WriteLine("Bound. Triggering");
-            await _pusher.TriggerAsync(channelName, eventName, new { hello = "world" }).ConfigureAwait(false);
-
-            Debug.WriteLine("waiting for event to be received");
-            reset.WaitOne(TimeSpan.FromSeconds(10));
-
-            Assert.IsTrue(eventReceived);
+            Assert.IsTrue(channel.IsSubscribed, nameof(channel.IsSubscribed));
+            Assert.IsTrue(eventReceived.WaitOne(TimeSpan.FromSeconds(5)), "Expected to receive an event");
+            expected.Validate(actual);
         }
 
         [Test]
-        public async Task it_can_trigger_an_event_with_a_percent_in_the_message_async()
+        public async Task It_can_trigger_an_event_with_a_percent_in_the_message_async()
         {
             string fileName = Path.Combine(Assembly.GetExecutingAssembly().Location, @"../../../../AcceptanceTests/percent-message.json");
             var eventJSON = File.ReadAllText(fileName);
@@ -128,19 +122,103 @@ namespace PusherServer.Tests.AcceptanceTests
             List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size);
             try
             {
-                await pusher.TriggerAsync("my-channel", "my_event", largeEvent[0]).ConfigureAwait(false);
+                await pusher.TriggerAsync(largeEvent[0].Channel, largeEvent[0].EventName, largeEvent[0]).ConfigureAwait(false);
             }
             catch(EventDataSizeExceededException e)
             {
-                Assert.AreEqual("my-channel", e.ChannelName, nameof(e.ChannelName));
-                Assert.AreEqual("my_event", e.EventName, nameof(e.EventName));
+                Assert.AreEqual(largeEvent[0].Channel, e.ChannelName, nameof(e.ChannelName));
+                Assert.AreEqual(largeEvent[0].EventName, e.EventName, nameof(e.EventName));
                 throw;
             }
         }
     }
 
     [TestFixture]
-    public class When_Triggering_an_Event_on_a_multiple_Channels
+    public class When_triggering_an_encrypted_event_on_a_single_channel
+    {
+        IPusher _pusher;
+
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions
+            {
+                Cluster = Config.Cluster,
+                EncryptionMasterKey = DataHelper.GenerateEncryptionMasterKey(),
+                Encrypted = true,
+                BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
+                TraceLogger = new DebugTraceLogger(),
+            });
+        }
+
+        [Test]
+        public async Task It_should_return_a_200_response_async()
+        {
+            string channelName = "private-encrypted-channel";
+            string eventName = "my-encrypted-event";
+            ITriggerResult asyncResult = await _pusher.TriggerAsync(channelName, eventName, new TestData("Hello World!")).ConfigureAwait(false);
+
+            Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
+        }
+
+        [Test]
+        public async Task It_should_be_received_by_a_client_async()
+        {
+            string channelName = "private-encrypted-channel";
+            string eventName = "my-encrypted-event";
+            string eventData = null;
+
+            AutoResetEvent eventReceived = new AutoResetEvent(false);
+
+            var client = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
+            {
+                Cluster = Config.Cluster,
+                TraceLogger = new PusherClient.TraceLogger(),
+                Authorizer = new InMemoryAuthorizer(_pusher as Pusher),
+            });
+
+            await client.ConnectAsync().ConfigureAwait(false);
+
+            var channel = await client.SubscribeAsync(channelName).ConfigureAwait(false);
+
+            channel.Bind(eventName, delegate (PusherClient.PusherEvent data)
+            {
+                eventData = data.Data;
+                eventReceived.Set();
+            });
+
+            var testData = new TestData("Hello World!");
+            await _pusher.TriggerAsync(channelName, eventName, testData).ConfigureAwait(false);
+
+            Assert.IsTrue(channel.IsSubscribed, nameof(channel.IsSubscribed));
+            Assert.IsTrue(eventReceived.WaitOne(TimeSpan.FromSeconds(5)), "Expected to receive an event");
+            Assert.IsNotNull(eventData, nameof(eventData));
+            Assert.IsFalse(eventData.Contains(testData.Message), testData.Message);
+        }
+
+        [Test]
+        [ExpectedException(typeof(EventDataSizeExceededException))]
+        public async Task It_should_fail_for_an_event_data_size_greater_than_10KB_async()
+        {
+            string channelName = "private-encrypted-channel";
+            string eventName = "my-encrypted-event";
+            int size = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT + 1;
+            List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size, channelId: channelName, eventId: eventName);
+            try
+            {
+                await _pusher.TriggerAsync(largeEvent[0].Channel, largeEvent[0].EventName, largeEvent[0]).ConfigureAwait(false);
+            }
+            catch (EventDataSizeExceededException e)
+            {
+                Assert.AreEqual(largeEvent[0].Channel, e.ChannelName, nameof(e.ChannelName));
+                Assert.AreEqual(largeEvent[0].EventName, e.EventName, nameof(e.EventName));
+                throw;
+            }
+        }
+    }
+
+    [TestFixture]
+    public class When_triggering_an_event_on_multiple_channels
     {
         [Test]
         public async Task It_should_return_a_200_response_async()
@@ -154,10 +232,22 @@ namespace PusherServer.Tests.AcceptanceTests
 
             Assert.AreEqual(HttpStatusCode.OK, asyncResult.StatusCode);
         }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public async Task It_should_fail_if_an_encrypted_channel_is_included_async()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost
+            });
+
+            await pusher.TriggerAsync(new string[] { "my-channel-1", "private-encrypted-channel-2" }, "my_event", new { hello = "world" }).ConfigureAwait(false);
+        }
     }
 
     [TestFixture]
-    public class When_Triggering_a_Batch_of_Events
+    public class When_triggering_a_batch_of_events
     {
         [Test]
         public async Task It_should_return_a_200_response_async()
@@ -199,8 +289,8 @@ namespace PusherServer.Tests.AcceptanceTests
             }
             catch (EventDataSizeExceededException e)
             {
-                Assert.AreEqual("testChannel", e.ChannelName, nameof(e.ChannelName));
-                Assert.AreEqual("testEvent", e.EventName, nameof(e.EventName));
+                Assert.AreEqual(largeEvent[0].Channel, e.ChannelName, nameof(e.ChannelName));
+                Assert.AreEqual(largeEvent[0].EventName, e.EventName, nameof(e.EventName));
                 throw;
             }
         }
@@ -221,15 +311,75 @@ namespace PusherServer.Tests.AcceptanceTests
     }
 
     [TestFixture]
-    public class When_Triggering_an_Event_over_HTTPS
+    public class When_triggering_an_encrypted_batch_of_events
+    {
+        [Test]
+        public async Task It_should_return_a_200_response_async()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost,
+                BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
+                EncryptionMasterKey = DataHelper.GenerateEncryptionMasterKey(),
+            });
+
+            List<Event> events = DataHelper.CreateEvents(numberOfEvents: 9, eventSizeInBytes: 84, channelId: "private-encrypted-channel");
+            var result = await pusher.TriggerAsync(events.ToArray()).ConfigureAwait(false);
+
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+        }
+
+        [Test]
+        [ExpectedException(typeof(EventDataSizeExceededException))]
+        public async Task It_should_fail_for_an_event_data_size_greater_than_10KB_async()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost,
+                BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
+                EncryptionMasterKey = DataHelper.GenerateEncryptionMasterKey(),
+            });
+
+            List<Event> events = DataHelper.CreateEvents(numberOfEvents: 9, eventSizeInBytes: 84, channelId: "private-encrypted-channel");
+            int size = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT + 1;
+            List<Event> largeEvent = DataHelper.CreateEvents(numberOfEvents: 1, eventSizeInBytes: size, channelId: "private-encrypted-channel");
+            events.AddRange(largeEvent);
+
+            try
+            {
+                await pusher.TriggerAsync(events.ToArray()).ConfigureAwait(false);
+            }
+            catch (EventDataSizeExceededException e)
+            {
+                Assert.AreEqual(largeEvent[0].Channel, e.ChannelName, nameof(e.ChannelName));
+                Assert.AreEqual(largeEvent[0].EventName, e.EventName, nameof(e.EventName));
+                throw;
+            }
+        }
+
+        [Test]
+        [ExpectedException(typeof(EventBatchSizeExceededException))]
+        public async Task It_should_fail_for_a_batch_size_greater_than_10_async()
+        {
+            IPusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
+            {
+                HostName = Config.HttpHost,
+                BatchEventDataSizeLimit = PusherOptions.DEFAULT_BATCH_EVENT_DATA_SIZE_LIMIT,
+            });
+
+            List<Event> events = DataHelper.CreateEvents(numberOfEvents: 11, eventSizeInBytes: 92, channelId: "private-encrypted-channel");
+            await pusher.TriggerAsync(events.ToArray()).ConfigureAwait(false);
+        }
+    }
+
+    [TestFixture]
+    public class When_triggering_an_event_over_https
     {
         IPusher _pusher = null;
 
         [OneTimeSetUp]
         public void Setup()
         {
-            PusherClient.Pusher.Trace.Listeners.Add(new ConsoleTraceListener(true));
-
             _pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
                 Encrypted = true,
