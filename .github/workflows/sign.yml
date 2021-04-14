@@ -1,8 +1,9 @@
-name: Publish
+name: Test signing
 
 on:
+  pull_request:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
 
 jobs:
   build:
@@ -24,5 +25,4 @@ jobs:
       run: msbuild /p:SignAssembly=true /p:deterministic=true /p:msbuildArchitecture=x64 /p:configuration=Release pusher-dotnet-server.sln
     - name: Pack
       run: msbuild /t:Pack /p:SignAssembly=true /p:configuration=release PusherServer/PusherServer.csproj
-    - name: Publish
-      run: nuget push PusherServer\bin\release\PusherServer.*.nupkg -NonInteractive -Source https://api.nuget.org/v3/index.json -SkipDuplicate -ApiKey ${{ secrets.NUGET_API_KEY }}
+

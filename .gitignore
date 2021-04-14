@@ -20,3 +20,4 @@ PusherServer.Core/project.lock.json
 *.userprefs
 TestResults/
 AppConfig.test.json
+PusherServer.snk
