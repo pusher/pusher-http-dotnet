@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.6.0
+* [ADDED] Strong name to the PusherServer assembly.
+
 ## 4.5.0
 * [ADDED] End-to-end encryption using NaCl.Net.
 * [ADDED] EncryptionMasterKey and RestClientTimeout properties to IPusherOptions.
