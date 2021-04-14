@@ -4,7 +4,16 @@
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
+
+  <PropertyGroup Condition="$(SignAssembly) == 'true'">
+    <AssemblyOriginatorKeyFile>..\PusherServer.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\PusherServer.snk" Link="PusherServer.snk" Pack="false" Condition="$(SignAssembly) == 'true'" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PusherServer\PusherServer.csproj" />

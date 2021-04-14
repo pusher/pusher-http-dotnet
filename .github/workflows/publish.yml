@@ -13,11 +13,16 @@ jobs:
     - uses: actions/checkout@v2
     - name: Setup MS Build
       uses: microsoft/setup-msbuild@v1.0.2
+    - name: Write code signing key
+      env:
+        CI_CODE_SIGN_KEY: ${{ secrets.CI_CODE_SIGN_KEY }}
+      run: |
+        ./StrongName/WritePusherKey.ps1
     - name: Restore dependencies
       run: nuget restore pusher-dotnet-server.sln
     - name: Build
-      run: msbuild /p:deterministic=true /p:msbuildArchitecture=x64 /p:configuration=Release pusher-dotnet-server.sln
+      run: msbuild /p:SignAssembly=true /p:deterministic=true /p:msbuildArchitecture=x64 /p:configuration=Release pusher-dotnet-server.sln
     - name: Pack
-      run: msbuild /t:Pack /p:configuration=release PusherServer/PusherServer.csproj
+      run: msbuild /t:Pack /p:SignAssembly=true /p:configuration=release PusherServer/PusherServer.csproj
     - name: Publish
       run: nuget push PusherServer\bin\release\PusherServer.*.nupkg -NonInteractive -Source https://api.nuget.org/v3/index.json -SkipDuplicate -ApiKey ${{ secrets.NUGET_API_KEY }}

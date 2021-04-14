@@ -39,6 +39,7 @@ Comprehensive documentation can be found at <http://pusher.com/docs/channels>.
   - [Getting user information for a presence channel](#getting-user-information-for-a-presence-channel)
 - [Webhooks](#webhooks)
 - [Developer notes](#developer-notes)
+  - [Code signing key generation](#code-signing-key-generation)
   - [Debug tracing](#debug-tracing)
   - [Asynchronous programming](#asynchronous-programming)
   - [Alternative environments](#alternative-environments)
@@ -378,6 +379,24 @@ The Pusher test application settings are now loaded from a JSON config file stor
 Make a copy of `./AppConfig.sample.json` and name it `AppConfig.test.json`.
 Modify the contents of `AppConfig.test.json` with your test application settings.
 You should be good to run all the tests successfully.
+
+### Code signing key generation
+
+To generate a new signing key, open a PowerShell command console and execute the command
+
+```powershell
+./StrongName/GeneratePusherKey.ps1
+```
+
+Copy the public key file `PusherServer.public.snk` to the source root folder.
+
+Take the base 64 encoded string and add it to the environment secret named CI_CODE_SIGN_KEY. This is used by `publish.yml`. Once this step is done remove all traces of the private signing key file.
+
+Also copy the PublicKey and apply it to the code file ./PusherServer/Properties/AssemblyInfo.Signed.cs; for example
+
+```cs
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("PusherServer.Tests, PublicKey=002400000...7dd")]
+```
 
 ### Debug tracing
 
