@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.6.1
+* [FIXED] PusherClient test integration to 2.1.0.
+
 ## 4.6.0
 * [ADDED] Strong name to the PusherServer assembly.
 
