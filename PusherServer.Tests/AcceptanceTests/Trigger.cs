@@ -193,7 +193,7 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.IsTrue(channel.IsSubscribed, nameof(channel.IsSubscribed));
             Assert.IsTrue(eventReceived.WaitOne(TimeSpan.FromSeconds(5)), "Expected to receive an event");
             Assert.IsNotNull(eventData, nameof(eventData));
-            Assert.IsFalse(eventData.Contains(testData.Message), testData.Message);
+            Assert.IsTrue(eventData.Contains(testData.Message), testData.Message);
         }
 
         [Test]
