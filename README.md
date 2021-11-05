@@ -71,6 +71,8 @@ var options = new PusherOptions
 var pusher = new Pusher(APP_ID, APP_KEY, APP_SECRET, options);
 ```
 
+For best practise, you should create a `Pusher` singleton and reuse it.
+
 **Please Note:** the `Cluster` option is overridden by `HostName` option. So, if `HostName` is set then `Cluster` will be ignored.
 
 ## Configuration
