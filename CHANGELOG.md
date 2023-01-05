@@ -1,5 +1,10 @@
 # Changelog
 
+## 4.7.0
+* [ADDED] AuthenticateUser
+* [ADDED] AuthorizeChannel
+* [DEPRECATED] Authenticate
+
 ## 4.6.1
 * [FIXED] PusherClient test integration to 2.1.0.
 
