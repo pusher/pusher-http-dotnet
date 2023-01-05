@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.7.0
+## 4.7.0-beta
 * [ADDED] AuthenticateUser
 * [ADDED] AuthorizeChannel
 * [DEPRECATED] Authenticate
