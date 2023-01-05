@@ -13,8 +13,8 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon-128.png</PackageIcon>
     <Version>4.6.1</Version>
-    <AssemblyVersion>$(Version).0</AssemblyVersion>
-    <FileVersion>$(Version).0</FileVersion>
+    <AssemblyVersion>4.6.1.0</AssemblyVersion>
+    <FileVersion>4.6.1.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
