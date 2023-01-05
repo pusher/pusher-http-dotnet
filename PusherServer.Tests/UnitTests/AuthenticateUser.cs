@@ -19,7 +19,7 @@ namespace PusherServer.Tests.UnitTests
 
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
-        public void null_presence_data_throw_Exception()
+        public void null_user_data_throw_Exception()
         {
             string socketId = "some_socket_id";
 
