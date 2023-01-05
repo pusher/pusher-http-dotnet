@@ -37,22 +37,67 @@ namespace PusherServer
         Task<ITriggerResult> TriggerAsync(Event[] events);
 
         /// <summary>
-        /// Authenticates the subscription request for a private channel.
+        /// DEPRECATED: Use <see cref="AuthorizeChannel" /> instead.
+        /// Authorizes the subscription request for a private channel.
         /// </summary>
         /// <param name="channelName">Name of the channel to be authenticated.</param>
         /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
-        /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
+        /// <returns>
+        /// Authorization response where the required auth token can be accessed via <see cref="IChannelAuthorizationResponse.auth"/>
+        /// The full response can be accessed via <see cref="IChannelAuthorizationResponse.ToJson()"/>
+        /// </returns>
         IAuthenticationData Authenticate(string channelName, string socketId);
 
         /// <summary>
-        /// Authenticates the subscription request for a presence channel.
+        /// DEPRECATED: Use <see cref="AuthorizeChannel" /> instead.
+        /// Authorizes the subscription request for a presence channel.
         /// </summary>
         /// <param name="channelName">Name of the channel to be authenticated.</param>
         /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
         /// <param name="data">Information about the user subscribing to the presence channel.</param>
         /// <exception cref="ArgumentNullException">If <paramref name="data"/> is null</exception>
-        /// <returns>Authentication data where the required authentication token can be accessed via <see cref="IAuthenticationData.auth"/></returns>
+        /// <returns>
+        /// Authorization response where the required auth token can be accessed via <see cref="IChannelAuthorizationResponse.auth"/>
+        /// The full response can be accessed via <see cref="IChannelAuthorizationResponse.ToJson()"/>
+        /// </returns>
         IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData data);
+
+        /// <summary>
+        /// Authorizes the subscription request for a private channel.
+        /// </summary>
+        /// <param name="channelName">Name of the channel to be authenticated.</param>
+        /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
+        /// <returns>
+        /// Authorization response where the required auth token can be accessed via <see cref="IChannelAuthorizationResponse.auth"/>
+        /// The full response can be accessed via <see cref="IChannelAuthorizationResponse.ToJson()"/>
+        /// </returns>
+        IChannelAuthorizationResponse AuthorizeChannel(string channelName, string socketId);
+
+        /// <summary>
+        /// Authorizes the subscription request for a presence channel.
+        /// </summary>
+        /// <param name="channelName">Name of the channel to be authenticated.</param>
+        /// <param name="socketId">The socket id which uniquely identifies the connection attempting to subscribe to the channel.</param>
+        /// <param name="data">Information about the user subscribing to the presence channel.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="data"/> is null</exception>
+        /// <returns>
+        /// Authorization response where the required auth token can be accessed via <see cref="IChannelAuthorizationResponse.auth"/>
+        /// The full response can be accessed via <see cref="IChannelAuthorizationResponse.ToJson()"/>
+        /// </returns>
+        IChannelAuthorizationResponse AuthorizeChannel(string channelName, string socketId, PresenceChannelData data);
+
+        /// <summary>
+        /// Authenticates a user to Pusher.
+        /// </summary>
+        /// <param name="socketId">The socket id which uniquely identifies the connection attempting to authenticate a user.</param>
+        /// <param name="userData">Information about the user.</param>
+        /// <exception cref="ArgumentNullException">If <paramref name="userData"/> is null</exception>
+        /// <returns>
+        /// Authentication response where the required auth token can be accessed via <see cref="IUserAuthenticationResponse.auth"/>
+        /// The full response can be accessed via <see cref="IUserAuthenticationResponse.ToJson()"/>
+        /// </returns>
+        IUserAuthenticationResponse AuthenticateUser(string socketId, UserData userData);
+
 
         /// <summary>
         /// Makes an asynchronous GET request to the specified resource. Authentication is handled as part of the call. The data returned from the request is deserizlized to the object type defined by <typeparamref name="T"/>.
