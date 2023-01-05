@@ -103,23 +103,6 @@ namespace PusherServer.Tests.UnitTests
             Assert.AreEqual(userDataJson, result.user_data);
         }
 
-        [Test]
-        public void channel_data_is_encoded_as_JSON()
-        {
-            string socketId = "123.456";
-
-            UserData userData = new UserData()
-            {
-                id = "unique_user_id",
-                watchlist = new string[] { "user1", "user2" },
-                user_info = new { twitter_id = "@leggetter" }
-            };
-            string userDataJson = DefaultSerializer.Default.Serialize(userData);
-
-            IUserAuthenticationResponse result = _pusher.AuthenticateUser(socketId, userData);
-            Assert.AreEqual(userDataJson, result.user_data);
-        }
-
         private string CreateSignedString(string socketId, string userDataJson)
         {
             var stringToSign = socketId + "::user::" + userDataJson;
