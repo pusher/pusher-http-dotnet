@@ -3,7 +3,7 @@
 namespace PusherServer
 {
     [DataContract]
-    class AuthenticationData: IAuthenticationData
+    class ChannelAuthorizationResponse: IChannelAuthorizationResponse, IAuthenticationData
     {
         private readonly string _appKey;
         private readonly string _appSecret;
@@ -12,7 +12,7 @@ namespace PusherServer
         private readonly PresenceChannelData _presenceData;
         private readonly byte[] _key;
 
-        public AuthenticationData(string appKey, string appSecret, string channelName, string socketId)
+        public ChannelAuthorizationResponse(string appKey, string appSecret, string channelName, string socketId)
         {
             ValidationHelper.ValidateChannelName(channelName);
             ValidationHelper.ValidateSocketId(socketId);
@@ -23,7 +23,7 @@ namespace PusherServer
             _socketId = socketId;
         }
 
-        public AuthenticationData(string appKey, string appSecret, string channelName, string socketId, byte[] masterEncryptionKey)
+        public ChannelAuthorizationResponse(string appKey, string appSecret, string channelName, string socketId, byte[] masterEncryptionKey)
             : this(appKey, appSecret, channelName, socketId)
         {
             ValidationHelper.ValidateEncryptionMasterKey(masterEncryptionKey);
@@ -31,7 +31,7 @@ namespace PusherServer
             _key = masterEncryptionKey;
         }
 
-        public AuthenticationData(string appKey, string appSecret, string channelName, string socketId, PresenceChannelData presenceData)
+        public ChannelAuthorizationResponse(string appKey, string appSecret, string channelName, string socketId, PresenceChannelData presenceData)
             : this(appKey, appSecret, channelName, socketId)
         {
             _presenceData = presenceData;

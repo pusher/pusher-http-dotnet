@@ -16,7 +16,7 @@ namespace PusherServer.Tests.Helpers
         {
             PusherClient.Pusher pusherClient = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
             {
-                Authorizer = new InMemoryAuthorizer(
+                ChannelAuthorizer = new InMemoryChannelAuthorizer(
                     pusherServer,
                     new PresenceChannelData()
                     {

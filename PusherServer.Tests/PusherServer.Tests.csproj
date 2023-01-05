@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45</TargetFrameworks>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsPackable>false</IsPackable>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
@@ -25,10 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="nunit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="NSubstitute" Version="1.10.0.0" />
-    <PackageReference Include="PusherClient" Version="2.1.0" />
+    <PackageReference Include="PusherClient" Version="2.3.0-beta" />
     <PackageReference Include="WebSocket4Net" Version="0.15.2" />
   </ItemGroup>
 

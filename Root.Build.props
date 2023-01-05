@@ -12,17 +12,18 @@
     <PackageTags>pusher channels realtime websocket</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon-128.png</PackageIcon>
-    <Version>4.6.1</Version>
-    <AssemblyVersion>$(Version).0</AssemblyVersion>
-    <FileVersion>$(Version).0</FileVersion>
+    <Version>4.7.0-beta</Version>
+    <AssemblyVersion>4.7.0.0</AssemblyVersion>
+    <FileVersion>4.7.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' OR '$(TargetFramework)' == 'net472' ">
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime" />
   </ItemGroup>
 
 </Project>

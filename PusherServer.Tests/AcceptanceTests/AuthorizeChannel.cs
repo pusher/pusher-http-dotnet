@@ -5,10 +5,10 @@ using PusherServer.Tests.Helpers;
 namespace PusherServer.Tests.AcceptanceTests
 {
     [TestFixture]
-    public class When_authenticating_a_private_subscription
+    public class When_authorizing_a_private_subscription
     {
         [Test]
-        public async Task the_authentication_token_for_a_private_channel_should_be_accepted_by_Pusher()
+        public async Task the_auth_token_for_a_private_channel_should_be_accepted_by_Pusher()
         {
             PusherServer.Pusher pusherServer = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
@@ -16,7 +16,7 @@ namespace PusherServer.Tests.AcceptanceTests
             });
             PusherClient.Pusher pusherClient = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
             {
-                Authorizer = new InMemoryAuthorizer(pusherServer),
+                ChannelAuthorizer = new InMemoryChannelAuthorizer(pusherServer),
                 Cluster = Config.Cluster,
                 TraceLogger = new PusherClient.TraceLogger(),
             });
@@ -31,7 +31,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async Task the_authentication_token_for_a_private_encrypted_channel_should_be_accepted_by_Pusher()
+        public async Task the_auth_token_for_a_private_encrypted_channel_should_be_accepted_by_Pusher()
         {
             PusherServer.Pusher pusherServer = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions()
             {
@@ -41,7 +41,7 @@ namespace PusherServer.Tests.AcceptanceTests
 
             PusherClient.Pusher pusherClient = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
             {
-                Authorizer = new InMemoryAuthorizer(pusherServer),
+                ChannelAuthorizer = new InMemoryChannelAuthorizer(pusherServer),
                 Cluster = Config.Cluster,
                 TraceLogger = new PusherClient.TraceLogger(),
             });
@@ -56,7 +56,7 @@ namespace PusherServer.Tests.AcceptanceTests
         }
 
         [Test]
-        public async Task the_authentication_token_for_a_presence_channel_should_be_accepted_by_Pusher()
+        public async Task the_auth_token_for_a_presence_channel_should_be_accepted_by_Pusher()
         {
             Pusher pusherServer = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret, new PusherOptions
             {
@@ -64,7 +64,7 @@ namespace PusherServer.Tests.AcceptanceTests
             });
             PusherClient.Pusher pusherClient = new PusherClient.Pusher(Config.AppKey, new PusherClient.PusherOptions
             {
-                Authorizer = new InMemoryAuthorizer(
+                ChannelAuthorizer = new InMemoryChannelAuthorizer(
                     pusherServer,
                     new PresenceChannelData()
                     {

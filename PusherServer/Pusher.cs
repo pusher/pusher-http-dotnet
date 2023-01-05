@@ -193,28 +193,52 @@ namespace PusherServer
         ///<inheritDoc/>
         public IAuthenticationData Authenticate(string channelName, string socketId)
         {
-            IAuthenticationData result;
+            return (IAuthenticationData)AuthorizeChannel(channelName, socketId);
+        }
+
+        ///<inheritDoc/>
+        public IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
+        {
+            return (IAuthenticationData)AuthorizeChannel(channelName, socketId, presenceData);
+        }
+
+
+        ///<inheritDoc/>
+        public IChannelAuthorizationResponse AuthorizeChannel(string channelName, string socketId)
+        {
+            IChannelAuthorizationResponse result;
             if (IsPrivateEncryptedChannel(channelName))
             {
-                result = new AuthenticationData(_appKey, _appSecret, channelName, socketId, _options.EncryptionMasterKey);
+                result = new ChannelAuthorizationResponse(_appKey, _appSecret, channelName, socketId, _options.EncryptionMasterKey);
             }
             else
             {
-                result = new AuthenticationData(_appKey, _appSecret, channelName, socketId);
+                result = new ChannelAuthorizationResponse(_appKey, _appSecret, channelName, socketId);
             }
 
             return result;
         }
 
         ///<inheritDoc/>
-        public IAuthenticationData Authenticate(string channelName, string socketId, PresenceChannelData presenceData)
+        public IChannelAuthorizationResponse AuthorizeChannel(string channelName, string socketId, PresenceChannelData presenceData)
         {
             if (presenceData == null)
             {
                 throw new ArgumentNullException(nameof(presenceData));
             }
 
-            return new AuthenticationData(_appKey, _appSecret, channelName, socketId, presenceData);
+            return new ChannelAuthorizationResponse(_appKey, _appSecret, channelName, socketId, presenceData);
+        }
+
+        ///<inheritDoc/>
+        public IUserAuthenticationResponse AuthenticateUser(string socketId, UserData userData)
+        {
+            if (userData == null)
+            {
+                throw new ArgumentNullException(nameof(userData));
+            }
+
+            return new UserAuthenticationResponse(_appKey, _appSecret, socketId, userData);
         }
 
         ///<inheritDoc/>

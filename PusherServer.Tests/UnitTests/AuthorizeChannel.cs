@@ -4,14 +4,10 @@ using NUnit.Framework;
 using PusherServer.Exceptions;
 using PusherServer.Tests.Helpers;
 
-////
-// This file tests the deprecated PusherServer.IPusher.Authenticate method.
-////
-
 namespace PusherServer.Tests.UnitTests
 {
     [TestFixture]
-    public class When_authenticating_a_private_channel
+    public class When_authorizing_a_private_channel
     {
         IPusher _pusher;
 
@@ -29,7 +25,7 @@ namespace PusherServer.Tests.UnitTests
 
             string expectedAuthString = Config.AppKey + ":" + CreateSignedString(channelName, socketId);
 
-            IAuthenticationData result = _pusher.Authenticate(channelName, socketId);
+            IChannelAuthorizationResponse result = _pusher.AuthorizeChannel(channelName, socketId);
             Assert.AreEqual(expectedAuthString, result.auth);
             Assert.IsNull(result.shared_secret, nameof(result.shared_secret));
         }
@@ -38,49 +34,49 @@ namespace PusherServer.Tests.UnitTests
         [ExpectedException(typeof(SocketIdFormatException))]
         public void socket_id_cannot_contain_colon_prefix()
         {
-            _pusher.Authenticate("private-test", ":444.444");
+            _pusher.AuthorizeChannel("private-test", ":444.444");
         }
 
         [Test]
         [ExpectedException(typeof(SocketIdFormatException))]
         public void socket_id_cannot_contain_colon_suffix()
         {
-            _pusher.Authenticate("private-test", "444.444:");
+            _pusher.AuthorizeChannel("private-test", "444.444:");
         }
 
         [Test]
         [ExpectedException(typeof(SocketIdFormatException))]
         public void socket_id_cannot_contain_letters_suffix()
         {
-            _pusher.Authenticate("private-test", "444.444a");
+            _pusher.AuthorizeChannel("private-test", "444.444a");
         }
 
         [Test]
         [ExpectedException(typeof(SocketIdFormatException))]
         public void socket_id_must_contain_a_period_point()
         {
-            _pusher.Authenticate("private-test", "444");
+            _pusher.AuthorizeChannel("private-test", "444");
         }
 
         [Test]
         [ExpectedException(typeof(SocketIdFormatException))]
         public void socket_id_must_not_contain_newline_prefix()
         {
-            _pusher.Authenticate("private-test", "\n444.444");
+            _pusher.AuthorizeChannel("private-test", "\n444.444");
         }
 
         [Test]
         [ExpectedException(typeof(SocketIdFormatException))]
         public void socket_id_must_not_contain_newline_suffix()
         {
-            _pusher.Authenticate("private-test", "444.444\n");
+            _pusher.AuthorizeChannel("private-test", "444.444\n");
         }
 
         [Test]
         [ExpectedException(typeof(SocketIdFormatException))]
         public void socket_id_must_not_be_empty_string()
         {
-            _pusher.Authenticate("private-test", string.Empty);
+            _pusher.AuthorizeChannel("private-test", string.Empty);
         }
 
         [Test]
@@ -120,7 +116,7 @@ namespace PusherServer.Tests.UnitTests
 
         private void AuthWithChannelName(string channelName)
         {
-            _pusher.Authenticate(channelName, "123.456");
+            _pusher.AuthorizeChannel(channelName, "123.456");
         }
 
         private string CreateSignedString(string channelName, string socketId)
@@ -132,7 +128,7 @@ namespace PusherServer.Tests.UnitTests
     }
 
     [TestFixture]
-    public class When_authenticating_a_private_encrypted_channel
+    public class When_authorizing_a_private_encrypted_channel
     {
         [Test]
         public void the_auth_response_is_valid()
@@ -143,7 +139,7 @@ namespace PusherServer.Tests.UnitTests
                 EncryptionMasterKey = DataHelper.GenerateEncryptionMasterKey(),
             });
 
-            IAuthenticationData result = pusher.Authenticate(channelName, "123.456");
+            IChannelAuthorizationResponse result = pusher.AuthorizeChannel(channelName, "123.456");
 
             Assert.IsNotNull(result, nameof(IAuthenticationData));
             Assert.IsNotNull(result.shared_secret, nameof(result.shared_secret));
@@ -156,7 +152,7 @@ namespace PusherServer.Tests.UnitTests
         {
             string channelName = "private-encrypted-channel";
             Pusher pusher = new Pusher(Config.AppId, Config.AppKey, Config.AppSecret);
-            pusher.Authenticate(channelName, "123.456");
+            pusher.AuthorizeChannel(channelName, "123.456");
         }
 
 
@@ -169,12 +165,12 @@ namespace PusherServer.Tests.UnitTests
             {
                 EncryptionMasterKey = new byte[] { 1, 2 },
             });
-            pusher.Authenticate(channelName, "123.456");
+            pusher.AuthorizeChannel(channelName, "123.456");
         }
     }
 
     [TestFixture]
-    public class When_authenticating_a_presence_channel
+    public class When_authorizing_a_presence_channel
     {
         private IPusher _pusher;
 
@@ -191,7 +187,7 @@ namespace PusherServer.Tests.UnitTests
             string channelName = "my-channel";
             string socketId = "some_socket_id";
 
-            _pusher.Authenticate(channelName, socketId, null);
+            _pusher.AuthorizeChannel(channelName, socketId, null);
         }
 
         [Test]
@@ -209,7 +205,7 @@ namespace PusherServer.Tests.UnitTests
 
             string expectedAuthString = Config.AppKey + ":" + CreateSignedString(channelName, socketId, presenceJson);
 
-            IAuthenticationData result = _pusher.Authenticate(channelName, socketId, data);
+            IChannelAuthorizationResponse result = _pusher.AuthorizeChannel(channelName, socketId, data);
             Assert.AreEqual(expectedAuthString, result.auth);
             Assert.IsNull(result.shared_secret, nameof(result.shared_secret));
         }
@@ -228,7 +224,7 @@ namespace PusherServer.Tests.UnitTests
 
             string expectedChannelData = DefaultSerializer.Default.Serialize(data);
 
-            IAuthenticationData result = _pusher.Authenticate(channelName, socketId, data);
+            IChannelAuthorizationResponse result = _pusher.AuthorizeChannel(channelName, socketId, data);
             Assert.AreEqual(expectedChannelData, result.channel_data);
         }
 

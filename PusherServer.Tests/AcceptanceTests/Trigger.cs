@@ -174,7 +174,7 @@ namespace PusherServer.Tests.AcceptanceTests
             {
                 Cluster = Config.Cluster,
                 TraceLogger = new PusherClient.TraceLogger(),
-                Authorizer = new InMemoryAuthorizer(_pusher as Pusher),
+                ChannelAuthorizer = new InMemoryChannelAuthorizer(_pusher as Pusher),
             });
 
             await client.ConnectAsync().ConfigureAwait(false);
