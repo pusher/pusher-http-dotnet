@@ -25,7 +25,7 @@ namespace PusherServer.RestfulClient
         {}
 
         /// <summary>
-        /// Constructs a new instance of the PusherRestClient with a supplied HttpClient
+        /// Constructs a new instance of the PusherRestClient
         /// </summary>
         /// <param name="baseAddress">The base address of the Pusher API</param>
         /// <param name="libraryName">The name of the Pusher Library</param>
@@ -43,7 +43,7 @@ namespace PusherServer.RestfulClient
         }
 
         /// <summary>
-        /// Constructs a new instance of the PusherRestClient
+        /// Constructs a new instance of the PusherRestClient with a supplied HttpClient
         /// </summary>
         /// <param name="httpClient">An externally configured HttpClient</param>
         /// <param name="libraryName">The name of the Pusher Library</param>
