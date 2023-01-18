@@ -25,18 +25,32 @@ namespace PusherServer.RestfulClient
         {}
 
         /// <summary>
-        /// Constructs a new instance of the PusherRestClient
+        /// Constructs a new instance of the PusherRestClient with a supplied HttpClient
         /// </summary>
         /// <param name="baseAddress">The base address of the Pusher API</param>
         /// <param name="libraryName">The name of the Pusher Library</param>
         /// <param name="version">The version of the Pusher library</param>
-        public PusherRestClient(Uri baseAddress, string libraryName, Version version)
+        public PusherRestClient(Uri baseAddress, string libraryName, Version version):this(CreateDefaultHttpClient(baseAddress), libraryName, version)
+        {}
+
+        private static HttpClient CreateDefaultHttpClient(Uri baseAddress)
         {
-            _httpClient = new HttpClient 
+            return new HttpClient 
             { 
                 BaseAddress = baseAddress,
                 Timeout = TimeSpan.FromSeconds(30),
             };
+        }
+
+        /// <summary>
+        /// Constructs a new instance of the PusherRestClient
+        /// </summary>
+        /// <param name="httpClient">An externally configured HttpClient</param>
+        /// <param name="libraryName">The name of the Pusher Library</param>
+        /// <param name="version">The version of the Pusher library</param>
+        public PusherRestClient(HttpClient httpClient, string libraryName, Version version)
+        {
+            _httpClient = httpClient;
             _libraryName = libraryName;
             _version = version.ToString(3);
             _httpClient.DefaultRequestHeaders.Clear();
