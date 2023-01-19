@@ -1,5 +1,8 @@
 # Changelog
 
+## 4.7.0-beta.2
+* [ADDED] Constructor for PusherRestClient accepting an externally supplied HttpClient
+
 ## 4.7.0-beta
 * [ADDED] AuthenticateUser
 * [ADDED] AuthorizeChannel
