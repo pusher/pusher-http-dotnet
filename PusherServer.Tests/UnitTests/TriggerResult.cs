@@ -18,6 +18,17 @@ namespace PusherServer.Tests.UnitTests
                             "}" +
                         "}";
 
+        public static string TRIGGER_RESPONSE_WITH_CHANNEL_ATTRIBUTES = "{" +
+                            "\"channels\": {" +
+                                "\"any-channel\": {" +
+                                    "\"user_count\": 1," +
+                                    "\"subscription_count\": 2" +
+                                "}" +
+                            "}," +
+                            "\"event_ids\": {" +
+                                "\"any-channel\": \"test-id\"" +
+                            "}" +
+                        "}";
     }
 
     [TestFixture]
@@ -84,6 +95,20 @@ namespace PusherServer.Tests.UnitTests
             var triggerResult = new TriggerResult(response, TriggerResultHelper.TRIGGER_RESPONSE_JSON);
 
             triggerResult.EventIds.Add("fish", "pie");
+        }
+
+        [Test]
+        public void it_should_parse_channel_attributes()
+        {
+            HttpResponseMessage response = Substitute.For<HttpResponseMessage>();
+            response.StatusCode = HttpStatusCode.OK;
+            response.Content = new StringContent(TriggerResultHelper.TRIGGER_RESPONSE_WITH_CHANNEL_ATTRIBUTES);
+
+            var triggerResult = new TriggerResult(response, TriggerResultHelper.TRIGGER_RESPONSE_WITH_CHANNEL_ATTRIBUTES);
+
+            Assert.AreEqual(2, triggerResult.ChannelAttributes["any-channel"].subscription_count);
+            Assert.AreEqual(1, triggerResult.ChannelAttributes["any-channel"].user_count);
+            Assert.AreEqual(1, triggerResult.EventIds.Count);
         }
     }
 }

@@ -415,4 +415,98 @@ namespace PusherServer.Tests.AcceptanceTests
             Assert.AreEqual(channels.Length, result.EventIds.Count);
         }
     }
+
+    [TestFixture]
+    public class When_requesting_channel_attributes
+    {
+        [Test]
+        public async Task It_should_return_channel_attributes_for_multiple_channels()
+        {
+            var pusher = ClientServerFactory.CreateServer();
+            var channels = new List<string>
+            {
+                GetPublicChannelName(),
+                GetPublicChannelName(),
+            };
+            var options = new TriggerOptions
+            {
+                Info = new List<string> { "subscription_count" },
+            };
+            await ClientServerFactory.CreateClientAsync(pusher, channels[0]).ConfigureAwait(false);
+            await ClientServerFactory.CreateClientAsync(pusher, channels[1]).ConfigureAwait(false);
+
+            var result = await pusher.TriggerAsync(channels.ToArray(), "event", "data", options).ConfigureAwait(false);
+
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(2, result.ChannelAttributes.Count);
+            Assert.AreEqual(1, result.ChannelAttributes[channels[0]].subscription_count);
+            Assert.AreEqual(1, result.ChannelAttributes[channels[1]].subscription_count);
+        }
+
+        [Test]
+        public async Task It_should_return_subscription_count_for_any_channel()
+        {
+            var channelName = GetPublicChannelName();
+            var pusher = ClientServerFactory.CreateServer();
+            await ClientServerFactory.CreateClientAsync(pusher, channelName).ConfigureAwait(false);
+
+            var options = new TriggerOptions
+            {
+                Info = new List<string>() { "subscription_count" },
+            };
+            var result = await pusher.TriggerAsync(channelName, "event", "data", options).ConfigureAwait(false);
+
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(1, result.ChannelAttributes[channelName].subscription_count);
+        }
+
+        [Test]
+        public async Task It_should_return_user_count_for_presence_channels()
+        {
+            var channelName = GetPresenceChannelName();
+            var pusher = ClientServerFactory.CreateServer();
+            await ClientServerFactory.CreateClientAsync(pusher, channelName).ConfigureAwait(false);
+
+            var options = new TriggerOptions
+            {
+                Info = new List<string>() { "user_count" },
+            };
+            var result = await pusher.TriggerAsync(channelName, "event", "data", options).ConfigureAwait(false);
+
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(1, result.ChannelAttributes[channelName].user_count);
+        }
+
+        [Test]
+        public async Task It_should_return_all_requested_attributes()
+        {
+            var channelName = GetPresenceChannelName();
+            var pusher = ClientServerFactory.CreateServer();
+            await ClientServerFactory.CreateClientAsync(pusher, channelName).ConfigureAwait(false);
+            await ClientServerFactory.CreateClientAsync(pusher, channelName).ConfigureAwait(false);
+            await ClientServerFactory.CreateClientAsync(pusher, channelName).ConfigureAwait(false);
+
+            var options = new TriggerOptions
+            {
+                Info = new List<string>() { "subscription_count", "user_count" },
+            };
+            var result = await pusher.TriggerAsync(channelName, "event", "data", options).ConfigureAwait(false);
+
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
+            Assert.AreEqual(1, result.ChannelAttributes[channelName].user_count);
+            Assert.AreEqual(3, result.ChannelAttributes[channelName].subscription_count);
+        }
+
+        private static string GetPublicChannelName()
+        {
+            var random = new Random();
+            return $"test-channel-{random.Next()}";
+        }
+
+        private static string GetPresenceChannelName()
+        {
+            var random = new Random();
+            return $"presence-test-channel-{random.Next()}";
+        }
+    }
 }
