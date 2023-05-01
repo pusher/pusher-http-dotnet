@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using PusherServer.RestfulClient;
@@ -159,6 +160,11 @@ namespace PusherServer
             if (string.IsNullOrEmpty(options.SocketId) == false)
             {
                 bodyData.socket_id = options.SocketId;
+            }
+
+            if (options.Info != null && options.Info.Count > 0)
+            {
+                bodyData.info = string.Join(",", options.Info);
             }
 
             return bodyData;

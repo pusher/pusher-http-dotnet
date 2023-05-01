@@ -32,9 +32,11 @@ namespace PusherServer
             }
 
             EventIds = new ReadOnlyDictionary<string, string>(eventIdData.event_ids);
+            ChannelAttributes = new ReadOnlyDictionary<string, ChannelAttributes>(eventIdData.channels);
         }
 
         /// <inheritDoc/>
         public IDictionary<string, string> EventIds { get; }
+        public IDictionary<string, ChannelAttributes> ChannelAttributes { get; }
     }
 }
