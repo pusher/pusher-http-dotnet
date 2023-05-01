@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.0.0
+* [ADDED] Add support for channel attributes when triggering events
+
 ## 4.7.0-beta.2
 * [ADDED] Constructor for PusherRestClient accepting an externally supplied HttpClient
 
