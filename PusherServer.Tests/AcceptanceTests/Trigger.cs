@@ -419,6 +419,8 @@ namespace PusherServer.Tests.AcceptanceTests
     [TestFixture]
     public class When_requesting_channel_attributes
     {
+        static Random random = new Random();
+
         [Test]
         public async Task It_should_return_channel_attributes_for_multiple_channels()
         {
@@ -499,13 +501,11 @@ namespace PusherServer.Tests.AcceptanceTests
 
         private static string GetPublicChannelName()
         {
-            var random = new Random();
             return $"test-channel-{random.Next()}";
         }
 
         private static string GetPresenceChannelName()
         {
-            var random = new Random();
             return $"presence-test-channel-{random.Next()}";
         }
     }
