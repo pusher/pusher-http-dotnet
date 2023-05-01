@@ -1,5 +1,8 @@
 # Changelog
 
+## 5.0.0
+* [CHANGED] Describe your change here. Look at CHANGELOG.md to see the format.
+
 ## 4.7.0-beta.2
 * [ADDED] Constructor for PusherRestClient accepting an externally supplied HttpClient
 
