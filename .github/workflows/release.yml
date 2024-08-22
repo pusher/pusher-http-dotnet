@@ -56,8 +56,10 @@ jobs:
           sed -i 's/<AssemblyVersion>[^<]*<\/AssemblyVersion>/<AssemblyVersion>${{ env.VERSION }}.0<\/AssemblyVersion>/' Root.Build.props
           sed -i 's/<FileVersion>[^<]*<\/FileVersion>/<FileVersion>${{ env.VERSION }}.0<\/FileVersion>/' Root.Build.props
       - name: Prepare CHANGELOG
+        env: 
+          PULL_REQUEST_BODY: ${{ github.event.pull_request.body }}
         run: |
-          echo "${{ github.event.pull_request.body }}" | csplit -s - "/##/"
+          echo "$PULL_REQUEST_BODY" | csplit -s - "/##/"
           echo "# Changelog
 
           ## ${{ env.VERSION }}" >> CHANGELOG.tmp
